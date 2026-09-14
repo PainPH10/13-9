@@ -1,0 +1,517 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
+
+pcall(function()
+    if LocalPlayer.PlayerGui:FindFirstChild("AdvancedMenuV50") then
+        LocalPlayer.PlayerGui.AdvancedMenuV50:Destroy()
+    end
+end)
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "AdvancedMenuV50"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+-- ==================== NÚT THU GÓC / MỞ MENU ====================
+local ToggleMenuBtn = Instance.new("TextButton")
+ToggleMenuBtn.Name = "ToggleMenuBtn"
+ToggleMenuBtn.Size = UDim2.new(0, 45, 0, 45)
+ToggleMenuBtn.Position = UDim2.new(0, 110, 0, 130)
+ToggleMenuBtn.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
+ToggleMenuBtn.BackgroundTransparency = 0.1
+ToggleMenuBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleMenuBtn.Text = "⚙"
+ToggleMenuBtn.TextSize = 24
+ToggleMenuBtn.Font = Enum.Font.GothamBold
+ToggleMenuBtn.Active = true
+ToggleMenuBtn.Draggable = true
+ToggleMenuBtn.Parent = ScreenGui
+
+local tmbCorner = Instance.new("UICorner")
+tmbCorner.CornerRadius = UDim.new(1, 0)
+tmbCorner.Parent = ToggleMenuBtn
+
+local tmbStroke = Instance.new("UIStroke")
+tmbStroke.Color = Color3.fromRGB(255, 100, 100)
+tmbStroke.Transparency = 0.2
+tmbStroke.Thickness = 1.8
+tmbStroke.Parent = ToggleMenuBtn
+
+-- ==================== MAIN FRAME ====================
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 280, 0, 215) -- Giảm chiều cao do đã bỏ 1 nút
+MainFrame.Position = UDim2.new(0.5, -140, 0.32, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrame.BackgroundTransparency = 0.1
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Visible = true
+MainFrame.Parent = ScreenGui
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 14)
+mainCorner.Parent = MainFrame
+
+local mainStroke = Instance.new("UIStroke")
+mainStroke.Color = Color3.fromRGB(45, 45, 45)
+mainStroke.Thickness = 1.5
+mainStroke.Parent = MainFrame
+
+-- ==================== TITLE BAR ====================
+local Title = Instance.new("Frame")
+Title.Size = UDim2.new(1, 0, 0, 38)
+Title.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+Title.BackgroundTransparency = 0.3
+Title.BorderSizePixel = 0
+Title.Parent = MainFrame
+
+local titleCorner = Instance.new("UICorner")
+titleCorner.CornerRadius = UDim.new(0, 14)
+titleCorner.Parent = Title
+
+local titleFix = Instance.new("Frame")
+titleFix.Size = UDim2.new(1, 0, 0, 10)
+titleFix.Position = UDim2.new(0, 0, 1, -10)
+titleFix.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+titleFix.BackgroundTransparency = 0.3
+titleFix.BorderSizePixel = 0
+titleFix.ZIndex = Title.ZIndex
+titleFix.Parent = Title
+
+-- ==================== LOGO CHỮ P ĐẸP MẮT ====================
+local LogoContainer = Instance.new("Frame")
+LogoContainer.Size = UDim2.new(0, 26, 0, 26)
+LogoContainer.Position = UDim2.new(0, 10, 0.5, -13)
+LogoContainer.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
+LogoContainer.BackgroundTransparency = 0.2
+LogoContainer.ZIndex = Title.ZIndex + 1
+LogoContainer.Parent = Title
+
+local logoCorner = Instance.new("UICorner")
+logoCorner.CornerRadius = UDim.new(0, 7)
+logoCorner.Parent = LogoContainer
+
+local logoStroke = Instance.new("UIStroke")
+logoStroke.Color = Color3.fromRGB(255, 100, 100)
+logoStroke.Thickness = 1.5
+logoStroke.Parent = LogoContainer
+
+local LogoText = Instance.new("TextLabel")
+LogoText.Size = UDim2.new(1, 0, 1, 0)
+LogoText.BackgroundTransparency = 1
+LogoText.Text = "P"
+LogoText.TextColor3 = Color3.fromRGB(255, 255, 255)
+LogoText.TextSize = 15
+LogoText.Font = Enum.Font.GothamBold
+LogoText.ZIndex = LogoContainer.ZIndex + 1
+LogoText.Parent = LogoContainer
+
+-- Hiệu ứng đổi màu phát sáng nhẹ cho Logo chữ P
+task.spawn(function()
+    while true do
+        TweenService:Create(logoStroke, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Color = Color3.fromRGB(255, 220, 100)}):Play()
+        TweenService:Create(LogoContainer, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {BackgroundColor3 = Color3.fromRGB(220, 80, 30)}):Play()
+        task.wait(1.5)
+        TweenService:Create(logoStroke, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {Color = Color3.fromRGB(255, 80, 80)}):Play()
+        TweenService:Create(LogoContainer, TweenInfo.new(1.5, Enum.EasingStyle.Sine), {BackgroundColor3 = Color3.fromRGB(180, 30, 30)}):Play()
+        task.wait(1.5)
+    end
+end)
+
+-- ==================== TEXT TÊN MENU ====================
+local TitleText = Instance.new("TextLabel")
+TitleText.Size = UDim2.new(1, -45, 1, 0)
+TitleText.Position = UDim2.new(0, 42, 0, 0)
+TitleText.BackgroundTransparency = 1
+TitleText.Text = "My Dino Life by 0painph10"
+TitleText.TextColor3 = Color3.fromRGB(240, 240, 240)
+TitleText.Font = Enum.Font.GothamBold
+TitleText.TextSize = 13
+TitleText.TextXAlignment = Enum.TextXAlignment.Left
+TitleText.ZIndex = Title.ZIndex + 1
+TitleText.Parent = Title
+
+-- ==================== CONTAINER HOLDER ====================
+local containerHolder = Instance.new("UIListLayout")
+containerHolder.SortOrder = Enum.SortOrder.LayoutOrder
+containerHolder.Padding = UDim.new(0, 10)
+containerHolder.HorizontalAlignment = Enum.HorizontalAlignment.Center
+containerHolder.Parent = MainFrame
+
+local pad = Instance.new("Frame")
+pad.Size = UDim2.new(1, 0, 0, 8)
+pad.BackgroundTransparency = 1
+pad.LayoutOrder = 0
+pad.Parent = MainFrame
+
+-- ==================== 1. FLY BUTTON ====================
+local flyButton = Instance.new("TextButton")
+flyButton.Name = "FlyToggleBtn"
+flyButton.Size = UDim2.new(0, 252, 0, 42)
+flyButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+flyButton.BackgroundTransparency = 0.4
+flyButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+flyButton.Text = "Fly: [ TẮT ]"
+flyButton.TextSize = 13
+flyButton.Font = Enum.Font.GothamMedium
+flyButton.AutoButtonColor = false
+flyButton.LayoutOrder = 1
+flyButton.Parent = MainFrame
+
+local fBtnCorner = Instance.new("UICorner")
+fBtnCorner.CornerRadius = UDim.new(0, 10)
+fBtnCorner.Parent = flyButton
+
+local fBtnStroke = Instance.new("UIStroke")
+fBtnStroke.Color = Color3.fromRGB(50, 50, 50)
+fBtnStroke.Transparency = 0.3
+fBtnStroke.Thickness = 1.2
+fBtnStroke.Parent = flyButton
+
+-- ==================== 2. ESP BUTTON ====================
+local espButton = Instance.new("TextButton")
+espButton.Name = "EspBtn"
+espButton.Size = UDim2.new(0, 252, 0, 42)
+espButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+espButton.BackgroundTransparency = 0.4
+espButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+espButton.Text = "ESP Tên & Máu: [ TẮT ]"
+espButton.TextSize = 13
+espButton.Font = Enum.Font.GothamMedium
+espButton.AutoButtonColor = false
+espButton.LayoutOrder = 2
+espButton.Parent = MainFrame
+
+local eBtnCorner = Instance.new("UICorner")
+eBtnCorner.CornerRadius = UDim.new(0, 10)
+eBtnCorner.Parent = espButton
+
+local eBtnStroke = Instance.new("UIStroke")
+eBtnStroke.Color = Color3.fromRGB(50, 50, 50)
+eBtnStroke.Transparency = 0.3
+eBtnStroke.Thickness = 1.2
+eBtnStroke.Parent = espButton
+
+-- ==================== 3. AUTO FARM BUTTON ====================
+local autoFarmButton = Instance.new("TextButton")
+autoFarmButton.Name = "AutoFarmBtn"
+autoFarmButton.Size = UDim2.new(0, 252, 0, 42)
+autoFarmButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+autoFarmButton.BackgroundTransparency = 0.4
+autoFarmButton.TextColor3 = Color3.fromRGB(220, 220, 220)
+autoFarmButton.Text = "Tự động nhặt: TẮT"
+autoFarmButton.TextSize = 13
+autoFarmButton.Font = Enum.Font.GothamMedium
+autoFarmButton.AutoButtonColor = false
+autoFarmButton.LayoutOrder = 3
+autoFarmButton.Parent = MainFrame
+
+local afBtnCorner = Instance.new("UICorner")
+afBtnCorner.CornerRadius = UDim.new(0, 10)
+afBtnCorner.Parent = autoFarmButton
+
+local afBtnStroke = Instance.new("UIStroke")
+afBtnStroke.Color = Color3.fromRGB(50, 50, 50)
+afBtnStroke.Transparency = 0.3
+afBtnStroke.Thickness = 1.2
+afBtnStroke.Parent = autoFarmButton
+
+-- ==================== BIẾN TRẠNG THÁI & ẨN HIỆN MENU ====================
+local flyEnabled = false
+local espEnabled = false
+local autoFarm = false
+local menuVisible = true
+
+ToggleMenuBtn.MouseButton1Click:Connect(function()
+    menuVisible = not menuVisible
+    MainFrame.Visible = menuVisible
+    
+    if menuVisible then
+        TweenService:Create(ToggleMenuBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(180, 40, 40)}):Play()
+    else
+        TweenService:Create(ToggleMenuBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(80, 20, 20)}):Play()
+    end
+end)
+
+-- ==================== XỬ LÝ LOGIC TỰ ĐỘNG NHẶT ====================
+autoFarmButton.MouseButton1Click:Connect(function()
+    autoFarm = not autoFarm
+    if autoFarm then
+        autoFarmButton.Text = "Tự động nhặt: BẬT"
+        TweenService:Create(autoFarmButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(15, 90, 15), BackgroundTransparency = 0.2}):Play()
+        TweenService:Create(afBtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(60, 255, 60), Transparency = 0}):Play()
+    else
+        autoFarmButton.Text = "Tự động nhặt: TẮT"
+        TweenService:Create(autoFarmButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 25), BackgroundTransparency = 0.4}):Play()
+        TweenService:Create(afBtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(50, 50, 50), Transparency = 0.3}):Play()
+    end
+end)
+
+local function getHRP_AutoFarm()
+    local char = LocalPlayer.Character
+    if not char then return nil end
+    return char:FindFirstChild("HumanoidRootPart") or char.PrimaryPart
+end
+
+task.spawn(function()
+    local visitedOrbs = {}
+    local burstCount = 0
+
+    while task.wait(0.15) do
+        if autoFarm and LocalPlayer.Character then
+            local char = LocalPlayer.Character
+            local hrp = getHRP_AutoFarm()
+            local humanoid = char:FindFirstChildOfClass("Humanoid")
+
+            if hrp and humanoid then
+                if burstCount >= 2 then
+                    burstCount = 0
+                    visitedOrbs = {} 
+                    task.wait(1.5) 
+                end
+
+                local bestFood = nil
+                local shortestDist = math.huge
+
+                for _, food in pairs(workspace:GetDescendants()) do
+                    if food and food.Parent and not visitedOrbs[food] then
+                        local nameLower = string.lower(food.Name)
+                        if string.find(nameLower, "food") or string.find(nameLower, "orb") or string.find(nameLower, "meat") or string.find(nameLower, "hp") then
+                            local pos = nil
+                            local isVisible = true
+                            pcall(function()
+                                if food:IsA("Model") then
+                                    pos = food:GetPivot().Position
+                                elseif food:IsA("BasePart") then
+                                    pos = food.Position
+                                    if food.Transparency >= 1 then isVisible = false end
+                                end
+                            end)
+
+                            if pos and isVisible then
+                                local dist = (hrp.Position - pos).Magnitude
+                                if dist < shortestDist then
+                                    shortestDist = dist
+                                    bestFood = food
+                                end
+                            end
+                        end
+                    end
+                end
+
+                if bestFood then
+                    visitedOrbs[bestFood] = true
+
+                    local targetCFrame = nil
+                    pcall(function()
+                        if bestFood:IsA("Model") then
+                            targetCFrame = bestFood:GetPivot()
+                        elseif bestFood:IsA("BasePart") then
+                            targetCFrame = bestFood.CFrame
+                        end
+                    end)
+
+                    if targetCFrame then
+                        pcall(function()
+                            humanoid.PlatformStand = true
+                        end)
+
+                        local distance = (hrp.Position - targetCFrame.Position).Magnitude
+                        local travelTime = math.clamp(distance / 220, 0.03, 0.25)
+
+                        local tweenInfo = TweenInfo.new(travelTime, Enum.EasingStyle.Linear)
+                        local tween = TweenService:Create(hrp, tweenInfo, {CFrame = targetCFrame})
+                        
+                        tween:Play()
+                        task.wait(travelTime)
+
+                        pcall(function()
+                            if bestFood:IsA("BasePart") then
+                                firetouchinterest(hrp, bestFood, 0)
+                                firetouchinterest(hrp, bestFood, 1)
+                            elseif bestFood:IsA("Model") and bestFood.PrimaryPart then
+                                firetouchinterest(hrp, bestFood.PrimaryPart, 0)
+                                firetouchinterest(hrp, bestFood.PrimaryPart, 1)
+                            end
+                        end)
+
+                        burstCount = burstCount + 1
+                        task.wait(0.2)
+                        
+                        pcall(function()
+                            humanoid.PlatformStand = false
+                        end)
+                    else
+                        task.wait(0.1)
+                    end
+                else
+                    visitedOrbs = {}
+                    burstCount = 0
+                    task.wait(0.5)
+                end
+            end
+        end
+    end
+end)
+
+-- ==================== XỬ LÝ LOGIC FLY ====================
+local char, hrp, hum
+local att, lv, ag
+local flySpeed = 50
+
+local function updateChar()
+    char = LocalPlayer.Character
+    if char then
+        hrp = char:FindFirstChild("HumanoidRootPart") or char.PrimaryPart or char:FindFirstChildOfClass("BasePart")
+        hum = char:FindFirstChildOfClass("Humanoid")
+    end
+end
+
+LocalPlayer.CharacterAdded:Connect(function(c)
+    task.wait(1)
+    updateChar()
+end)
+updateChar()
+
+local function startFly()
+    updateChar()
+    if not hrp then return end
+    flyEnabled = true
+    
+    att = Instance.new("Attachment", hrp)
+    
+    lv = Instance.new("LinearVelocity")
+    lv.Attachment0 = att
+    lv.MaxForce = math.huge
+    lv.VectorVelocity = Vector3.new(0, 0, 0)
+    lv.Parent = hrp
+    
+    ag = Instance.new("AlignOrientation")
+    ag.Attachment0 = att
+    ag.MaxTorque = math.huge
+    ag.Responsiveness = 200
+    ag.Parent = hrp
+    
+    flyButton.Text = "Fly: [ BẬT ]"
+    TweenService:Create(flyButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(110, 15, 15), BackgroundTransparency = 0.2}):Play()
+    TweenService:Create(fBtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(255, 60, 60), Transparency = 0}):Play()
+end
+
+local function stopFly()
+    flyEnabled = false
+    if lv then lv:Destroy() end
+    if ag then ag:Destroy() end
+    if att then att:Destroy() end
+    flyButton.Text = "Fly: [ TẮT ]"
+    TweenService:Create(flyButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 25), BackgroundTransparency = 0.4}):Play()
+    TweenService:Create(fBtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(50, 50, 50), Transparency = 0.3}):Play()
+end
+
+flyButton.MouseButton1Click:Connect(function()
+    if flyEnabled then stopFly() else startFly() end
+end)
+
+RunService.RenderStepped:Connect(function()
+    if not flyEnabled or not hrp or not lv or not ag then return end
+    local cam = workspace.CurrentCamera
+    
+    local moveDir = Vector3.new()
+    if hum then moveDir = hum.MoveDirection end
+    
+    local targetVel = Vector3.new()
+    if moveDir.Magnitude > 0 then
+        local camCF = cam.CFrame
+        local camLook = camCF.LookVector
+        local camRight = camCF.RightVector
+        local flatLook = Vector3.new(camLook.X, 0, camLook.Z).Unit
+        local flatRight = Vector3.new(camRight.X, 0, camRight.Z).Unit
+        local lookDot = moveDir:Dot(camLook)
+        local rightDot = moveDir:Dot(camRight)
+        targetVel = (flatLook * lookDot + flatRight * rightDot + Vector3.new(0, camLook.Y * math.abs(lookDot), 0)).Unit * flySpeed
+    else
+        targetVel = Vector3.new(0, 0, 0)
+    end
+    lv.VectorVelocity = targetVel
+    ag.CFrame = cam.CFrame
+end)
+
+-- ==================== XỬ LÝ LOGIC ESP ====================
+local espFolder = Instance.new("Folder")
+espFolder.Name = "ESPFolder"
+espFolder.Parent = ScreenGui
+
+local function removeEsp(otherPlayer)
+	if espFolder:FindFirstChild(otherPlayer.Name .. "_ESP") then
+		espFolder[otherPlayer.Name .. "_ESP"]:Destroy()
+	end
+end
+
+local function addEsp(otherPlayer)
+	if otherPlayer == LocalPlayer then return end
+	local billboard = Instance.new("BillboardGui")
+	billboard.Name = otherPlayer.Name .. "_ESP"
+	billboard.Size = UDim2.new(0, 120, 0, 45)
+	billboard.AlwaysOnTop = true
+	
+	local nameLabel = Instance.new("TextLabel")
+	nameLabel.Name = "NameLabel"
+	nameLabel.Size = UDim2.new(1, 0, 0.5, 0)
+	nameLabel.BackgroundTransparency = 1
+	nameLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+	nameLabel.TextStrokeTransparency = 0.4
+	nameLabel.TextSize = 12
+	nameLabel.Font = Enum.Font.GothamBold
+	nameLabel.Parent = billboard
+	
+	local healthLabel = Instance.new("TextLabel")
+	healthLabel.Name = "HealthLabel"
+	healthLabel.Size = UDim2.new(1, 0, 0.5, 0)
+	healthLabel.Position = UDim2.new(0, 0, 0.5, 0)
+	healthLabel.BackgroundTransparency = 1
+	healthLabel.TextColor3 = Color3.fromRGB(80, 255, 80)
+	healthLabel.TextStrokeTransparency = 0.4
+	healthLabel.TextSize = 12
+	healthLabel.Font = Enum.Font.GothamBold
+	healthLabel.Parent = billboard
+	
+	billboard.Parent = espFolder
+	
+	RunService.RenderStepped:Connect(function()
+		if not espEnabled then
+			billboard.Enabled = false
+			return
+		end
+		local c = otherPlayer.Character
+		if c and c:FindFirstChild("Head") and c:FindFirstChild("Humanoid") then
+			billboard.Adornee = c.Head
+			billboard.Enabled = true
+			local humanoid = c.Humanoid
+			nameLabel.Text = otherPlayer.DisplayName
+			healthLabel.Text = math.floor(humanoid.Health) .."/" .. math.floor(humanoid.MaxHealth)
+		else
+			billboard.Enabled = false
+		end
+	end)
+end
+
+espButton.MouseButton1Click:Connect(function()
+	espEnabled = not espEnabled
+	if espEnabled then
+		espButton.Text = "ESP Tên & Máu: [ BẬT ]"
+		TweenService:Create(espButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(110, 15, 15), BackgroundTransparency = 0.2}):Play()
+		TweenService:Create(eBtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(255, 60, 60), Transparency = 0}):Play()
+		for _, p in ipairs(Players:GetPlayers()) do addEsp(p) end
+	else
+		espButton.Text = "ESP Tên & Máu: [ TẮT ]"
+		TweenService:Create(espButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 25, 25), BackgroundTransparency = 0.35}):Play()
+		TweenService:Create(eBtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(50, 50, 50), Transparency = 0.3}):Play()
+		espFolder:ClearAllChildren()
+		for _, p in ipairs(Players:GetPlayers()) do removeEsp(p) end
+	end
+end)
+
+Players.PlayerAdded:Connect(function(p) p.CharacterAdded:Connect(function() if espEnabled then addEsp(p) end end) end)
+Players.PlayerRemoving:Connect(function(p) removeEsp(p) end)
