@@ -1,0 +1,712 @@
+-- ================================================================= --
+--  JURASSIC BLOCKY V11.2 BY 0PAINPH10 - UNDERGROUND VERTICAL FIX     --
+--  (TỰ ĐỘNG DỰNG ĐỨNG 90 DƯỚI LÒNG ĐẤT BÁM THEO MỤC TIÊU)              --
+-- ================================================================= --
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local virtualInputManager = game:GetService("VirtualInputManager")
+local userInputService = game:GetService("UserInputService")
+local runService = game:GetService("RunService")
+local players = game.Players
+
+if playerGui:FindFirstChild("CyberFlyMenu") then
+    playerGui.CyberFlyMenu:Destroy()
+end
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "CyberFlyMenu"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+local openCloseBtn = Instance.new("TextButton", screenGui)
+openCloseBtn.Name = "FixedToggleIcon"
+openCloseBtn.Size = UDim2.new(0, 45, 0, 45)
+openCloseBtn.Position = UDim2.new(0, 15, 0.45, 0)
+openCloseBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+openCloseBtn.Text = "🦖"
+openCloseBtn.TextSize = 22
+openCloseBtn.TextColor3 = Color3.fromRGB(0, 230, 255)
+openCloseBtn.Font = Enum.Font.GothamBold
+openCloseBtn.Active = true
+Instance.new("UICorner", openCloseBtn).CornerRadius = UDim.new(1, 0)
+
+local iconStroke = Instance.new("UIStroke", openCloseBtn)
+iconStroke.Thickness = 2
+iconStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+local iconGradient = Instance.new("UIGradient", iconStroke)
+iconGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 128)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 230, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 128))
+})
+
+task.spawn(function()
+    while task.wait(0.03) do
+        iconGradient.Rotation = (iconGradient.Rotation + 4) % 360
+    end
+end)
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 550, 0, 285)
+mainFrame.Position = UDim2.new(0.5, -275, 0.5, -142)
+mainFrame.BackgroundColor3 = Color3.fromRGB(16, 16, 24)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.ClipsDescendants = true
+mainFrame.Parent = screenGui
+
+local mainCorner = Instance.new("UICorner", mainFrame)
+mainCorner.CornerRadius = UDim.new(0, 10)
+
+local mainStroke = Instance.new("UIStroke", mainFrame)
+mainStroke.Thickness = 2
+mainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+local strokeGradient = Instance.new("UIGradient", mainStroke)
+strokeGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 128)),
+    ColorSequenceKeypoint.new(0.33, Color3.fromRGB(0, 230, 255)),
+    ColorSequenceKeypoint.new(0.66, Color3.fromRGB(0, 150, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 128))
+})
+
+task.spawn(function()
+    while task.wait(0.03) do
+        strokeGradient.Rotation = (strokeGradient.Rotation + 3) % 360
+    end
+end)
+
+local titleFrame = Instance.new("Frame", mainFrame)
+titleFrame.Size = UDim2.new(1, 0, 0, 36)
+titleFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 36)
+titleFrame.BorderSizePixel = 0
+
+local titleCorner = Instance.new("UICorner", titleFrame)
+titleCorner.CornerRadius = UDim.new(0, 10)
+
+local titleText = Instance.new("TextLabel", titleFrame)
+titleText.Size = UDim2.new(1, -50, 1, 0)
+titleText.Position = UDim2.new(0, 12, 0, 0)
+titleText.BackgroundTransparency = 1
+titleText.Text = "🦖 JURASSIC BLOCKY BY 0PAINPH10"
+titleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleText.Font = Enum.Font.GothamBold
+titleText.TextSize = 13
+titleText.TextXAlignment = Enum.TextXAlignment.Left
+
+local toggleMenuBtn = Instance.new("TextButton", titleFrame)
+toggleMenuBtn.Size = UDim2.new(0, 26, 0, 24)
+toggleMenuBtn.Position = UDim2.new(1, -32, 0.5, -12)
+toggleMenuBtn.BackgroundColor3 = Color3.fromRGB(235, 60, 90)
+toggleMenuBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleMenuBtn.Text = "−"
+toggleMenuBtn.Font = Enum.Font.GothamBold
+toggleMenuBtn.TextSize = 16
+Instance.new("UICorner", toggleMenuBtn).CornerRadius = UDim.new(0, 5)
+
+local contentContainer = Instance.new("Frame", mainFrame)
+contentContainer.Size = UDim2.new(1, -16, 1, -44)
+contentContainer.Position = UDim2.new(0, 8, 0, 40)
+contentContainer.BackgroundTransparency = 1
+
+local isMenuOpen = true
+local function toggleMenuVisibility()
+    isMenuOpen = not isMenuOpen
+    mainFrame.Visible = isMenuOpen
+end
+
+openCloseBtn.MouseButton1Click:Connect(toggleMenuVisibility)
+toggleMenuBtn.MouseButton1Click:Connect(toggleMenuVisibility)
+
+local leftScroll = Instance.new("ScrollingFrame", contentContainer)
+leftScroll.Size = UDim2.new(0.5, -6, 1, 0)
+leftScroll.Position = UDim2.new(0, 0, 0, 0)
+leftScroll.BackgroundTransparency = 1
+leftScroll.ScrollBarThickness = 3
+leftScroll.ScrollBarImageColor3 = Color3.fromRGB(0, 230, 255)
+
+local leftLayout = Instance.new("UIListLayout", leftScroll)
+leftLayout.SortOrder = Enum.SortOrder.LayoutOrder
+leftLayout.Padding = UDim.new(0, 6)
+
+leftLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    leftScroll.CanvasSize = UDim2.new(0, 0, 0, leftLayout.AbsoluteContentSize.Y + 10)
+end)
+
+local function createTitle(text, color, parent, order)
+    local lbl = Instance.new("TextLabel")
+    lbl.Size = UDim2.new(1, 0, 0, 18)
+    lbl.BackgroundTransparency = 1
+    lbl.Text = text
+    lbl.TextColor3 = color
+    lbl.Font = Enum.Font.GothamBold
+    lbl.TextSize = 11
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.LayoutOrder = order
+    lbl.Parent = parent
+    return lbl
+end
+
+local function createAdjuster(titleText, initialVal, minVal, maxVal, step, parent, onValChange, order)
+    local container = Instance.new("Frame", parent)
+    container.Size = UDim2.new(1, -4, 0, 32)
+    container.BackgroundColor3 = Color3.fromRGB(24, 24, 34)
+    container.LayoutOrder = order
+    Instance.new("UICorner", container).CornerRadius = UDim.new(0, 6)
+    
+    local stroke = Instance.new("UIStroke", container)
+    stroke.Color = Color3.fromRGB(40, 40, 55)
+
+    local valLabel = Instance.new("TextLabel", container)
+    valLabel.Size = UDim2.new(1, -65, 1, 0)
+    valLabel.Position = UDim2.new(0, 8, 0, 0)
+    valLabel.BackgroundTransparency = 1
+    valLabel.TextColor3 = Color3.fromRGB(220, 220, 240)
+    valLabel.Font = Enum.Font.Gotham
+    valLabel.TextSize = 11
+    valLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    local currVal = initialVal
+    local function update()
+        valLabel.Text = titleText .. ": " .. tostring(currVal)
+        onValChange(currVal)
+    end
+
+    local decBtn = Instance.new("TextButton", container)
+    decBtn.Size = UDim2.new(0, 24, 0, 20)
+    decBtn.Position = UDim2.new(1, -54, 0.5, -10)
+    decBtn.BackgroundColor3 = Color3.fromRGB(38, 38, 52)
+    decBtn.TextColor3 = Color3.fromRGB(255, 90, 90)
+    decBtn.Text = "−"
+    decBtn.Font = Enum.Font.GothamBold
+    decBtn.TextSize = 13
+    Instance.new("UICorner", decBtn).CornerRadius = UDim.new(0, 4)
+
+    local incBtn = Instance.new("TextButton", container)
+    incBtn.Size = UDim2.new(0, 24, 0, 20)
+    incBtn.Position = UDim2.new(1, -26, 0.5, -10)
+    incBtn.BackgroundColor3 = Color3.fromRGB(38, 38, 52)
+    incBtn.TextColor3 = Color3.fromRGB(90, 255, 150)
+    incBtn.Text = "+"
+    incBtn.Font = Enum.Font.GothamBold
+    incBtn.TextSize = 13
+    Instance.new("UICorner", incBtn).CornerRadius = UDim.new(0, 4)
+
+    decBtn.MouseButton1Click:Connect(function()
+        currVal = math.clamp(currVal - step, minVal, maxVal)
+        update()
+    end)
+
+    incBtn.MouseButton1Click:Connect(function()
+        currVal = math.clamp(currVal + step, minVal, maxVal)
+        update()
+    end)
+
+    update()
+end
+
+local function createToggle(defaultText, parent, order)
+    local btn = Instance.new("TextButton", parent)
+    btn.Size = UDim2.new(1, -4, 0, 30)
+    btn.BackgroundColor3 = Color3.fromRGB(180, 45, 60)
+    btn.Text = defaultText .. ": TẮT"
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 11
+    btn.LayoutOrder = order
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+    return btn
+end
+
+local currentHeight = 15
+local flySpeed = 50
+local selectedPlayer = "Nearest"
+
+createAdjuster("Độ sâu dưới đất", currentHeight, 5, 100, 2, leftScroll, function(v) currentHeight = v end, 1)
+createAdjuster("Tốc độ bay", flySpeed, 10, 150, 5, leftScroll, function(v) flySpeed = v end, 2)
+
+local flyBtn = createToggle("🚀 Bay & Bám Đuôi Dưới Đất", leftScroll, 3)
+
+createTitle("👁️ HỆ THỐNG ESP (VIỀN & TÊN)", Color3.fromRGB(0, 230, 255), leftScroll, 4)
+local espBtn = createToggle("👁️ ESP Hiển Thị Tên & Viền Khủng Long", leftScroll, 5)
+
+local chooseTapBtn = Instance.new("TextButton", leftScroll)
+chooseTapBtn.Size = UDim2.new(1, -4, 0, 28)
+chooseTapBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+chooseTapBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+chooseTapBtn.Text = "📍 Chọn Vị Trí Tap"
+chooseTapBtn.Font = Enum.Font.Gotham
+chooseTapBtn.TextSize = 11
+chooseTapBtn.LayoutOrder = 6
+Instance.new("UICorner", chooseTapBtn).CornerRadius = UDim.new(0, 6)
+
+local posLabel = Instance.new("TextLabel", leftScroll)
+posLabel.Size = UDim2.new(1, 0, 0, 14)
+posLabel.BackgroundTransparency = 1
+posLabel.Text = "Tọa độ: Center"
+posLabel.TextColor3 = Color3.fromRGB(160, 160, 180)
+posLabel.Font = Enum.Font.Gotham
+posLabel.TextSize = 10
+posLabel.LayoutOrder = 7
+
+local autoTapToggleBtn = createToggle("👆 Bật Auto Tap", leftScroll, 8)
+
+local rightFrame = Instance.new("Frame", contentContainer)
+rightFrame.Size = UDim2.new(0.5, -6, 1, 0)
+rightFrame.Position = UDim2.new(0.5, 6, 0, 0)
+rightFrame.BackgroundColor3 = Color3.fromRGB(22, 22, 32)
+Instance.new("UICorner", rightFrame).CornerRadius = UDim.new(0, 8)
+
+local rightStroke = Instance.new("UIStroke", rightFrame)
+rightStroke.Color = Color3.fromRGB(40, 40, 60)
+
+local targetTitle = Instance.new("TextLabel", rightFrame)
+targetTitle.Size = UDim2.new(1, -12, 0, 24)
+targetTitle.Position = UDim2.new(0, 8, 0, 4)
+targetTitle.BackgroundTransparency = 1
+targetTitle.Text = "🎯 MỤC TIÊU BÁM ĐUÔI"
+targetTitle.TextColor3 = Color3.fromRGB(0, 230, 255)
+targetTitle.Font = Enum.Font.GothamBold
+targetTitle.TextSize = 11
+targetTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+local targetLabel = Instance.new("TextLabel", rightFrame)
+targetLabel.Size = UDim2.new(1, -16, 0, 18)
+targetLabel.Position = UDim2.new(0, 8, 0, 26)
+targetLabel.BackgroundTransparency = 1
+targetLabel.Text = "Đang chọn: [Người Gần Nhất]"
+targetLabel.TextColor3 = Color3.fromRGB(0, 255, 170)
+targetLabel.Font = Enum.Font.Gotham
+targetLabel.TextSize = 10
+targetLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local refreshBtn = Instance.new("TextButton", rightFrame)
+refreshBtn.Size = UDim2.new(1, -16, 0, 24)
+refreshBtn.Position = UDim2.new(0, 8, 0, 48)
+refreshBtn.BackgroundColor3 = Color3.fromRGB(40, 70, 120)
+refreshBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+refreshBtn.Text = "🔄 Làm Mới Danh Sách"
+refreshBtn.Font = Enum.Font.GothamBold
+refreshBtn.TextSize = 10
+Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 5)
+
+local playerScroll = Instance.new("ScrollingFrame", rightFrame)
+playerScroll.Size = UDim2.new(1, -16, 1, -82)
+playerScroll.Position = UDim2.new(0, 8, 0, 76)
+playerScroll.BackgroundTransparency = 1
+playerScroll.ScrollBarThickness = 3
+playerScroll.ScrollBarImageColor3 = Color3.fromRGB(0, 230, 255)
+
+local pListLayout = Instance.new("UIListLayout", playerScroll)
+pListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+pListLayout.Padding = UDim.new(0, 4)
+
+pListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    playerScroll.CanvasSize = UDim2.new(0, 0, 0, pListLayout.AbsoluteContentSize.Y + 5)
+end)
+
+local function refreshPlayerList()
+    for _, child in ipairs(playerScroll:GetChildren()) do
+        if child:IsA("TextButton") then child:Destroy() end
+    end
+    
+    local btnNearest = Instance.new("TextButton", playerScroll)
+    btnNearest.Size = UDim2.new(1, -6, 0, 24)
+    btnNearest.Text = "[🎯 Người Gần Nhất]"
+    btnNearest.BackgroundColor3 = Color3.fromRGB(30, 80, 130)
+    btnNearest.TextColor3 = Color3.new(1,1,1)
+    btnNearest.Font = Enum.Font.GothamBold
+    btnNearest.TextSize = 10
+    Instance.new("UICorner", btnNearest).CornerRadius = UDim.new(0, 5)
+    
+    btnNearest.MouseButton1Click:Connect(function()
+        selectedPlayer = "Nearest"
+        targetLabel.Text = "Đang chọn: [Người Gần Nhất]"
+    end)
+    
+    for _, p in ipairs(players:GetPlayers()) do
+        if p ~= player then
+            local btn = Instance.new("TextButton", playerScroll)
+            btn.Size = UDim2.new(1, -6, 0, 24)
+            btn.Text = p.DisplayName .. " (@" .. p.Name .. ")"
+            btn.BackgroundColor3 = Color3.fromRGB(38, 38, 52)
+            btn.TextColor3 = Color3.new(1,1,1)
+            btn.Font = Enum.Font.Gotham
+            btn.TextSize = 10
+            Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 5)
+            
+            btn.MouseButton1Click:Connect(function()
+                selectedPlayer = p
+                targetLabel.Text = "Đang chọn: " .. p.DisplayName
+            end)
+        end
+    end
+end
+
+refreshBtn.MouseButton1Click:Connect(refreshPlayerList)
+refreshPlayerList()
+
+players.PlayerAdded:Connect(refreshPlayerList)
+players.PlayerRemoving:Connect(refreshPlayerList)
+
+local function getTailPart(character)
+    if not character then return nil end
+    local possibleNames = {"Tail", "Tail1", "Tail2", "Tail3", "Tail10", "LowerTorso", "Pelvis", "HumanoidRootPart"}
+    for _, name in ipairs(possibleNames) do
+        local part = character:FindFirstChild(name, true)
+        if part and part:IsA("BasePart") then
+            return part
+        end
+    end
+    return character:FindFirstChild("HumanoidRootPart")
+end
+
+-- ESP SYSTEM
+local isEsp = false
+
+local espContainer = playerGui:FindFirstChild("ESP_Container")
+if not espContainer then
+    espContainer = Instance.new("Folder")
+    espContainer.Name = "ESP_Container"
+    espContainer.Parent = playerGui
+end
+
+local function removeEspForPlayerName(pName)
+    local oldGui = espContainer:FindFirstChild("ESP_Gui_" .. pName)
+    if oldGui then oldGui:Destroy() end
+    
+    local oldHighlight = espContainer:FindFirstChild("ESP_Highlight_" .. pName)
+    if oldHighlight then oldHighlight:Destroy() end
+end
+
+local function updateOrCreateEsp(p)
+    if not isEsp or p == player then 
+        removeEspForPlayerName(p.Name)
+        return 
+    end
+
+    local char = p.Character
+    if not char or not char.Parent then
+        removeEspForPlayerName(p.Name)
+        return
+    end
+
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    local targetPart = char:FindFirstChild("HumanoidRootPart") 
+        or char.PrimaryPart 
+        or char:FindFirstChild("Head") 
+        or char:FindFirstChildWhichIsA("BasePart")
+
+    if not humanoid or humanoid.Health <= 0 or not targetPart then
+        removeEspForPlayerName(p.Name)
+        return
+    end
+
+    local highlight = espContainer:FindFirstChild("ESP_Highlight_" .. p.Name)
+    if not highlight then
+        highlight = Instance.new("Highlight")
+        highlight.Name = "ESP_Highlight_" .. p.Name
+        highlight.FillTransparency = 0.5
+        highlight.OutlineTransparency = 0
+        highlight.FillColor = Color3.fromRGB(0, 230, 255)
+        highlight.OutlineColor = Color3.fromRGB(0, 255, 120)
+        highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+        highlight.Parent = espContainer
+    end
+    highlight.Adornee = char
+
+    local billboard = espContainer:FindFirstChild("ESP_Gui_" .. p.Name)
+    if not billboard then
+        billboard = Instance.new("BillboardGui")
+        billboard.Name = "ESP_Gui_" .. p.Name
+        billboard.AlwaysOnTop = true
+        billboard.Size = UDim2.new(0, 140, 0, 50)
+        billboard.StudsOffset = Vector3.new(0, 4, 0)
+        billboard.MaxDistance = math.huge
+        billboard.Parent = espContainer
+
+        local nameLabel = Instance.new("TextLabel", billboard)
+        nameLabel.Name = "NameLabel"
+        nameLabel.Size = UDim2.new(1, 0, 0, 18)
+        nameLabel.BackgroundTransparency = 1
+        nameLabel.Text = p.DisplayName
+        nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        nameLabel.TextSize = 12
+        nameLabel.Font = Enum.Font.GothamBold
+        
+        local nameStroke = Instance.new("UIStroke", nameLabel)
+        nameStroke.Color = Color3.fromRGB(0, 0, 0)
+
+        local healthBg = Instance.new("Frame", billboard)
+        healthBg.Name = "HealthBg"
+        healthBg.Size = UDim2.new(1, 0, 0, 6)
+        healthBg.Position = UDim2.new(0, 0, 0, 20)
+        healthBg.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        healthBg.BorderSizePixel = 0
+        Instance.new("UICorner", healthBg).CornerRadius = UDim.new(0, 3)
+
+        local healthBar = Instance.new("Frame", healthBg)
+        healthBar.Name = "HealthBar"
+        healthBar.Size = UDim2.new(1, 0, 1, 0)
+        healthBar.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+        healthBar.BorderSizePixel = 0
+        Instance.new("UICorner", healthBar).CornerRadius = UDim.new(0, 3)
+
+        local hpText = Instance.new("TextLabel", billboard)
+        hpText.Name = "HpText"
+        hpText.Size = UDim2.new(1, 0, 0, 14)
+        hpText.Position = UDim2.new(0, 0, 0, 28)
+        hpText.BackgroundTransparency = 1
+        hpText.TextColor3 = Color3.fromRGB(220, 220, 220)
+        hpText.TextSize = 10
+        hpText.Font = Enum.Font.Gotham
+        
+        local hpStroke = Instance.new("UIStroke", hpText)
+        hpStroke.Color = Color3.fromRGB(0, 0, 0)
+    end
+
+    billboard.Adornee = targetPart
+
+    local maxHp = math.max(humanoid.MaxHealth, 1)
+    local hpPct = math.clamp(humanoid.Health / maxHp, 0, 1)
+    
+    local healthBar = billboard.HealthBg.HealthBar
+    healthBar.Size = UDim2.new(hpPct, 0, 1, 0)
+    healthBar.BackgroundColor3 = Color3.fromRGB(255 * (1 - hpPct), 255 * hpPct, 0)
+
+    local distStr = ""
+    local myChar = player.Character
+    if myChar and myChar:FindFirstChild("HumanoidRootPart") then
+        local dist = math.floor((myChar.HumanoidRootPart.Position - targetPart.Position).Magnitude)
+        distStr = " | " .. dist .. "m"
+    end
+
+    billboard.HpText.Text = math.floor(humanoid.Health) .. "/" .. math.floor(humanoid.MaxHealth) .. distStr
+end
+
+runService.RenderStepped:Connect(function()
+    if not isEsp then return end
+    for _, p in ipairs(players:GetPlayers()) do
+        if p ~= player then
+            updateOrCreateEsp(p)
+        end
+    end
+end)
+
+players.PlayerRemoving:Connect(function(p)
+    removeEspForPlayerName(p.Name)
+end)
+
+espBtn.MouseButton1Click:Connect(function()
+    isEsp = not isEsp
+    if isEsp then
+        espBtn.Text = "👁️ ESP Hiển Thị Tên & Viền: BẬT"
+        espBtn.BackgroundColor3 = Color3.fromRGB(40, 180, 90)
+    else
+        espBtn.Text = "👁️ ESP Hiển Thị Tên & Viền: TẮT"
+        espBtn.BackgroundColor3 = Color3.fromRGB(180, 45, 60)
+        espContainer:ClearAllChildren()
+    end
+end)
+
+runService.Stepped:Connect(function()
+    local char = player.Character
+    if not char then return end
+    if isFlying then
+        for _, part in ipairs(char:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+-- AUTO TAP
+local TOG = false
+local RUN = false
+local selecting = false
+local tapPos = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2, workspace.CurrentCamera.ViewportSize.Y/2)
+
+local FOV = Instance.new("Frame", screenGui)
+FOV.Size = UDim2.new(0, 20, 0, 20)
+FOV.AnchorPoint = Vector2.new(0.5, 0.5)
+FOV.Position = UDim2.new(0, tapPos.X, 0, tapPos.Y)
+FOV.BackgroundTransparency = 1
+
+local Stroke = Instance.new("UIStroke", FOV)
+Stroke.Thickness = 2
+Instance.new("UICorner", FOV).CornerRadius = UDim.new(1, 0)
+
+local Inner1 = FOV:Clone()
+Inner1.Size = UDim2.new(0, 8, 0, 8)
+Inner1.Parent = FOV
+Inner1.Position = UDim2.new(0.5, 0, 0.5, 0)
+Inner1.AnchorPoint = Vector2.new(0.5, 0.5)
+
+local PlusH = Instance.new("Frame", FOV)
+PlusH.Size = UDim2.new(0, 8, 0, 1)
+PlusH.AnchorPoint = Vector2.new(0.5, 0.5)
+PlusH.Position = UDim2.new(0.5, 0, 0.5, 0)
+
+local PlusV = Instance.new("Frame", FOV)
+PlusV.Size = UDim2.new(0, 1, 0, 8)
+PlusV.AnchorPoint = Vector2.new(0.5, 0.5)
+PlusV.Position = UDim2.new(0.5, 0, 0.5, 0)
+
+task.spawn(function()
+    local h = 0
+    while task.wait(0.04) do
+        h = (h + 0.01) % 1
+        local col = Color3.fromHSV(h, 1, 1)
+        Stroke.Color = col
+        Inner1:GetChildren()[1].Color = col
+        PlusH.BackgroundColor3 = col
+        PlusV.BackgroundColor3 = col
+    end
+end)
+
+local function updateLabel()
+    posLabel.Text = "Tọa độ: (" .. math.floor(tapPos.X) .. ", " .. math.floor(tapPos.Y) .. ")"
+end
+
+chooseTapBtn.MouseButton1Click:Connect(function()
+    if not selecting then
+        selecting = true
+        chooseTapBtn.Text = "👉 Chạm vị trí trên màn hình..."
+    end
+end)
+
+userInputService.InputBegan:Connect(function(input)
+    if selecting and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+        tapPos = input.Position
+        updateLabel()
+        chooseTapBtn.Text = "📍 Chọn Vị Trí Tap"
+        selecting = false
+    end
+end)
+
+autoTapToggleBtn.MouseButton1Click:Connect(function()
+    TOG = not TOG
+    if TOG then
+        autoTapToggleBtn.Text = "👆 Bật Auto Tap: BẬT"
+        autoTapToggleBtn.BackgroundColor3 = Color3.fromRGB(40, 180, 90)
+        RUN = true
+        task.spawn(function()
+            while RUN and TOG do
+                local x, y = tapPos.X, tapPos.Y + 50
+                FOV.Position = UDim2.new(0, tapPos.X, 0, tapPos.Y)
+                virtualInputManager:SendMouseButtonEvent(x, y, 0, true, game, false)
+                virtualInputManager:SendMouseButtonEvent(x, y, 0, false, game, false)
+                task.wait(0.1)
+            end
+        end)
+    else
+        RUN = false
+        autoTapToggleBtn.Text = "👆 Bật Auto Tap: TẮT"
+        autoTapToggleBtn.BackgroundColor3 = Color3.fromRGB(180, 45, 60)
+    end
+end)
+updateLabel()
+
+-- LOGIC BÁM ĐUÔI DƯỚI ĐẤT DỰNG ĐỨNG 90° (UNDERGROUND VERTICAL)
+local function getTargetCharacter(hrp)
+    if typeof(selectedPlayer) == "Instance" and selectedPlayer:IsA("Player") then
+        if selectedPlayer.Character and selectedPlayer.Character:FindFirstChild("Humanoid") and selectedPlayer.Character.Humanoid.Health > 0 then
+            return selectedPlayer.Character
+        end
+    end
+
+    local nearestChar = nil
+    local shortestDistance = math.huge
+    for _, p in ipairs(players:GetPlayers()) do
+        if p ~= player and p.Character and p.Character:FindFirstChild("Humanoid") then
+            if p.Character.Humanoid.Health > 0 then
+                local tailPart = getTailPart(p.Character)
+                if tailPart then
+                    local distance = (hrp.Position - tailPart.Position).Magnitude
+                    if distance < shortestDistance then
+                        shortestDistance = distance
+                        nearestChar = p.Character
+                    end
+                end
+            end
+        end
+    end
+    return nearestChar
+end
+
+local isFlying = false
+local flyConnection = nil
+
+flyBtn.MouseButton1Click:Connect(function()
+    isFlying = not isFlying
+    if isFlying then
+        flyBtn.Text = "🚀 Bay & Bám Đuôi: BẬT"
+        flyBtn.BackgroundColor3 = Color3.fromRGB(40, 180, 90)
+
+        flyConnection = runService.Heartbeat:Connect(function(dt)
+            if not isFlying then return end
+            local char = player.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") or not char:FindFirstChild("Humanoid") then return end
+            
+            local hrp = char.HumanoidRootPart
+            local hum = char.Humanoid
+            
+            hum.PlatformStand = true
+            hrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+            hrp.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+
+            for _, part in ipairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+
+            local targetChar = getTargetCharacter(hrp)
+            if targetChar then
+                local targetHrp = targetChar:FindFirstChild("HumanoidRootPart") or getTailPart(targetChar)
+                if targetHrp then
+                    local targetCF = targetHrp.CFrame
+                    local _, targetYaw, _ = targetCF:ToOrientation()
+                    
+                    local goalPos = targetCF.Position - Vector3.new(0, math.max(currentHeight, 5), 0)
+                    local dist = (goalPos - hrp.Position).Magnitude
+                    
+                    local newPos = hrp.Position
+                    if dist > 0.1 then
+                        local stepDist = math.min(dist, flySpeed * dt)
+                        local dir = (goalPos - hrp.Position).Unit
+                        newPos = hrp.Position + (dir * stepDist)
+                    else
+                        newPos = goalPos
+                    end
+                    
+                    hrp.CFrame = CFrame.new(newPos) * CFrame.Angles(0, targetYaw, 0) * CFrame.Angles(math.rad(90), 0, 0)
+                end
+            end
+        end)
+    else
+        flyBtn.Text = "🚀 Bay & Bám Đuôi: TẮT"
+        flyBtn.BackgroundColor3 = Color3.fromRGB(180, 45, 60)
+        
+        if flyConnection then
+            flyConnection:Disconnect()
+            flyConnection = nil
+        end
+        
+        local char = player.Character
+        if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("Humanoid") then
+            char.Humanoid.PlatformStand = false
+            local hrp = char.HumanoidRootPart
+            hrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+            
+            for _, part in ipairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
+            end
+        end
+    end
+end)
