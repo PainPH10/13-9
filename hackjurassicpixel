@@ -1,0 +1,388 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Jurassic Pixel By 0painph10",
+   Icon = 0,
+   LoadingTitle = "Jurassic Pixel",
+   LoadingSubtitle = "by 0painph10",
+   ShowText = false,
+   Theme = "Default",
+   ToggleUIKeybind = "K",
+
+   DisableRayfieldPrompts = true,
+   DisableBuildWarnings = true,
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil,
+      FileName = "Big Hub"
+   },
+
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink",
+      RememberJoins = true
+   },
+
+   KeySystem = false,
+   KeySettings = {
+      Title = "Untitled",
+      Subtitle = "Key System",
+      Note = "No method of obtaining the key is provided",
+      FileName = "Key",
+      SaveKey = true,
+      GrabKeyFromSite = false,
+      Key = {"Hello"}
+   }
+})
+
+local Tab = Window:CreateTab("Main Hacks", 4483362458)
+
+-- --- BIẾN TRẠNG THÁI ---
+local FastAttackEnabled = false
+local HitboxEnabled = true 
+local ESPEnabled = false
+local AutoAttackEnabled = false
+local HitboxExtenderThing = 25
+
+local flyEnabled = true 
+local flySpeed = 50
+local originalGravity = workspace.Gravity
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local localPlayer = Players.LocalPlayer
+
+pcall(function()
+    localPlayer.DevEnableMouseLock = true
+    workspace.FallenPartsDestroyHeight = -999999
+end)
+
+-- --- KÍCH HOẠT TRỌNG LỰC CHO FLY LUÔN TỪ ĐẦU ---
+originalGravity = workspace.Gravity
+workspace.Gravity = 0
+
+-- --- HOOK METAMETHOD ---
+local GiveAllCreatures = ReplicatedStorage:WaitForChild("GiveAllCreatures")
+local Eat = ReplicatedStorage:WaitForChild("Eat")
+
+local oldNamecall
+oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    local args = {...}
+
+    if FastAttackEnabled and not checkcaller() then
+        if method == "FireServer" then
+            if self == GiveAllCreatures then
+                return nil
+            end
+            if self == Eat and args[1] == "SpecialCheck0000" then
+                return oldNamecall(self, unpack(args))
+            end
+        end
+    end
+
+    if flyEnabled and not checkcaller() and (method == "FireServer" or method == "InvokeServer") then
+        local remoteName = string.lower(self.Name)
+        if string.find(remoteName, "teleport") or string.find(remoteName, "cheat") or string.find(remoteName, "void") or string.find(remoteName, "position") or string.find(remoteName, "check") or string.find(remoteName, "reset") then
+            return nil
+        end
+    end
+
+    return oldNamecall(self, ...)
+end))
+
+local oldNewIndex
+oldNewIndex = hookmetamethod(game, "__newindex", newcclosure(function(self, idx, val)
+    if flyEnabled and not checkcaller() and localPlayer.Character then
+        local hrp = localPlayer.Character:FindFirstChild("HumanoidRootPart")
+        local hum = localPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if (self == hrp and (idx == "CFrame" or idx == "Position" or idx == "Velocity" or idx == "AssemblyLinearVelocity")) or (self == hum and idx == "HipHeight") then
+            return
+        end
+    end
+    return oldNewIndex(self, idx, val)
+end))
+
+-- --- XỬ LÝ AUTO ATTACK ---
+local function doAutoAttack()
+    local playerGui = localPlayer:FindFirstChild("PlayerGui")
+    if playerGui then
+        for _, gui in pairs(playerGui:GetDescendants()) do
+            if gui:IsA("TextButton") or gui:IsA("ImageButton") then
+                local btnText = (gui:IsA("TextButton") and gui.Text) or gui.Name
+                if string.find(string.upper(btnText), "TẤN CÔNG") or string.find(string.upper(btnText), "TAN CONG") or gui.Name == "Attack" then
+                    if firesignal then
+                        firesignal(gui.MouseButton1Click)
+                        firesignal(gui.Activated)
+                    elseif getconnections then
+                        for _, conn in pairs(getconnections(gui.MouseButton1Click)) do
+                            conn:Fire()
+                        end
+                        for _, conn in pairs(getconnections(gui.Activated)) do
+                            conn:Fire()
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+task.spawn(function()
+    while true do
+        if AutoAttackEnabled then
+            pcall(doAutoAttack)
+        end
+        task.wait(0.15)
+    end
+end)
+
+-- --- XỬ LÝ FAST ATTACK CD ---
+task.spawn(function()
+    while true do
+        local character = localPlayer and localPlayer.Character
+        if character and character:FindFirstChild("CreatureInfo") then
+            local cd = character.CreatureInfo:FindFirstChild("AttackCooldown")
+            local aoeCd = character.CreatureInfo:FindFirstChild("AOEAttackCooldown")
+
+            if FastAttackEnabled then
+                if cd and not cd:GetAttribute("OriginalCD") then
+                    cd:SetAttribute("OriginalCD", cd.Value)
+                end
+                if aoeCd and not aoeCd:GetAttribute("OriginalCD") then
+                    aoeCd:SetAttribute("OriginalCD", aoeCd.Value)
+                end
+
+                if cd then cd.Value = 0.1 end
+                if aoeCd then aoeCd.Value = 0.1 end
+            else
+                if cd and cd:GetAttribute("OriginalCD") then
+                    cd.Value = cd:GetAttribute("OriginalCD")
+                    cd:SetAttribute("OriginalCD", nil)
+                end
+                if aoeCd and aoeCd:GetAttribute("OriginalCD") then
+                    aoeCd.Value = aoeCd:GetAttribute("OriginalCD")
+                    aoeCd:SetAttribute("OriginalCD", nil)
+                end
+            end
+        end
+        task.wait(0.1)
+    end
+end)
+
+-- --- XỬ LÝ HITBOX EXTENDER (LUÔN CHẠY) ---
+task.spawn(function()
+    while true do
+        local char = localPlayer and localPlayer.Character
+        if char then
+            local attackPart = char:FindFirstChild("AttackPart")
+            if attackPart then
+                if not attackPart:GetAttribute("OriginalSize") then
+                    attackPart:SetAttribute("OriginalSize", attackPart.Size)
+                end
+                attackPart.Size = Vector3.new(HitboxExtenderThing, HitboxExtenderThing, HitboxExtenderThing)
+            end
+        end
+        task.wait(0.3)
+    end
+end)
+
+-- --- XỬ LÝ ESP ---
+local function removeAllESP()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player.Character then
+            local head = player.Character:FindFirstChild("Head") or player.Character:FindFirstChild("HumanoidRootPart")
+            if head and head:FindFirstChild("ESP_Tag") then
+                head.ESP_Tag:Destroy()
+            end
+        end
+    end
+end
+
+local function updateESP()
+    local myChar = localPlayer.Character
+    local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= localPlayer and player.Character then
+            local char = player.Character
+            local root = char:FindFirstChild("Head") or char:FindFirstChild("HumanoidRootPart")
+            local humanoid = char:FindFirstChildOfClass("Humanoid")
+
+            if root and humanoid and humanoid.Health > 0 then
+                local esp = root:FindFirstChild("ESP_Tag")
+                if not esp then
+                    esp = Instance.new("BillboardGui")
+                    esp.Name = "ESP_Tag"
+                    esp.Adornee = root
+                    esp.Size = UDim2.new(0, 200, 0, 60)
+                    esp.StudsOffset = Vector3.new(0, 3, 0)
+                    esp.AlwaysOnTop = true
+
+                    local label = Instance.new("TextLabel")
+                    label.Name = "ESPLabel"
+                    label.Parent = esp
+                    label.Size = UDim2.new(1, 0, 1, 0)
+                    label.BackgroundTransparency = 1
+                    label.TextStrokeTransparency = 0
+                    label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+                    label.TextSize = 14
+                    label.Font = Enum.Font.SourceSansBold
+                    label.RichText = true
+
+                    esp.Parent = root
+                end
+
+                local label = esp:FindFirstChild("ESPLabel")
+                if label then
+                    local distance = 0
+                    if myRoot then
+                        distance = math.floor((myRoot.Position - root.Position).Magnitude)
+                    end
+                    
+                    label.Text = string.format(
+                        "<font color=\"#00FFFF\">%s</font>\n<font color=\"#55FF55\">HP: %d/%d</font>\n<font color=\"#FFFF55\">[%d Mét]</font>",
+                        player.Name,
+                        math.floor(humanoid.Health),
+                        math.floor(humanoid.MaxHealth),
+                        distance
+                    )
+                end
+            end
+        end
+    end
+end
+
+task.spawn(function()
+    while true do
+        if ESPEnabled then
+            pcall(updateESP)
+        end
+        task.wait(0.1)
+    end
+end)
+
+-- --- XỬ LÝ NOPHYSICS KHI FLY (LUÔN CHẠY) ---
+RunService.Stepped:Connect(function()
+    if flyEnabled and localPlayer.Character then
+        local char = localPlayer.Character
+        for _, part in pairs(char:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+        
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+        end
+    end
+end)
+
+-- --- XỬ LÝ BAY 3D CHUẨN (LUÔN CHẠY) ---
+RunService.RenderStepped:Connect(function(dt)
+    if not flyEnabled then return end
+
+    local char = localPlayer.Character
+    if not char then return end
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    if not hrp or not humanoid then return end
+
+    hrp.AssemblyLinearVelocity = Vector3.zero
+    hrp.AssemblyAngularVelocity = Vector3.zero
+
+    local camCF = workspace.CurrentCamera.CFrame
+    local moveDir = humanoid.MoveDirection
+    local flyDirection = Vector3.zero
+
+    if moveDir.Magnitude > 0 then
+        local localMove = camCF:VectorToObjectSpace(moveDir)
+        flyDirection = (camCF.LookVector * -localMove.Z) + (camCF.RightVector * localMove.X)
+    end
+
+    if UserInputService:IsKeyDown(Enum.KeyCode.Space) or UserInputService:IsKeyDown(Enum.KeyCode.E) then
+        flyDirection = flyDirection + Vector3.new(0, 1, 0)
+    end
+    if UserInputService:IsKeyDown(Enum.KeyCode.Q) or UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then
+        flyDirection = flyDirection - Vector3.new(0, 1, 0)
+    end
+
+    if flyDirection.Magnitude > 0 then
+        flyDirection = flyDirection.Unit
+        hrp.CFrame = hrp.CFrame + (flyDirection * (flySpeed * dt))
+    end
+
+    hrp.CFrame = CFrame.new(hrp.Position, hrp.Position + camCF.LookVector)
+end)
+
+-- ================= GIAO DIỆN RAYFIELD =================
+
+Tab:CreateSection("Combat Settings")
+
+Tab:CreateToggle({
+   Name = "Auto Attack (Tự động TẤN CÔNG)",
+   CurrentValue = false,
+   Flag = "AutoAttackToggle",
+   Callback = function(Value)
+      AutoAttackEnabled = Value
+   end,
+})
+
+Tab:CreateToggle({
+   Name = "Faster Attack Option (0.1)",
+   CurrentValue = false,
+   Flag = "FastAttackToggle",
+   Callback = function(Value)
+      FastAttackEnabled = Value
+   end,
+})
+
+Tab:CreateParagraph({Title = "Hitbox M1 Extender [LUÔN BẬT]", Content = "KHI TẮT SẼ BỊ BAND NÊN KHÔNG TẮT DC"})
+
+Tab:CreateSlider({
+   Name = "Hitbox Extender Range",
+   Range = {0, 67},
+   Increment = 1,
+   Suffix = "Studs",
+   CurrentValue = 25,
+   Flag = "Slider1",
+   Callback = function(Value)
+      HitboxExtenderThing = Value
+   end,
+})
+
+Tab:CreateSection("Visual Settings")
+
+Tab:CreateToggle({
+   Name = "ESP (Hiện Tên + Máu + Mét)",
+   CurrentValue = false,
+   Flag = "ESPToggle",
+   Callback = function(Value)
+      ESPEnabled = Value
+      if not Value then
+         removeAllESP()
+      end
+   end,
+})
+
+Tab:CreateSection("Movement Settings")
+
+Tab:CreateSlider({
+   Name = "Fly Speed (Tốc độ bay)",
+   Range = {10, 50},
+   Increment = 1,
+   Suffix = "Studs/s",
+   CurrentValue = 50,
+   Flag = "FlySpeedSlider",
+   Callback = function(Value)
+      flySpeed = Value
+   end,
+})
+
+-- ĐÃ XÓA HOÀN TOÀN SHIFT LOCK Ở ĐÂY
+
+Tab:CreateParagraph({Title = "Fly + Noclip (Bay Xuyên Đất) [LUÔN BẬT]", Content = "KHI TẮT SẼ BỊ BAND NÊN KHÔNG TẮT DC"})
