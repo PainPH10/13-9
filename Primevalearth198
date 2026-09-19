@@ -1,0 +1,1826 @@
+--[[ 
+	UI Library - Primeval Earth By 0painph10 
+	(Updated: Default Side Teleport & Dynamic Tail Follow Switch - Vietnamese Version)
+]]
+
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local VirtualUser = game:GetService("VirtualUser")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local camera = Workspace.CurrentCamera
+
+-- Clear old UI
+if CoreGui:FindFirstChild("CustomLibraryHubInteractive") then
+	CoreGui.CustomLibraryHubInteractive:Destroy()
+end
+if playerGui:FindFirstChild("CustomLibraryHubInteractive") then
+	playerGui.CustomLibraryHubInteractive:Destroy()
+end
+
+-- Global Control Variables
+_G.AutoEatRunning = false
+_G.AutoDrinkRunning = false
+_G.AutoRestRunning = false
+_G.AutoZoneRunning = false
+_G.CurrentQuest = "Không có"
+
+_G.SpeedEnabled = false
+_G.WalkSpeedValue = 16
+_G.FlyEnabled = false
+_G.FlySpeedValue = 50
+_G.NoclipEnabled = false
+
+_G.ESPEnabled = false
+_G.ESPShowName = true
+_G.ESPShowHealth = true
+
+-- Teleport Target & Kill Farm Configurations
+local combatConfig = {
+	Enabled = false,
+	TargetPlayer = nil,
+	Distance = 12,
+	Height = 1.5,
+	CircleEnabled = false,
+	CircleSpeed = 3,
+	Mode = "Side" -- "Side" là mặc định
+}
+
+local killConfig = {
+	Enabled = false,
+	TargetIndex = 1,
+	Distance = 12,
+	Height = 1.5,
+	CurrentTarget = nil
+}
+
+-- FreeCam Configuration
+_G.FreeCamEnabled = false
+local CamFOV = 70
+local SavedCameraType = camera.CameraType
+local SavedSubject = camera.CameraSubject
+local CamCFrame = camera.CFrame
+local CameraRotationX = 0
+local CameraRotationY = 0
+local moveUpHold = false
+local moveDownHold = false
+
+-- ScreenGui Setup
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "CustomLibraryHubInteractive"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- ==================== TELEPORT & COMBAT LOGIC ====================
+local lastTargetLookVector = {}
+local currentAngle = 0
+
+-- Biến điều khiển chuyển đổi 2 bên hông mỗi 1s
+local currentSideMultiplier = 1
+task.spawn(function()
+	while true do
+		task.wait(1)
+		currentSideMultiplier = -currentSideMultiplier
+	end
+end)
+
+local function teleportToTarget(myHrp, targetHrp, targetPlayer, distOffset, heightOffset, mode)
+	if not myHrp or not targetHrp then return end
+	
+	-- Tùy chọn xoay vòng tròn
+	if combatConfig.CircleEnabled then
+		currentAngle = currentAngle + (combatConfig.CircleSpeed * RunService.RenderStepped:Wait())
+		local offset = Vector3.new(math.cos(currentAngle) * distOffset, heightOffset, math.sin(currentAngle) * distOffset)
+		local orbitPosition = targetHrp.Position + offset
+		
+		myHrp.CFrame = CFrame.new(orbitPosition, Vector3.new(targetHrp.Position.X, orbitPosition.Y, targetHrp.Position.Z))
+		myHrp.AssemblyLinearVelocity = Vector3.zero
+		myHrp.AssemblyAngularVelocity = Vector3.zero
+		return
+	end
+
+	local currentCFrame = targetHrp.CFrame
+	local currentLook = currentCFrame.LookVector
+	
+	local targetKey = targetPlayer or targetHrp
+	if not lastTargetLookVector[targetKey] then
+		lastTargetLookVector[targetKey] = currentLook
+	else
+		lastTargetLookVector[targetKey] = lastTargetLookVector[targetKey]:Lerp(currentLook, 0.35).Unit
+	end
+	
+	local lookVector = lastTargetLookVector[targetKey]
+	
+	if targetHrp.AssemblyLinearVelocity.Magnitude > 2 then
+		local moveVel = Vector3.new(targetHrp.AssemblyLinearVelocity.X, 0, targetHrp.AssemblyLinearVelocity.Z)
+		if moveVel.Magnitude > 1 then
+			lookVector = moveVel.Unit
+		end
+	end
+	
+	local targetPosFlat = Vector3.new(targetHrp.Position.X, 0, targetHrp.Position.Z)
+	local finalPosition = Vector3.zero
+
+	if mode == "Tail" then
+		-- Chức năng BÁM ĐUÔI
+		local tailPosition = targetHrp.Position - (lookVector * distOffset) + Vector3.new(0, heightOffset, 0)
+		targetPosFlat = Vector3.new(targetHrp.Position.X, tailPosition.Y, targetHrp.Position.Z)
+		finalPosition = tailPosition
+	else
+		-- Chức năng BÁM 2 BÊN HÔNG (Mặc định)
+		local rightVector = Vector3.new(-lookVector.Z, 0, lookVector.X).Unit
+		local sidePosition = targetHrp.Position + (rightVector * (distOffset * currentSideMultiplier)) + Vector3.new(0, heightOffset, 0)
+		targetPosFlat = Vector3.new(targetHrp.Position.X, sidePosition.Y, targetHrp.Position.Z)
+		finalPosition = sidePosition
+	end
+	
+	myHrp.CFrame = CFrame.new(finalPosition, targetPosFlat)
+	myHrp.AssemblyLinearVelocity = Vector3.zero
+	myHrp.AssemblyAngularVelocity = Vector3.zero
+end
+
+-- ==================== 1. TOGGLE MENU BUTTON ====================
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Name = "ToggleMenuButton"
+toggleBtn.Size = UDim2.new(0, 85, 0, 32)
+toggleBtn.Position = UDim2.new(0, 15, 0, 70)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(24, 24, 28)
+toggleBtn.BorderSizePixel = 0
+toggleBtn.Text = "Ẩn/Hiện Menu"
+toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleBtn.TextSize = 13
+toggleBtn.Font = Enum.Font.FredokaOne
+toggleBtn.Parent = screenGui
+
+local toggleCorner = Instance.new("UICorner", toggleBtn)
+toggleCorner.CornerRadius = UDim.new(0, 4)
+
+local toggleStroke = Instance.new("UIStroke", toggleBtn)
+toggleStroke.Color = Color3.fromRGB(90, 90, 105)
+toggleStroke.Thickness = 1.5
+
+-- ==================== 2. MAIN FRAME ====================
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 520, 0, 340) 
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+local mainCorner = Instance.new("UICorner", mainFrame)
+mainCorner.CornerRadius = UDim.new(0, 6)
+
+local topbar = Instance.new("Frame")
+topbar.Size = UDim2.new(1, 0, 0, 38)
+topbar.BackgroundTransparency = 1
+topbar.Parent = mainFrame
+
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(0, 230, 1, 0)
+titleLabel.Position = UDim2.new(0, 12, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Primeval Earth By 0painph10"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextSize = 14
+titleLabel.Font = Enum.Font.FredokaOne
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = topbar
+
+local searchBox = Instance.new("TextBox")
+searchBox.Name = "SearchBox"
+searchBox.Size = UDim2.new(0, 130, 0, 26)
+searchBox.Position = UDim2.new(0, 250, 0.5, -13)
+searchBox.BackgroundColor3 = Color3.fromRGB(32, 32, 38)
+searchBox.BorderSizePixel = 0
+searchBox.PlaceholderText = "Tìm kiếm..."
+searchBox.Text = ""
+searchBox.TextColor3 = Color3.fromRGB(240, 240, 245)
+searchBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 165)
+searchBox.TextSize = 13
+searchBox.Font = Enum.Font.FredokaOne
+searchBox.Parent = topbar
+
+local searchCorner = Instance.new("UICorner", searchBox)
+searchCorner.CornerRadius = UDim.new(0, 4)
+
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Size = UDim2.new(0, 24, 0, 24)
+minimizeBtn.Position = UDim2.new(1, -32, 0.5, -12)
+minimizeBtn.BackgroundTransparency = 1
+minimizeBtn.Text = "-"
+minimizeBtn.TextColor3 = Color3.fromRGB(220, 220, 230)
+minimizeBtn.TextSize = 20
+minimizeBtn.Font = Enum.Font.FredokaOne
+minimizeBtn.Parent = topbar
+
+minimizeBtn.MouseButton1Click:Connect(function()
+	mainFrame.Visible = not mainFrame.Visible
+end)
+
+-- ==================== TAB MANAGEMENT ====================
+local tabContainers = {}
+local tabButtons = {}
+local allToggleRows = {}
+
+local subTabHolder = Instance.new("Frame")
+subTabHolder.Size = UDim2.new(1, -24, 0, 30)
+subTabHolder.Position = UDim2.new(0, 12, 0, 38)
+subTabHolder.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
+subTabHolder.BorderSizePixel = 0
+subTabHolder.Parent = mainFrame
+
+local subTabCorner = Instance.new("UICorner", subTabHolder)
+subTabCorner.CornerRadius = UDim.new(0, 4)
+
+local subLayout = Instance.new("UIListLayout")
+subLayout.FillDirection = Enum.FillDirection.Horizontal
+subLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+subLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+subLayout.Padding = UDim.new(0, 12)
+subLayout.Parent = subTabHolder
+
+local function createTabPage()
+	local pageFrame = Instance.new("Frame")
+	pageFrame.Size = UDim2.new(1, -24, 1, -78)
+	pageFrame.Position = UDim2.new(0, 12, 0, 72)
+	pageFrame.BackgroundTransparency = 1
+	pageFrame.Visible = false
+	pageFrame.Parent = mainFrame
+	
+	local leftCol = Instance.new("ScrollingFrame")
+	leftCol.Size = UDim2.new(0.5, -6, 1, 0)
+	leftCol.BackgroundTransparency = 1
+	leftCol.BorderSizePixel = 0
+	leftCol.CanvasSize = UDim2.new(0, 0, 0, 0)
+	leftCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	leftCol.ScrollBarThickness = 3
+	leftCol.Parent = pageFrame
+	
+	local leftList = Instance.new("UIListLayout")
+	leftList.SortOrder = Enum.SortOrder.LayoutOrder
+	leftList.Padding = UDim.new(0, 8)
+	leftList.Parent = leftCol
+	
+	local rightCol = Instance.new("ScrollingFrame")
+	rightCol.Size = UDim2.new(0.5, -6, 1, 0)
+	rightCol.Position = UDim2.new(0.5, 6, 0, 0)
+	rightCol.BackgroundTransparency = 1
+	rightCol.BorderSizePixel = 0
+	rightCol.CanvasSize = UDim2.new(0, 0, 0, 0)
+	rightCol.AutomaticCanvasSize = Enum.AutomaticSize.Y
+	rightCol.ScrollBarThickness = 3
+	rightCol.Parent = pageFrame
+	
+	local rightList = Instance.new("UIListLayout")
+	rightList.SortOrder = Enum.SortOrder.LayoutOrder
+	rightList.Padding = UDim.new(0, 8)
+	rightList.Parent = rightCol
+	
+	return pageFrame, leftCol, rightCol
+end
+
+local function createCategory(parent, titleText, layoutOrderValue)
+	local catFrame = Instance.new("Frame")
+	catFrame.Name = "Category_" .. titleText
+	catFrame.Size = UDim2.new(1, 0, 0, 40)
+	catFrame.BackgroundColor3 = Color3.fromRGB(27, 27, 32)
+	catFrame.BorderSizePixel = 0
+	catFrame.AutomaticSize = Enum.AutomaticSize.Y
+	catFrame.LayoutOrder = layoutOrderValue or 1
+	catFrame.Parent = parent
+	
+	local catCorner = Instance.new("UICorner", catFrame)
+	catCorner.CornerRadius = UDim.new(0, 4)
+	
+	local header = Instance.new("TextLabel")
+	header.Name = "HeaderTitle"
+	header.Size = UDim2.new(1, -12, 0, 26)
+	header.Position = UDim2.new(0, 8, 0, 0)
+	header.BackgroundTransparency = 1
+	header.Text = titleText
+	header.TextColor3 = Color3.fromRGB(245, 245, 250)
+	header.TextSize = 13
+	header.Font = Enum.Font.FredokaOne
+	header.TextXAlignment = Enum.TextXAlignment.Left
+	header.Parent = catFrame
+	
+	local catListLayout = Instance.new("UIListLayout")
+	catListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	catListLayout.Padding = UDim.new(0, 6)
+	catListLayout.Parent = catFrame
+	
+	local padding = Instance.new("UIPadding", catFrame)
+	padding.PaddingTop = UDim.new(0, 6)
+	padding.PaddingBottom = UDim.new(0, 6)
+	padding.PaddingLeft = UDim.new(0, 8)
+	padding.PaddingRight = UDim.new(0, 8)
+	
+	return catFrame
+end
+
+local function AddToggle(categoryFrame, text, defaultState, callback)
+	local row = Instance.new("Frame")
+	row.Size = UDim2.new(1, 0, 0, 26)
+	row.BackgroundTransparency = 1
+	row.Parent = categoryFrame
+
+	local label = Instance.new("TextLabel")
+	label.Size = UDim2.new(1, -45, 1, 0)
+	label.BackgroundTransparency = 1
+	label.Text = text
+	label.TextColor3 = Color3.fromRGB(200, 200, 215)
+	label.TextSize = 12
+	label.Font = Enum.Font.FredokaOne
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.Parent = row
+
+	local button = Instance.new("TextButton")
+	button.Size = UDim2.new(0, 36, 0, 18)
+	button.Position = UDim2.new(1, -36, 0.5, -9)
+	button.BackgroundColor3 = defaultState and Color3.fromRGB(255, 105, 180) or Color3.fromRGB(100, 100, 100)
+	button.BorderSizePixel = 0
+	button.Text = ""
+	button.AutoButtonColor = false
+	button.Parent = row
+
+	local slider = Instance.new("Frame")
+	slider.Size = UDim2.new(0, 18, 1, 0)
+	slider.Position = defaultState and UDim2.new(1, -18, 0, 0) or UDim2.new(0, 0, 0, 0)
+	slider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	slider.BorderSizePixel = 0
+	slider.Parent = button
+
+	local toggled = defaultState
+
+	button.MouseButton1Click:Connect(function()
+		toggled = not toggled
+		local targetPos = toggled and UDim2.new(1, -18, 0, 0) or UDim2.new(0, 0, 0, 0)
+		local targetColor = toggled and Color3.fromRGB(255, 105, 180) or Color3.fromRGB(100, 100, 100)
+
+		TweenService:Create(slider, TweenInfo.new(0.15), {Position = targetPos}):Play()
+		TweenService:Create(button, TweenInfo.new(0.15), {BackgroundColor3 = targetColor}):Play()
+
+		if callback then callback(toggled) end
+	end)
+
+	table.insert(allToggleRows, {Row = row, Text = text, Page = categoryFrame.Parent.Parent})
+	return row
+end
+
+local function AddSlider(categoryFrame, text, min, max, default, callback)
+	local container = Instance.new("Frame")
+	container.Size = UDim2.new(1, 0, 0, 40)
+	container.BackgroundTransparency = 1
+	container.Parent = categoryFrame
+
+	local titleLabel = Instance.new("TextLabel")
+	titleLabel.Size = UDim2.new(1, -60, 0, 18)
+	titleLabel.BackgroundTransparency = 1
+	titleLabel.Text = text
+	titleLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
+	titleLabel.TextSize = 12
+	titleLabel.Font = Enum.Font.FredokaOne
+	titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	titleLabel.Parent = container
+
+	local valueLabel = Instance.new("TextLabel")
+	valueLabel.Size = UDim2.new(0, 50, 0, 18)
+	valueLabel.Position = UDim2.new(1, -50, 0, 0)
+	valueLabel.BackgroundTransparency = 1
+	valueLabel.Text = tostring(default)
+	valueLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
+	valueLabel.TextSize = 12
+	valueLabel.Font = Enum.Font.FredokaOne
+	valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+	valueLabel.Parent = container
+
+	local sliderTrack = Instance.new("Frame")
+	sliderTrack.Size = UDim2.new(1, 0, 0, 10)
+	sliderTrack.Position = UDim2.new(0, 0, 0, 22)
+	sliderTrack.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+	sliderTrack.BorderSizePixel = 0
+	sliderTrack.Parent = container
+
+	local initPercent = (default - min) / (max - min)
+
+	local sliderFill = Instance.new("Frame")
+	sliderFill.Size = UDim2.new(initPercent, 0, 1, 0)
+	sliderFill.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+	sliderFill.BorderSizePixel = 0
+	sliderFill.Parent = sliderTrack
+
+	local sliderThumb = Instance.new("Frame")
+	sliderThumb.Size = UDim2.new(0, 12, 0, 12)
+	sliderThumb.AnchorPoint = Vector2.new(0, 0.5)
+	sliderThumb.Position = UDim2.new(initPercent, -6 * initPercent, 0.5, 0)
+	sliderThumb.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	sliderThumb.BorderSizePixel = 0
+	sliderThumb.Parent = sliderTrack
+
+	local dragging = false
+
+	local function update(input)
+		local posX = math.clamp(input.Position.X - sliderTrack.AbsolutePosition.X, 0, sliderTrack.AbsoluteSize.X)
+		local percent = posX / sliderTrack.AbsoluteSize.X
+		local val = (min + (max - min) * percent)
+		
+		if (max - min) >= 10 then
+			val = math.floor(val)
+		else
+			val = math.floor(val * 100) / 100
+		end
+
+        sliderThumb.Position = UDim2.new(percent, -6 * percent, 0.5, 0)
+		sliderFill.Size = UDim2.new(percent, 0, 1, 0)
+		valueLabel.Text = tostring(val)
+		if callback then callback(val) end
+	end
+
+	sliderTrack.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			update(input)
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+			update(input)
+		end
+	end)
+
+	UserInputService.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = false
+		end
+	end)
+
+	return container
+end
+
+local function AddButton(categoryFrame, text, callback)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, 0, 0, 26)
+	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+	btn.BorderSizePixel = 0
+	btn.Text = text
+	btn.TextColor3 = Color3.fromRGB(240, 240, 245)
+	btn.Font = Enum.Font.FredokaOne
+	btn.TextSize = 12
+	btn.Parent = categoryFrame
+
+	local corner = Instance.new("UICorner", btn)
+	corner.CornerRadius = UDim.new(0, 4)
+
+	btn.MouseButton1Click:Connect(function()
+		if callback then callback() end
+	end)
+
+	return btn
+end
+
+-- Initialize Tabs
+local tabNames = {"FARM", "PVP", "UNIVERSAL"}
+local activeTabName = "FARM"
+
+local farmPage, farmLCol, farmRCol = createTabPage()
+local pvpPage, pvpLCol, pvpRCol = createTabPage()
+local univPage, univLCol, univRCol = createTabPage()
+
+tabContainers["FARM"] = farmPage
+tabContainers["PVP"] = pvpPage
+tabContainers["UNIVERSAL"] = univPage
+
+for _, tabName in ipairs(tabNames) do
+	local page = tabContainers[tabName]
+	local tBtn = Instance.new("TextButton")
+	tBtn.Size = UDim2.new(0, 80, 1, 0)
+	tBtn.BackgroundTransparency = 1
+	tBtn.Text = tabName
+	tBtn.TextColor3 = Color3.fromRGB(180, 180, 195)
+	tBtn.TextSize = 13
+	tBtn.Font = Enum.Font.FredokaOne
+	tBtn.Parent = subTabHolder
+	tabButtons[tabName] = tBtn
+	
+	tBtn.MouseButton1Click:Connect(function()
+		for name, p in pairs(tabContainers) do
+			p.Visible = false
+			tabButtons[name].TextColor3 = Color3.fromRGB(180, 180, 195)
+		end
+		page.Visible = true
+		tBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+		activeTabName = tabName
+		searchBox.Text = ""
+	end)
+end
+
+-- ==================== TAB FARM SETUP ====================
+local farmCat1 = createCategory(farmLCol, "⚙️ Tự Động Sinh Tồn", 1)
+local questCat = createCategory(farmRCol, "📄 Trạng Thái Nhiệm Vụ", 1)
+
+local questStatusLabel = Instance.new("TextLabel")
+questStatusLabel.Size = UDim2.new(1, 0, 0, 24)
+questStatusLabel.BackgroundTransparency = 1
+questStatusLabel.Text = "Nhiệm Vụ Hiện Tại: Đang chờ..."
+questStatusLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+questStatusLabel.TextSize = 12
+questStatusLabel.Font = Enum.Font.FredokaOne
+questStatusLabel.TextXAlignment = Enum.TextXAlignment.Left
+questStatusLabel.Parent = questCat
+
+AddToggle(farmCat1, "Tự Động Ăn", false, function(state) _G.AutoEatRunning = state end)
+AddToggle(farmCat1, "Tự Động Uống", false, function(state) _G.AutoDrinkRunning = state end)
+AddToggle(farmCat1, "Tự Động Nghỉ Ngơi", false, function(state) _G.AutoRestRunning = state end)
+AddToggle(farmCat1, "Tự Động Mở Khu Vực (Zone)", false, function(state) _G.AutoZoneRunning = state end)
+
+local reminderCat = createCategory(farmRCol, "🔔 Lời Nhắc", 2)
+
+local reminderTextLabel = Instance.new("TextLabel")
+reminderTextLabel.Size = UDim2.new(1, 0, 0, 36)
+reminderTextLabel.BackgroundTransparency = 1
+reminderTextLabel.Text = "Bật các tính năng Tự Động để farm hóa thạch tự động!"
+reminderTextLabel.TextColor3 = Color3.fromRGB(255, 105, 180)
+reminderTextLabel.TextSize = 12
+reminderTextLabel.Font = Enum.Font.FredokaOne
+reminderTextLabel.TextWrapped = true
+reminderTextLabel.TextXAlignment = Enum.TextXAlignment.Left
+reminderTextLabel.Parent = reminderCat
+
+-- ==================== TAB PVP SETUP ====================
+local autoTapCat = createCategory(pvpLCol, "⚡ Menu Tự Động Nhấn (Auto Tap)", 1)
+
+local ChooseBtn = Instance.new("TextButton")
+ChooseBtn.Size = UDim2.new(1, 0, 0, 26)
+ChooseBtn.Text = "Chọn Vị Trí Nhấn"
+ChooseBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+ChooseBtn.BorderSizePixel = 0
+ChooseBtn.TextColor3 = Color3.fromRGB(240, 240, 245)
+ChooseBtn.Font = Enum.Font.FredokaOne
+ChooseBtn.TextSize = 12
+ChooseBtn.Parent = autoTapCat
+local chooseCorner = Instance.new("UICorner", ChooseBtn)
+chooseCorner.CornerRadius = UDim.new(0, 4)
+
+local PosLabel = Instance.new("TextLabel")
+PosLabel.Size = UDim2.new(1, 0, 0, 20)
+PosLabel.BackgroundTransparency = 1
+PosLabel.Text = "Vị trí: Giữa màn hình"
+PosLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
+PosLabel.Font = Enum.Font.FredokaOne
+PosLabel.TextSize = 11
+PosLabel.TextXAlignment = Enum.TextXAlignment.Left
+PosLabel.Parent = autoTapCat
+
+local AutoTapToggleBtn = Instance.new("TextButton")
+AutoTapToggleBtn.Size = UDim2.new(1, 0, 0, 28)
+AutoTapToggleBtn.Text = "Tự Động Nhấn: TẮT"
+AutoTapToggleBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+AutoTapToggleBtn.BorderSizePixel = 0
+AutoTapToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoTapToggleBtn.Font = Enum.Font.FredokaOne
+AutoTapToggleBtn.TextSize = 12
+AutoTapToggleBtn.Parent = autoTapCat
+local atCorner = Instance.new("UICorner", AutoTapToggleBtn)
+atCorner.CornerRadius = UDim.new(0, 4)
+
+local TOG = false
+local RUN = false
+local selecting = false
+local tapPos = Vector2.new(workspace.CurrentCamera.ViewportSize.X / 2, workspace.CurrentCamera.ViewportSize.Y / 2)
+
+local FOV = Instance.new("Frame", screenGui)
+FOV.Size = UDim2.new(0, 20, 0, 20)
+FOV.AnchorPoint = Vector2.new(0.5, 0.5)
+FOV.Position = UDim2.new(0, tapPos.X, 0, tapPos.Y)
+FOV.BackgroundTransparency = 1
+local Stroke = Instance.new("UIStroke", FOV)
+Stroke.Thickness = 1.5
+Stroke.Transparency = 0
+local Circle = Instance.new("UICorner", FOV)
+Circle.CornerRadius = UDim.new(1, 0)
+
+local Inner1 = FOV:Clone()
+Inner1.Size = UDim2.new(0, 10, 0, 10)
+Inner1.Parent = FOV
+Inner1.Position = UDim2.new(0.5, 0, 0.5, 0)
+Inner1.AnchorPoint = Vector2.new(0.5, 0.5)
+Inner1:GetChildren()[1].Thickness = 1
+
+local PlusH = Instance.new("Frame", FOV)
+PlusH.Size = UDim2.new(0, 10, 0, 1)
+PlusH.AnchorPoint = Vector2.new(0.5, 0.5)
+PlusH.Position = UDim2.new(0.5, 0, 0.5, 0)
+PlusH.BackgroundColor3 = Color3.new(1, 1, 1)
+
+local PlusV = Instance.new("Frame", FOV)
+PlusV.Size = UDim2.new(0, 1, 0, 10)
+PlusV.AnchorPoint = Vector2.new(0.5, 0.5)
+PlusV.Position = UDim2.new(0.5, 0, 0.5, 0)
+PlusV.BackgroundColor3 = Color3.new(1, 1, 1)
+
+task.spawn(function()
+	local h = 0
+	while true do
+		h = (h + 0.01) % 1
+		local col = Color3.fromHSV(h, 1, 1)
+		Stroke.Color = col
+		Inner1:GetChildren()[1].Color = col
+		PlusH.BackgroundColor3 = col
+		PlusV.BackgroundColor3 = col
+		task.wait(0.05)
+	end
+end)
+
+local function updateLabel()
+	PosLabel.Text = "Vị trí: (" .. math.floor(tapPos.X) .. ", " .. math.floor(tapPos.Y) .. ")"
+end
+
+local function stopAutoTap()
+	TOG = false
+	RUN = false
+	AutoTapToggleBtn.Text = "Tự Động Nhấn: TẮT"
+	TweenService:Create(AutoTapToggleBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(100, 100, 100)}):Play()
+end
+
+local function startAutoTapLoop()
+	RUN = true
+	coroutine.wrap(function()
+		while RUN and TOG do
+			local x, y = tapPos.X, tapPos.Y + 50
+			FOV.Position = UDim2.new(0, tapPos.X, 0, tapPos.Y)
+			VirtualInputManager:SendMouseButtonEvent(x, y, 0, true, game, false)
+			VirtualInputManager:SendMouseButtonEvent(x, y, 0, false, game, false)
+			task.wait(0.1)
+		end
+	end)()
+end
+
+ChooseBtn.MouseButton1Click:Connect(function()
+	if not selecting then
+		selecting = true
+		ChooseBtn.Text = "Nhấp vào bất kỳ đâu..."
+	end
+end)
+
+UserInputService.InputBegan:Connect(function(input, gp)
+	if selecting and (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then
+		tapPos = input.Position
+		updateLabel()
+		ChooseBtn.Text = "Chọn Vị Trí Nhấn"
+		selecting = false
+	end
+end)
+
+AutoTapToggleBtn.MouseButton1Click:Connect(function()
+	TOG = not TOG
+	if TOG then
+		AutoTapToggleBtn.Text = "Tự Động Nhấn: BẬT"
+		TweenService:Create(AutoTapToggleBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(255, 105, 180)}):Play()
+		startAutoTapLoop()
+	else
+		stopAutoTap()
+	end
+end)
+
+-- Teleport Settings
+local pvpCombatCat = createCategory(pvpRCol, "⚔️ Cài Đặt Mục Tiêu & Dịch Chuyển", 1)
+
+local playlistLabel = Instance.new("TextButton")
+playlistLabel.Parent = pvpCombatCat
+playlistLabel.Size = UDim2.new(1, 0, 0, 26)
+playlistLabel.Text = "Chọn Người Chơi: Không"
+playlistLabel.TextColor3 = Color3.fromRGB(240, 240, 245)
+playlistLabel.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+playlistLabel.BorderSizePixel = 0
+playlistLabel.Font = Enum.Font.FredokaOne
+playlistLabel.TextSize = 12
+local plCorner = Instance.new("UICorner") plCorner.CornerRadius = UDim.new(0, 4) plCorner.Parent = playlistLabel
+
+local togglePlaylistBtn = Instance.new("TextButton")
+togglePlaylistBtn.Parent = pvpCombatCat
+togglePlaylistBtn.Size = UDim2.new(1, 0, 0, 22)
+togglePlaylistBtn.Text = "Ẩn Danh Sách Người Chơi ▲"
+togglePlaylistBtn.TextColor3 = Color3.fromRGB(180, 180, 200)
+togglePlaylistBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
+togglePlaylistBtn.BorderSizePixel = 0
+togglePlaylistBtn.Font = Enum.Font.FredokaOne
+togglePlaylistBtn.TextSize = 11
+local tplCorner = Instance.new("UICorner") tplCorner.CornerRadius = UDim.new(0, 4) tplCorner.Parent = togglePlaylistBtn
+
+local playlistScroll = Instance.new("ScrollingFrame")
+playlistScroll.Parent = pvpCombatCat
+playlistScroll.Size = UDim2.new(1, 0, 0, 60)
+playlistScroll.BackgroundColor3 = Color3.fromRGB(32, 32, 38)
+playlistScroll.BorderSizePixel = 0
+playlistScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+playlistScroll.ScrollBarThickness = 3
+local psCorner = Instance.new("UICorner") psCorner.CornerRadius = UDim.new(0, 4) psCorner.Parent = playlistScroll
+
+local psLayout = Instance.new("UIListLayout")
+psLayout.Parent = playlistScroll
+psLayout.SortOrder = Enum.SortOrder.LayoutOrder
+psLayout.Padding = UDim.new(0, 4)
+
+local isPlaylistVisible = true
+togglePlaylistBtn.MouseButton1Click:Connect(function()
+	isPlaylistVisible = not isPlaylistVisible
+	playlistScroll.Visible = isPlaylistVisible
+	togglePlaylistBtn.Text = isPlaylistVisible and "Ẩn Danh Sách Người Chơi ▲" or "Hiện Danh Sách Người Chơi ▼"
+end)
+
+playlistLabel.MouseButton1Click:Connect(function()
+	isPlaylistVisible = not isPlaylistVisible
+	playlistScroll.Visible = isPlaylistVisible
+	togglePlaylistBtn.Text = isPlaylistVisible and "Ẩn Danh Sách Người Chơi ▲" or "Hiện Danh Sách Người Chơi ▼"
+end)
+
+local homeRefreshBtn = Instance.new("TextButton")
+homeRefreshBtn.Parent = pvpCombatCat
+homeRefreshBtn.Size = UDim2.new(1, 0, 0, 26)
+homeRefreshBtn.Text = "Làm Mới Danh Sách Người Chơi"
+homeRefreshBtn.TextColor3 = Color3.fromRGB(240, 240, 245)
+homeRefreshBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+homeRefreshBtn.BorderSizePixel = 0
+homeRefreshBtn.Font = Enum.Font.FredokaOne
+homeRefreshBtn.TextSize = 12
+local hrCorner = Instance.new("UICorner") hrCorner.CornerRadius = UDim.new(0, 4) hrCorner.Parent = homeRefreshBtn
+
+-- Nút Bám Đuôi (Khi bật đổi thành Bám Đuôi, Khi tắt về Bám 2 bên)
+local tailToggleBtn = Instance.new("TextButton")
+tailToggleBtn.Parent = pvpCombatCat
+tailToggleBtn.Size = UDim2.new(1, 0, 0, 28)
+tailToggleBtn.Text = "Bám Đuôi: TẮT (Đang Bám 2 Bên)"
+tailToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+tailToggleBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+tailToggleBtn.BorderSizePixel = 0
+tailToggleBtn.Font = Enum.Font.FredokaOne
+tailToggleBtn.TextSize = 12
+local tailCorner = Instance.new("UICorner") tailCorner.CornerRadius = UDim.new(0, 4) tailCorner.Parent = tailToggleBtn
+
+local killToggleBtn = Instance.new("TextButton")
+killToggleBtn.Parent = pvpCombatCat
+killToggleBtn.Size = UDim2.new(1, 0, 0, 28)
+killToggleBtn.Text = "SĂN SÁT THỦ (KILL FARM): TẮT"
+killToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+killToggleBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+killToggleBtn.BorderSizePixel = 0
+killToggleBtn.Font = Enum.Font.FredokaOne
+killToggleBtn.TextSize = 12
+local klCorner = Instance.new("UICorner") klCorner.CornerRadius = UDim.new(0, 4) klCorner.Parent = killToggleBtn
+
+local switchTargetBtn = Instance.new("TextButton")
+switchTargetBtn.Parent = pvpCombatCat
+switchTargetBtn.Size = UDim2.new(1, 0, 0, 26)
+switchTargetBtn.Text = "ĐỔI SANG MỤC TIÊU GẦN THỨ 2"
+switchTargetBtn.TextColor3 = Color3.fromRGB(240, 240, 245)
+switchTargetBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 65)
+switchTargetBtn.BorderSizePixel = 0
+switchTargetBtn.Font = Enum.Font.FredokaOne
+switchTargetBtn.TextSize = 11
+local stCorner = Instance.new("UICorner") stCorner.CornerRadius = UDim.new(0, 4) stCorner.Parent = switchTargetBtn
+
+-- Chức năng Xoay vòng tròn
+AddToggle(pvpCombatCat, "Xoay Vòng Tròn Quanh Mục Tiêu", false, function(state)
+	combatConfig.CircleEnabled = state
+end)
+
+AddSlider(pvpCombatCat, "Tốc Độ Xoay", 1, 15, 3, function(val)
+	combatConfig.CircleSpeed = val
+end)
+
+local function updateHomePlaylist()
+	for _, child in pairs(playlistScroll:GetChildren()) do
+		if child:IsA("TextButton") then child:Destroy() end
+	end
+	local count = 0
+	for _, p in ipairs(Players:GetPlayers()) do
+		if p ~= player then
+			count = count + 1
+			local pBtn = Instance.new("TextButton")
+			pBtn.Parent = playlistScroll
+			pBtn.Size = UDim2.new(1, -4, 0, 26)
+			pBtn.BackgroundColor3 = (combatConfig.TargetPlayer == p) and Color3.fromRGB(255, 105, 180) or Color3.fromRGB(40, 40, 50)
+			pBtn.BorderSizePixel = 0
+			pBtn.Text = "  " .. (p.DisplayName or p.Name)
+			pBtn.TextColor3 = Color3.fromRGB(240, 240, 245)
+			pBtn.TextSize = 11
+			pBtn.Font = Enum.Font.FredokaOne
+			pBtn.TextXAlignment = Enum.TextXAlignment.Left
+			
+			local pbCorner = Instance.new("UICorner") pbCorner.CornerRadius = UDim.new(0, 4) pbCorner.Parent = pBtn
+			
+			pBtn.MouseButton1Click:Connect(function()
+				combatConfig.TargetPlayer = p
+				playlistLabel.Text = "Chọn Người Chơi: " .. (p.DisplayName or p.Name)
+				isPlaylistVisible = false
+				playlistScroll.Visible = false
+				togglePlaylistBtn.Text = "Hiện Danh Sách Người Chơi ▼"
+				updateHomePlaylist()
+			end)
+		end
+	end
+	playlistScroll.CanvasSize = UDim2.new(0, 0, 0, count * 30)
+end
+
+homeRefreshBtn.MouseButton1Click:Connect(updateHomePlaylist)
+Players.PlayerAdded:Connect(updateHomePlaylist)
+Players.PlayerRemoving:Connect(function(p)
+	if combatConfig.TargetPlayer == p then
+		combatConfig.TargetPlayer = nil
+		playlistLabel.Text = "Chọn Người Chơi: Không"
+	end
+	if killConfig.CurrentTarget == p then
+		killConfig.CurrentTarget = nil
+	end
+	updateHomePlaylist()
+end)
+updateHomePlaylist()
+
+-- ==================== DISTANCE SETTING (-10 to 50) ====================
+local distContainer = Instance.new("Frame")
+distContainer.Parent = pvpCombatCat
+distContainer.Size = UDim2.new(1, 0, 0, 54)
+distContainer.BackgroundTransparency = 1
+
+local distLabel = Instance.new("TextLabel")
+distLabel.Parent = distContainer
+distLabel.Size = UDim2.new(1, -110, 0, 18)
+distLabel.BackgroundTransparency = 1
+distLabel.Text = "Khoảng Cách Dịch Chuyển"
+distLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
+distLabel.TextSize = 12
+distLabel.Font = Enum.Font.FredokaOne
+distLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local distValueLabel = Instance.new("TextLabel")
+distValueLabel.Parent = distContainer
+distValueLabel.Size = UDim2.new(0, 50, 0, 18)
+distValueLabel.Position = UDim2.new(1, -110, 0, 0)
+distValueLabel.BackgroundTransparency = 1
+distValueLabel.Text = "12"
+distValueLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
+distValueLabel.TextSize = 12
+distValueLabel.Font = Enum.Font.FredokaOne
+distValueLabel.TextXAlignment = Enum.TextXAlignment.Right
+
+local distMinusBtn = Instance.new("TextButton")
+distMinusBtn.Parent = distContainer
+distMinusBtn.Size = UDim2.new(0, 25, 0, 18)
+distMinusBtn.Position = UDim2.new(1, -55, 0, 0)
+distMinusBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 65)
+distMinusBtn.BorderSizePixel = 0
+distMinusBtn.Text = "-"
+distMinusBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+distMinusBtn.Font = Enum.Font.FredokaOne
+distMinusBtn.TextSize = 12
+Instance.new("UICorner", distMinusBtn).CornerRadius = UDim.new(0, 4)
+
+local distPlusBtn = Instance.new("TextButton")
+distPlusBtn.Parent = distContainer
+distPlusBtn.Size = UDim2.new(0, 25, 0, 18)
+distPlusBtn.Position = UDim2.new(1, -25, 0, 0)
+distPlusBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 65)
+distPlusBtn.BorderSizePixel = 0
+distPlusBtn.Text = "+"
+distPlusBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+distPlusBtn.Font = Enum.Font.FredokaOne
+distPlusBtn.TextSize = 12
+Instance.new("UICorner", distPlusBtn).CornerRadius = UDim.new(0, 4)
+
+local distSliderTrack = Instance.new("Frame")
+distSliderTrack.Parent = distContainer
+distSliderTrack.Size = UDim2.new(1, 0, 0, 10)
+distSliderTrack.Position = UDim2.new(0, 0, 0, 26)
+distSliderTrack.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+distSliderTrack.BorderSizePixel = 0
+local dstCorner = Instance.new("UICorner", distSliderTrack)
+dstCorner.CornerRadius = UDim.new(0, 4)
+
+local initDistPercent = (12 - (-10)) / (50 - (-10))
+
+local distSliderFill = Instance.new("Frame")
+distSliderFill.Parent = distSliderTrack
+distSliderFill.Size = UDim2.new(initDistPercent, 0, 1, 0)
+distSliderFill.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+distSliderFill.BorderSizePixel = 0
+local dsfCorner = Instance.new("UICorner", distSliderFill)
+dsfCorner.CornerRadius = UDim.new(0, 4)
+
+local distSliderThumb = Instance.new("Frame")
+distSliderThumb.Parent = distSliderTrack
+distSliderThumb.Size = UDim2.new(0, 12, 0, 12)
+distSliderThumb.AnchorPoint = Vector2.new(0, 0.5)
+distSliderThumb.Position = UDim2.new(initDistPercent, -6 * initDistPercent, 0.5, 0)
+distSliderThumb.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+distSliderThumb.BorderSizePixel = 0
+local dsthCorner = Instance.new("UICorner", distSliderThumb)
+dsthCorner.CornerRadius = UDim.new(1, 0)
+
+local function updateDistanceSlider(val)
+	local rounded = math.clamp(math.floor(val + 0.5), -10, 50)
+	combatConfig.Distance = rounded
+	killConfig.Distance = rounded
+	distValueLabel.Text = tostring(rounded)
+	local percent = math.clamp((rounded - (-10)) / (50 - (-10)), 0, 1)
+	distSliderThumb.Position = UDim2.new(percent, -6 * percent, 0.5, 0)
+	distSliderFill.Size = UDim2.new(percent, 0, 1, 0)
+end
+
+distMinusBtn.MouseButton1Click:Connect(function()
+	updateDistanceSlider(combatConfig.Distance - 1)
+end)
+
+distPlusBtn.MouseButton1Click:Connect(function()
+	updateDistanceSlider(combatConfig.Distance + 1)
+end)
+
+local draggingDist = false
+distSliderTrack.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		draggingDist = true
+		local posX = math.clamp(input.Position.X - distSliderTrack.AbsolutePosition.X, 0, distSliderTrack.AbsoluteSize.X)
+		local percent = posX / distSliderTrack.AbsoluteSize.X
+		updateDistanceSlider(-10 + (percent * 60))
+	end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		draggingDist = false
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if draggingDist and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local posX = math.clamp(input.Position.X - distSliderTrack.AbsolutePosition.X, 0, distSliderTrack.AbsoluteSize.X)
+		local percent = posX / distSliderTrack.AbsoluteSize.X
+		updateDistanceSlider(-10 + (percent * 60))
+	end
+end)
+
+-- ==================== HEIGHT SETTING ====================
+local heightContainer = Instance.new("Frame")
+heightContainer.Parent = pvpCombatCat
+heightContainer.Size = UDim2.new(1, 0, 0, 54)
+heightContainer.BackgroundTransparency = 1
+
+local heightLabel = Instance.new("TextLabel")
+heightLabel.Parent = heightContainer
+heightLabel.Size = UDim2.new(1, -110, 0, 18)
+heightLabel.BackgroundTransparency = 1
+heightLabel.Text = "Độ Cao Dịch Chuyển"
+heightLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
+heightLabel.TextSize = 12
+heightLabel.Font = Enum.Font.FredokaOne
+heightLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local heightValueLabel = Instance.new("TextLabel")
+heightValueLabel.Parent = heightContainer
+heightValueLabel.Size = UDim2.new(0, 50, 0, 18)
+heightValueLabel.Position = UDim2.new(1, -110, 0, 0)
+heightValueLabel.BackgroundTransparency = 1
+heightValueLabel.Text = "1.5"
+heightValueLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
+heightValueLabel.TextSize = 12
+heightValueLabel.Font = Enum.Font.FredokaOne
+heightValueLabel.TextXAlignment = Enum.TextXAlignment.Right
+
+local heightMinusBtn = Instance.new("TextButton")
+heightMinusBtn.Parent = heightContainer
+heightMinusBtn.Size = UDim2.new(0, 25, 0, 18)
+heightMinusBtn.Position = UDim2.new(1, -55, 0, 0)
+heightMinusBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 65)
+heightMinusBtn.BorderSizePixel = 0
+heightMinusBtn.Text = "-"
+heightMinusBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+heightMinusBtn.Font = Enum.Font.FredokaOne
+heightMinusBtn.TextSize = 12
+Instance.new("UICorner", heightMinusBtn).CornerRadius = UDim.new(0, 4)
+
+local heightPlusBtn = Instance.new("TextButton")
+heightPlusBtn.Parent = heightContainer
+heightPlusBtn.Size = UDim2.new(0, 25, 0, 18)
+heightPlusBtn.Position = UDim2.new(1, -25, 0, 0)
+heightPlusBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 65)
+heightPlusBtn.BorderSizePixel = 0
+heightPlusBtn.Text = "+"
+heightPlusBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+heightPlusBtn.Font = Enum.Font.FredokaOne
+heightPlusBtn.TextSize = 12
+Instance.new("UICorner", heightPlusBtn).CornerRadius = UDim.new(0, 4)
+
+local heightSliderTrack = Instance.new("Frame")
+heightSliderTrack.Parent = heightContainer
+heightSliderTrack.Size = UDim2.new(1, 0, 0, 10)
+heightSliderTrack.Position = UDim2.new(0, 0, 0, 26)
+heightSliderTrack.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+heightSliderTrack.BorderSizePixel = 0
+local hstCorner = Instance.new("UICorner", heightSliderTrack)
+hstCorner.CornerRadius = UDim.new(0, 4)
+
+local initHeightPercent = (1.5 - (-20)) / (50 - (-20))
+
+local heightSliderFill = Instance.new("Frame")
+heightSliderFill.Parent = heightSliderTrack
+heightSliderFill.Size = UDim2.new(initHeightPercent, 0, 1, 0)
+heightSliderFill.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+heightSliderFill.BorderSizePixel = 0
+local hsfCorner = Instance.new("UICorner", heightSliderFill)
+hsfCorner.CornerRadius = UDim.new(0, 4)
+
+local heightSliderThumb = Instance.new("Frame")
+heightSliderThumb.Parent = heightSliderTrack
+heightSliderThumb.Size = UDim2.new(0, 12, 0, 12)
+heightSliderThumb.AnchorPoint = Vector2.new(0, 0.5)
+heightSliderThumb.Position = UDim2.new(initHeightPercent, -6 * initHeightPercent, 0.5, 0)
+heightSliderThumb.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+heightSliderThumb.BorderSizePixel = 0
+local hsthCorner = Instance.new("UICorner", heightSliderThumb)
+hsthCorner.CornerRadius = UDim.new(1, 0)
+
+local function updateHeightSlider(val)
+	local rounded = math.clamp(math.floor(val + 0.5), -20, 50)
+	combatConfig.Height = rounded
+	killConfig.Height = rounded
+	heightValueLabel.Text = tostring(rounded)
+	local percent = math.clamp((rounded - (-20)) / (50 - (-20)), 0, 1)
+	heightSliderThumb.Position = UDim2.new(percent, -6 * percent, 0.5, 0)
+	heightSliderFill.Size = UDim2.new(percent, 0, 1, 0)
+end
+
+heightMinusBtn.MouseButton1Click:Connect(function()
+	updateHeightSlider(combatConfig.Height - 1)
+end)
+
+heightPlusBtn.MouseButton1Click:Connect(function()
+	updateHeightSlider(combatConfig.Height + 1)
+end)
+
+local draggingHeight = false
+heightSliderTrack.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		draggingHeight = true
+		local posX = math.clamp(input.Position.X - heightSliderTrack.AbsolutePosition.X, 0, heightSliderTrack.AbsoluteSize.X)
+		local percent = posX / heightSliderTrack.AbsoluteSize.X
+		updateHeightSlider(-20 + (percent * 70))
+	end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		draggingHeight = false
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if draggingHeight and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local posX = math.clamp(input.Position.X - heightSliderTrack.AbsolutePosition.X, 0, heightSliderTrack.AbsoluteSize.X)
+		local percent = posX / heightSliderTrack.AbsoluteSize.X
+		updateHeightSlider(-20 + (percent * 70))
+	end
+end)
+
+-- Sự kiện click Nút Bám Đuôi
+tailToggleBtn.MouseButton1Click:Connect(function()
+	if combatConfig.Mode == "Side" then
+		combatConfig.Mode = "Tail"
+		tailToggleBtn.Text = "Bám Đuôi: BẬT"
+		TweenService:Create(tailToggleBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(255, 105, 180)}):Play()
+	else
+		combatConfig.Mode = "Side"
+		tailToggleBtn.Text = "Bám Đuôi: TẮT (Đang Bám 2 Bên)"
+		TweenService:Create(tailToggleBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(100, 100, 100)}):Play()
+	end
+end)
+
+killToggleBtn.MouseButton1Click:Connect(function()
+	killConfig.Enabled = not killConfig.Enabled
+	if killConfig.Enabled then
+		killConfig.TargetIndex = 1
+		killConfig.CurrentTarget = nil
+	else
+		killConfig.CurrentTarget = nil
+	end
+
+	killToggleBtn.Text = killConfig.Enabled and "SĂN SÁT THỦ (KILL FARM): BẬT" or "SĂN SÁT THỦ (KILL FARM): TẮT"
+	local targetColor = killConfig.Enabled and Color3.fromRGB(255, 105, 180) or Color3.fromRGB(100, 100, 100)
+	TweenService:Create(killToggleBtn, TweenInfo.new(0.15), {BackgroundColor3 = targetColor}):Play()
+end)
+
+switchTargetBtn.MouseButton1Click:Connect(function()
+	killConfig.TargetIndex = 2
+	killConfig.CurrentTarget = nil
+	
+	switchTargetBtn.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+	task.delay(0.2, function()
+		switchTargetBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 65)
+	end)
+end)
+
+-- ==================== FREECAM CONTROLS ====================
+local freeCamCat = createCategory(pvpRCol, "🎥 Điều Khiển Camera Tự Do (Freecam)", 2)
+
+local function SetCharacterAnchor(anchor)
+	local char = player.Character
+	if char then
+		local root = char:FindFirstChild("HumanoidRootPart")
+		if root then
+			root.Anchored = anchor
+		end
+	end
+end
+
+AddToggle(freeCamCat, "Bật Camera Tự Do", false, function(state)
+	_G.FreeCamEnabled = state
+	if state then
+		SavedCameraType = camera.CameraType
+		SavedSubject = camera.CameraSubject
+		CamCFrame = camera.CFrame
+		
+		local _, y, z = camera.CFrame:ToOrientation()
+		CameraRotationX = y
+		CameraRotationY = z
+		
+		camera.CameraType = Enum.CameraType.Scriptable
+		SetCharacterAnchor(true)
+	else
+		camera.CameraType = SavedCameraType
+		camera.CameraSubject = SavedSubject
+		SetCharacterAnchor(false)
+	end
+end)
+
+AddButton(freeCamCat, "Dịch Chuyển Đến Vị Trí Cam", function()
+	if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+		player.Character.HumanoidRootPart.Anchored = false
+		player.Character.HumanoidRootPart.CFrame = CFrame.new(camera.CFrame.Position)
+		if _G.FreeCamEnabled then player.Character.HumanoidRootPart.Anchored = true end
+	end
+end)
+
+AddSlider(freeCamCat, "Tầm Nhìn Camera (FOV)", 30, 120, 70, function(val)
+	CamFOV = val
+	if _G.FreeCamEnabled then
+		camera.FieldOfView = CamFOV
+	end
+end)
+
+local camUpDownRow = Instance.new("Frame")
+camUpDownRow.Size = UDim2.new(1, 0, 0, 26)
+camUpDownRow.BackgroundTransparency = 1
+camUpDownRow.Parent = freeCamCat
+
+local upBtn = Instance.new("TextButton")
+upBtn.Size = UDim2.new(0.48, 0, 1, 0)
+upBtn.Position = UDim2.new(0, 0, 0, 0)
+upBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+upBtn.BorderSizePixel = 0
+upBtn.Text = "Bay Lên (Lên)"
+upBtn.TextColor3 = Color3.fromRGB(240, 240, 245)
+upBtn.Font = Enum.Font.FredokaOne
+upBtn.TextSize = 11
+upBtn.Parent = camUpDownRow
+Instance.new("UICorner", upBtn).CornerRadius = UDim.new(0, 4)
+
+local downBtn = Instance.new("TextButton")
+downBtn.Size = UDim2.new(0.48, 0, 1, 0)
+downBtn.Position = UDim2.new(0.52, 0, 0, 0)
+downBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+downBtn.BorderSizePixel = 0
+downBtn.Text = "Hạ Xuống (Xuống)"
+downBtn.TextColor3 = Color3.fromRGB(240, 240, 245)
+downBtn.Font = Enum.Font.FredokaOne
+downBtn.TextSize = 11
+downBtn.Parent = camUpDownRow
+Instance.new("UICorner", downBtn).CornerRadius = UDim.new(0, 4)
+
+upBtn.MouseButton1Down:Connect(function() moveUpHold = true end)
+upBtn.MouseButton1Up:Connect(function() moveUpHold = false end)
+downBtn.MouseButton1Down:Connect(function() moveDownHold = true end)
+downBtn.MouseButton1Up:Connect(function() moveDownHold = false end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if not _G.FreeCamEnabled then return end
+	if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then
+		local sensitivity = 0.005
+		CameraRotationX = CameraRotationX - input.Delta.X * sensitivity
+		CameraRotationY = math.clamp(CameraRotationY - input.Delta.Y * sensitivity, -math.rad(80), math.rad(80))
+	end
+end)
+
+RunService.RenderStepped:Connect(function(dt)
+	if _G.FreeCamEnabled then
+		camera.FieldOfView = CamFOV
+		
+		local finalRotation = CFrame.Angles(0, CameraRotationX, 0) * CFrame.Angles(CameraRotationY, 0, 0)
+		camera.CFrame = CFrame.new(CamCFrame.Position) * finalRotation
+		
+		local moveDirection = Vector3.new(0, 0, 0)
+		if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+			moveDirection = player.Character.Humanoid.MoveDirection
+		end
+		
+		local flyVector = Vector3.new(0, 0, 0)
+		if moveDirection.Magnitude > 0 then
+			local forwardVector = camera.CFrame.LookVector
+			local rightVector = camera.CFrame.RightVector
+			local camActiveCFrame = camera.CFrame
+			
+			local forwardInput = moveDirection:Dot(Vector3.new(camActiveCFrame.LookVector.X, 0, camActiveCFrame.LookVector.Z).Unit)
+			local sideInput = moveDirection:Dot(Vector3.new(camActiveCFrame.RightVector.X, 0, camActiveCFrame.RightVector.Z).Unit)
+			
+			flyVector = (forwardVector * forwardInput) + (rightVector * sideInput)
+		end
+		
+		if moveUpHold then
+			flyVector = flyVector + Vector3.new(0, 1, 0)
+		end
+		if moveDownHold then
+			flyVector = flyVector - Vector3.new(0, 1, 0)
+		end
+		
+		if flyVector.Magnitude > 0 then
+			flyVector = flyVector.Unit
+			CamCFrame = CFrame.new(CamCFrame.Position + (flyVector * (60 * dt)))
+		end
+		
+		camera.CFrame = CFrame.new(CamCFrame.Position) * finalRotation
+	end
+end)
+
+-- ==================== TAB UNIVERSAL SETUP ====================
+local univMovementCat = createCategory(univLCol, "🏃 Di Chuyển", 1)
+
+AddToggle(univMovementCat, "Bật Tốc Độ Nhanh", false, function(state)
+	_G.SpeedEnabled = state
+end)
+
+AddSlider(univMovementCat, "Tốc Độ Chạy", 16, 300, 16, function(val)
+	_G.WalkSpeedValue = val
+end)
+
+local flyAttachment, flyLinearVelocity, flyAlignOrientation
+
+local function stopFlyPhysics()
+	if flyLinearVelocity then flyLinearVelocity:Destroy() flyLinearVelocity = nil end
+	if flyAlignOrientation then flyAlignOrientation:Destroy() flyAlignOrientation = nil end
+	if flyAttachment then flyAttachment:Destroy() flyAttachment = nil end
+end
+
+local function startFlyPhysics()
+	local char = player.Character
+	local hrp = char and char:FindFirstChild("HumanoidRootPart")
+	if not hrp then return end
+	
+	stopFlyPhysics()
+
+	flyAttachment = Instance.new("Attachment")
+	flyAttachment.Parent = hrp
+
+	flyLinearVelocity = Instance.new("LinearVelocity")
+	flyLinearVelocity.Attachment0 = flyAttachment
+	flyLinearVelocity.MaxForce = math.huge
+	flyLinearVelocity.VectorVelocity = Vector3.new(0, 0, 0)
+	flyLinearVelocity.Parent = hrp
+
+	flyAlignOrientation = Instance.new("AlignOrientation")
+	flyAlignOrientation.Attachment0 = flyAttachment
+	flyAlignOrientation.MaxTorque = math.huge
+	flyAlignOrientation.Responsiveness = 200
+	flyAlignOrientation.Parent = hrp
+end
+
+AddToggle(univMovementCat, "Chế Độ Bay (Fly)", false, function(state)
+	_G.FlyEnabled = state
+	if state then
+		startFlyPhysics()
+	else
+		stopFlyPhysics()
+	end
+end)
+
+AddSlider(univMovementCat, "Tốc Độ Bay", 10, 300, 50, function(val)
+	_G.FlySpeedValue = val
+end)
+
+AddToggle(univMovementCat, "Xuyên Tường (Noclip)", false, function(state)
+	_G.NoclipEnabled = state
+end)
+
+local univVisualCat = createCategory(univRCol, "👁️ Hiển Thị ESP", 1)
+local univServerCat = createCategory(univRCol, "🌐 Quản Lý Máy Chủ", 2)
+
+local function clearAllESP()
+	for _, plr in ipairs(Players:GetPlayers()) do
+		if plr.Character and plr.Character:FindFirstChild("Head") then
+			local bb = plr.Character.Head:FindFirstChild("CustomESP")
+			if bb then bb:Destroy() end
+		end
+	end
+end
+
+AddToggle(univVisualCat, "Bật ESP", false, function(state)
+	_G.ESPEnabled = state
+	if not state then clearAllESP() end
+end)
+
+AddToggle(univVisualCat, "Hiện Tên", true, function(state)
+	_G.ESPShowName = state
+end)
+
+AddToggle(univVisualCat, "Hiện Máu", true, function(state)
+	_G.ESPShowHealth = state
+end)
+
+AddButton(univServerCat, "Đổi Server (Ít Người)", function()
+	pcall(function()
+		local placeId = game.PlaceId
+		local serversApi = "https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100"
+		local raw = game:HttpGet(serversApi)
+		local data = HttpService:JSONDecode(raw)
+		
+		if data and data.data then
+			for _, s in ipairs(data.data) do
+				if s.id ~= game.JobId and s.playing < s.maxPlayers then
+					TeleportService:TeleportToPlaceInstance(placeId, s.id, player)
+					break
+				end
+			end
+		end
+	end)
+end)
+
+tabContainers["FARM"].Visible = true
+tabButtons["FARM"].TextColor3 = Color3.fromRGB(255, 255, 255)
+
+-- ==================== SYSTEM LOGIC ====================
+
+local function isTargetAliveAndValid(plr)
+	if not plr or not plr.Parent or plr == player then return false end
+	local char = plr.Character
+	if not char or not char.Parent then return false end
+	
+	local hrp = char:FindFirstChild("HumanoidRootPart")
+	local hum = char:FindFirstChildOfClass("Humanoid")
+	
+	if not hrp or not hum then return false end
+	if hum.Health <= 0 or hum:GetState() == Enum.HumanoidStateType.Dead then return false end
+	
+	return true
+end
+
+RunService.RenderStepped:Connect(function()
+	if combatConfig.Enabled and combatConfig.TargetPlayer then
+		if isTargetAliveAndValid(combatConfig.TargetPlayer) then
+			pcall(function()
+				local targetHrp = combatConfig.TargetPlayer.Character:FindFirstChild("HumanoidRootPart")
+				local myHrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+				if targetHrp and myHrp then
+					teleportToTarget(myHrp, targetHrp, combatConfig.TargetPlayer, combatConfig.Distance, combatConfig.Height, combatConfig.Mode)
+				end
+			end)
+		end
+	end
+
+	if killConfig.Enabled then
+		pcall(function()
+			local myChar = player.Character
+			local myHrp = myChar and myChar:FindFirstChild("HumanoidRootPart")
+			if not myHrp then return end
+
+			if not isTargetAliveAndValid(killConfig.CurrentTarget) then
+				killConfig.CurrentTarget = nil
+				
+				local playerDistances = {}
+				for _, plr in ipairs(Players:GetPlayers()) do
+					if isTargetAliveAndValid(plr) then
+						local targetHrp = plr.Character:FindFirstChild("HumanoidRootPart")
+						local dist = (myHrp.Position - targetHrp.Position).Magnitude
+						table.insert(playerDistances, {Player = plr, Distance = dist})
+					end
+				end
+
+				table.sort(playerDistances, function(a, b) return a.Distance < b.Distance end)
+
+				if #playerDistances > 0 then
+					local targetIdx = killConfig.TargetIndex
+					if targetIdx > #playerDistances then
+						targetIdx = 1
+					end
+					killConfig.CurrentTarget = playerDistances[targetIdx].Player
+				end
+			end
+
+			if isTargetAliveAndValid(killConfig.CurrentTarget) then
+				local targetHrp = killConfig.CurrentTarget.Character:FindFirstChild("HumanoidRootPart")
+				if targetHrp then
+					teleportToTarget(myHrp, targetHrp, killConfig.CurrentTarget, killConfig.Distance, killConfig.Height, combatConfig.Mode)
+				end
+			end
+		end)
+	end
+end)
+
+RunService.RenderStepped:Connect(function()
+	if _G.FlyEnabled then
+		pcall(function()
+			local char = player.Character
+			local hrp = char and char:FindFirstChild("HumanoidRootPart")
+			if not hrp then return end
+			
+			if not flyLinearVelocity or not flyAlignOrientation or not flyAttachment then
+				startFlyPhysics()
+			end
+
+			local cam = workspace.CurrentCamera
+			local humanoid = char:FindFirstChildOfClass("Humanoid")
+			local moveDir = humanoid and humanoid.MoveDirection or Vector3.new()
+
+			local targetVel = Vector3.new()
+			if moveDir.Magnitude > 0 then
+				local camCF = cam.CFrame
+				local camLook = camCF.LookVector
+				local camRight = camCF.RightVector
+				local flatLook = Vector3.new(camLook.X, 0, camLook.Z).Unit
+				local flatRight = Vector3.new(camRight.X, 0, camRight.Z).Unit
+				local lookDot = moveDir:Dot(camLook)
+				local rightDot = moveDir:Dot(camRight)
+				targetVel = (flatLook * lookDot + flatRight * rightDot + Vector3.new(0, camLook.Y * math.abs(lookDot), 0)).Unit * _G.FlySpeedValue
+			else
+				targetVel = Vector3.new(0, 0, 0)
+			end
+
+			if flyLinearVelocity then flyLinearVelocity.VectorVelocity = targetVel end
+			if flyAlignOrientation then flyAlignOrientation.CFrame = cam.CFrame end
+		end)
+	else
+		stopFlyPhysics()
+	end
+end)
+
+RunService.Stepped:Connect(function()
+	pcall(function()
+		local char = player.Character
+		if char then
+			local hum = char:FindFirstChildOfClass("Humanoid")
+			if hum and _G.SpeedEnabled then
+				hum.WalkSpeed = _G.SpeedEnabled and _G.WalkSpeedValue or 16
+			end
+			if _G.NoclipEnabled then
+				for _, part in ipairs(char:GetDescendants()) do
+					if part:IsA("BasePart") then
+						part.CanCollide = false
+					end
+				end
+			end
+		end
+	end)
+end)
+
+task.spawn(function()
+	while task.wait(0.1) do
+		if _G.ESPEnabled then
+			pcall(function()
+				for _, plr in ipairs(Players:GetPlayers()) do
+					if plr ~= player and plr.Character and plr.Character:FindFirstChild("Head") then
+						local head = plr.Character.Head
+						local hum = plr.Character:FindFirstChildOfClass("Humanoid")
+						
+						local bb = head:FindFirstChild("CustomESP")
+						if not bb then
+							bb = Instance.new("BillboardGui")
+							bb.Name = "CustomESP"
+							bb.AlwaysOnTop = true
+							bb.Size = UDim2.new(0, 150, 0, 45)
+							bb.StudsOffset = Vector3.new(0, 3, 0)
+							bb.Parent = head
+
+							local container = Instance.new("Frame")
+							container.Name = "Container"
+							container.Size = UDim2.new(1, 0, 1, 0)
+							container.BackgroundTransparency = 1
+							container.Parent = bb
+
+							local nameLabel = Instance.new("TextLabel")
+							nameLabel.Name = "NameLabel"
+							nameLabel.Size = UDim2.new(1, 0, 0, 18)
+							nameLabel.BackgroundTransparency = 1
+							nameLabel.Text = plr.DisplayName
+							nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+							nameLabel.Font = Enum.Font.FredokaOne
+							nameLabel.TextSize = 13
+							nameLabel.TextStrokeTransparency = 0.4
+							nameLabel.Parent = container
+
+							local hpBg = Instance.new("Frame")
+							hpBg.Name = "HPBg"
+							hpBg.Size = UDim2.new(0.85, 0, 0, 8)
+							hpBg.Position = UDim2.new(0.075, 0, 0, 22)
+							hpBg.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+							hpBg.BorderSizePixel = 0
+							hpBg.Parent = container
+
+							local bgCorner = Instance.new("UICorner", hpBg)
+							bgCorner.CornerRadius = UDim.new(0, 4)
+
+							local bgStroke = Instance.new("UIStroke", hpBg)
+							bgStroke.Color = Color3.fromRGB(60, 60, 70)
+							bgStroke.Thickness = 1
+
+							local hpBar = Instance.new("Frame")
+							hpBar.Name = "HPBar"
+							hpBar.Size = UDim2.new(1, 0, 1, 0)
+							hpBar.BackgroundColor3 = Color3.fromRGB(0, 230, 100)
+							hpBar.BorderSizePixel = 0
+							hpBar.Parent = hpBg
+
+							local barCorner = Instance.new("UICorner", hpBar)
+							barCorner.CornerRadius = UDim.new(0, 4)
+
+							local hpText = Instance.new("TextLabel")
+							hpText.Name = "HPText"
+							hpText.Size = UDim2.new(1, 0, 0, 12)
+							hpText.Position = UDim2.new(0, 0, 0, 31)
+							hpText.BackgroundTransparency = 1
+							hpText.Text = "100%"
+							hpText.TextColor3 = Color3.fromRGB(220, 220, 220)
+							hpText.Font = Enum.Font.FredokaOne
+							hpText.TextSize = 10
+							hpText.TextStrokeTransparency = 0.5
+							hpText.Parent = container
+						end
+
+						if hum and bb:FindFirstChild("Container") then
+							local container = bb.Container
+							local nameLabel = container:FindFirstChild("NameLabel")
+							local hpBg = container:FindFirstChild("HPBg")
+							local hpText = container:FindFirstChild("HPText")
+
+							if nameLabel then nameLabel.Visible = _G.ESPShowName end
+							if hpBg then hpBg.Visible = _G.ESPShowHealth end
+							if hpText then hpText.Visible = _G.ESPShowHealth end
+
+							if hpBg then
+								local hpBar = hpBg:FindFirstChild("HPBar")
+								if hpBar then
+									local healthRatio = math.clamp(hum.Health / hum.MaxHealth, 0, 1)
+									TweenService:Create(hpBar, TweenInfo.new(0.2), {Size = UDim2.new(healthRatio, 0, 1, 0)}):Play()
+									local barColor = Color3.fromRGB(255 * (1 - healthRatio), 255 * healthRatio, 50)
+									hpBar.BackgroundColor3 = barColor
+									
+									if hpText then
+										hpText.Text = math.floor(healthRatio * 100) .. "%"
+									end
+								end
+							end
+						end
+					end
+				end
+			end)
+		end
+	end
+end)
+
+-- Quest Detector System
+task.spawn(function()
+	while task.wait(0.2) do
+		pcall(function()
+			local pGui = player:WaitForChild("PlayerGui")
+			local questsFrame = pGui:FindFirstChild("GameUI") and pGui.GameUI:FindFirstChild("QuestsFrame")
+			local detectedQuest = "Không có"
+			
+			if questsFrame then
+				for _, child in pairs(questsFrame:GetChildren()) do
+					local textContent = ""
+					for _, desc in pairs(child:GetDescendants()) do
+						if desc:IsA("TextLabel") then
+							textContent = textContent .. " " .. string.lower(desc.Text)
+						end
+					end
+					
+					if string.find(textContent, "eat something") then
+						detectedQuest = "Ăn"
+						break
+					elseif string.find(textContent, "drink water") then
+						detectedQuest = "Uống"
+						break
+					elseif string.find(textContent, "rest") then
+						detectedQuest = "Nghỉ ngơi"
+						break
+					end
+				end
+			end
+			
+			_G.CurrentQuest = detectedQuest
+			
+			if detectedQuest == "Ăn" then
+				questStatusLabel.Text = "Nhiệm Vụ Hiện Tại: Ăn"
+				questStatusLabel.TextColor3 = Color3.fromRGB(50, 255, 50)
+			elseif detectedQuest == "Uống" then
+				questStatusLabel.Text = "Nhiệm Vụ Hiện Tại: Uống"
+				questStatusLabel.TextColor3 = Color3.fromRGB(50, 150, 255)
+			elseif detectedQuest == "Nghỉ ngơi" then
+				questStatusLabel.Text = "Nhiệm Vụ Hiện Tại: Nghỉ Ngơi"
+				questStatusLabel.TextColor3 = Color3.fromRGB(255, 165, 0)
+			else
+				questStatusLabel.Text = "Nhiệm Vụ Hiện Tại: Đang chờ..."
+				questStatusLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+			end
+		end)
+	end
+end)
+
+-- Auto Eat
+task.spawn(function()
+	while true do
+		if _G.AutoEatRunning then
+			pcall(function()
+				local remote = ReplicatedStorage.Remotes.Character.Eat
+				local char = player.Character
+				local hrp = char and char:FindFirstChild("HumanoidRootPart")
+				if hrp then
+					local env = Workspace.MapEnvironment
+					local closest = nil
+					local shortest = math.huge
+					local folders = {
+						{ F = env:FindFirstChild("RedWood") and env.RedWood:FindFirstChild("Trees"), N = "RedWoodTree" },
+						{ F = env:FindFirstChild("Pines") and env.Pines:FindFirstChild("Trees"), N = "PineTree" },
+						{ F = env:FindFirstChild("Desert") and env.Desert:FindFirstChild("Tress"), N = "DesertTree" },
+						{ F = env:FindFirstChild("Lobby") and env.Lobby:FindFirstChild("Trees"), N = "RedWoodTree" }
+					}
+					for _, conf in pairs(folders) do
+						if conf.F then
+							for _, tree in pairs(conf.F:GetChildren()) do
+								if tree.Name == conf.N then
+									local p = tree:IsA("BasePart") and tree or tree:FindFirstChildWhichIsA("BasePart")
+									if p and (hrp.Position - p.Position).Magnitude < shortest then
+										shortest = (hrp.Position - p.Position).Magnitude
+										closest = tree
+									end
+								end
+							end
+						end
+					end
+					
+					if closest then
+						remote:FireServer(closest)
+					end
+				end
+			end)
+			task.wait(0.4)
+		else
+			task.wait(0.2)
+		end
+	end
+end)
+
+-- Auto Drink
+task.spawn(function()
+	while true do
+		if _G.AutoDrinkRunning then
+			pcall(function()
+				ReplicatedStorage.Remotes.Character.CharacterFunctions:InvokeServer("Drink")
+			end)
+			task.wait(0.8)
+		else
+			task.wait(0.2)
+		end
+	end
+end)
+
+-- Auto Rest
+task.spawn(function()
+	local isRestingActive = false
+	while true do
+		task.wait(0.3)
+		local shouldRest = _G.AutoRestRunning and (_G.CurrentQuest == "Nghỉ ngơi")
+		
+		if shouldRest and not isRestingActive then
+			pcall(function()
+				ReplicatedStorage.Remotes.Character.Rest:InvokeServer(true)
+			end)
+			isRestingActive = true
+		elseif not shouldRest and isRestingActive then
+			pcall(function()
+				ReplicatedStorage.Remotes.Character.Rest:InvokeServer(false)
+			end)
+			isRestingActive = false
+		end
+	end
+end)
+
+-- Auto Zone
+local ZonesList = {
+	{ Position = Vector3.new(-144.54, -102.15, 1032.19), Teleport = CFrame.new(-144.54, -87.15, 1032.19) },
+	{ Position = Vector3.new(-617.92, 143.39, -1130.44), Teleport = CFrame.new(-617.92, 158.39, -1130.44) },
+	{ Position = Vector3.new(1449.99, 77.16, -677.59), Teleport = CFrame.new(1449.99, 92.16, -677.59) },
+	{ Position = Vector3.new(276.03, 75.50, -1029.02), Teleport = CFrame.new(276.03, 90.50, -1029.02) },
+	{ Position = Vector3.new(-513.23, 75.73, -430.79), Teleport = CFrame.new(-513.23, 90.73, -430.79) },
+	{ Position = Vector3.new(1090.65, 66.03, 467.14), Teleport = CFrame.new(1090.65, 81.03, 467.14) },
+	{ Position = Vector3.new(209.25, -32.79, -359.19), Teleport = CFrame.new(209.25, -17.79, -359.19) },
+	{ Position = Vector3.new(-170.20, 109.98, 388.42), Teleport = CFrame.new(-170.20, 124.98, 388.42) },
+	{ Position = Vector3.new(-69.11, -61.16, -1493.54), Teleport = CFrame.new(-69.11, -46.16, -1493.54) }
+}
+
+local function IsThisZoneGreen(targetPos)
+	local isGreen = false
+	pcall(function()
+		local folder = Workspace.MapResources.Zones
+		for _, zoneObj in pairs(folder:GetChildren()) do
+			local core = zoneObj:FindFirstChild("LightCore")
+			if core and (core.Position - targetPos).Magnitude < 15 then
+				local color = core.Color
+				if color.R == 0 and color.G > 0.9 and color.B == 0 then
+					isGreen = true
+				end
+				break
+			end
+		end
+	end)
+	return isGreen
+end
+
+task.spawn(function()
+	while true do
+		if _G.AutoZoneRunning then
+			local char = player.Character
+			local hrp = char and char:FindFirstChild("HumanoidRootPart")
+			if hrp then
+				local safetyZone3CFrame = CFrame.new(1449.99, 82.16, -677.59) 
+				
+				for i = 1, #ZonesList do
+					if not _G.AutoZoneRunning then break end
+					local zone = ZonesList[i]
+					
+					if not IsThisZoneGreen(zone.Position) then
+						hrp.CFrame = zone.Teleport
+						task.wait(0.05)
+						local startTime = tick()
+						
+						while _G.AutoZoneRunning do
+							if IsThisZoneGreen(zone.Position) or (tick() - startTime >= 15) then
+								break
+							end
+							
+							local shakeX = math.sin(tick() * 8) * 0.35
+							local shakeZ = math.cos(tick() * 8) * 0.35
+							hrp.CFrame = zone.Teleport * CFrame.new(shakeX, 0, shakeZ)
+							hrp.Velocity = Vector3.new(0, 0, 0)
+							task.wait(0.02)
+						end
+						task.wait(0.5)
+					end
+				end
+				
+				if hrp and _G.AutoZoneRunning then 
+				   hrp.CFrame = safetyZone3CFrame 
+				end
+				task.wait(5)
+			else
+				task.wait(0.5)
+			end
+		else
+			task.wait(0.1)
+		end
+	end
+end)
+
+searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+	local query = string.lower(searchBox.Text)
+	for _, item in ipairs(allToggleRows) do
+		if item.Page == tabContainers[activeTabName] then
+			local match = (query == "") or (string.find(string.lower(item.Text), query) ~= nil)
+			item.Row.Visible = match
+		end
+	end
+end)
+
+toggleBtn.MouseButton1Click:Connect(function()
+	mainFrame.Visible = not mainFrame.Visible
+end)
+
+UserInputService.InputBegan:Connect(function(input, processed)
+	if processed then return end 
+	if input.KeyCode == Enum.KeyCode.RightAlt then
+		mainFrame.Visible = not mainFrame.Visible
+	end
+end)
+
+player.Idled:Connect(function()
+	VirtualUser:CaptureController()
+	VirtualUser:ClickButton2(Vector2.new())
+end)
+
+print("Đã cập nhật logic Bám 2 Bên mặc định và Nút chuyển Bám Đuôi thành công!")
