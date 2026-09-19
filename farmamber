@@ -3,11 +3,13 @@
 -- [[ End Rscripts Risk Notice ]]
 
 --[[
-    Jurassic Blocky - Auto Amber (With Toggle UI)
+    Jurassic Blocky - Auto Amber (With Toggle UI & Server Hop)
 ]]
 
 local plr = game.Players.LocalPlayer
 local rs = game:GetService("RunService")
+local teleportService = game:GetService("TeleportService")
+local httpService = game:GetService("HttpService")
 
 -- Configuration
 local speed = 100
@@ -29,32 +31,57 @@ screenGui.Name = "AutoAmberUI"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = plr:WaitForChild("PlayerGui")
 
+-- Khung chứa 2 nút (Frame)
+local containerFrame = Instance.new("Frame")
+containerFrame.Name = "Container"
+containerFrame.Size = UDim2.new(0, 160, 0, 95)
+containerFrame.Position = UDim2.new(0.5, -80, 0, 20)
+containerFrame.BackgroundTransparency = 1
+containerFrame.Parent = screenGui
+
+-- Nút Bật/Tắt Auto Farm
 local toggleBtn = Instance.new("TextButton")
 toggleBtn.Name = "ToggleButton"
-toggleBtn.Size = UDim2.new(0, 160, 0, 45)
-toggleBtn.Position = UDim2.new(0.5, -80, 0, 20)
+toggleBtn.Size = UDim2.new(1, 0, 0, 42)
+toggleBtn.Position = UDim2.new(0, 0, 0, 0)
 toggleBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 toggleBtn.Text = "Auto Amber: OFF"
 toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-toggleBtn.TextSize = 16
+toggleBtn.TextSize = 15
 toggleBtn.Font = Enum.Font.SourceSansBold
-toggleBtn.Parent = screenGui
+toggleBtn.Parent = containerFrame
 
-local uiCorner = Instance.new("UICorner")
-uiCorner.CornerRadius = UDim.new(0, 8)
-uiCorner.Parent = toggleBtn
+local uiCorner1 = Instance.new("UICorner")
+uiCorner1.CornerRadius = UDim.new(0, 8)
+uiCorner1.Parent = toggleBtn
 
--- UI Dragging functionality
+-- Nút Đổi Server
+local serverHopBtn = Instance.new("TextButton")
+serverHopBtn.Name = "ServerHopButton"
+serverHopBtn.Size = UDim2.new(1, 0, 0, 42)
+serverHopBtn.Position = UDim2.new(0, 0, 0, 50)
+serverHopBtn.BackgroundColor3 = Color3.fromRGB(40, 120, 210)
+serverHopBtn.Text = "Server Hop 🔄"
+serverHopBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+serverHopBtn.TextSize = 15
+serverHopBtn.Font = Enum.Font.SourceSansBold
+serverHopBtn.Parent = containerFrame
+
+local uiCorner2 = Instance.new("UICorner")
+uiCorner2.CornerRadius = UDim.new(0, 8)
+uiCorner2.Parent = serverHopBtn
+
+-- Kéo thả giao diện (UI Dragging)
 local dragging, dragInput, dragStart, startPos
-toggleBtn.InputBegan:Connect(function(input)
+containerFrame.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = true
 		dragStart = input.Position
-		startPos = toggleBtn.Position
+		startPos = containerFrame.Position
 	end
 end)
 
-toggleBtn.InputEnded:Connect(function(input)
+containerFrame.InputEnded:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 		dragging = false
 	end
@@ -63,8 +90,48 @@ end)
 game:GetService("UserInputService").InputChanged:Connect(function(input)
 	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
 		local delta = input.Position - dragStart
-		toggleBtn.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		containerFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 	end
+end)
+
+-- ==========================================
+-- SERVER HOP LOGIC
+-- ==========================================
+local function serverHop()
+	serverHopBtn.Text = "Finding Server..."
+	serverHopBtn.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+	
+	local placeId = game.PlaceId
+	local currentJobId = game.JobId
+	local servers = {}
+	
+	local reqUrl = string.format("https://games.roblox.com/v1/games/%s/servers/Public?sortOrder=Asc&limit=100", tostring(placeId))
+	
+	local success, result = pcall(function()
+		return httpService:JSONDecode(game:HttpGet(reqUrl))
+	end)
+	
+	if success and result and result.data then
+		for _, server in ipairs(result.data) do
+			if server.id ~= currentJobId and server.playing < server.maxPlayers and server.playing > 0 then
+				table.insert(servers, server.id)
+			end
+		end
+	end
+	
+	if #servers > 0 then
+		local randomServerId = servers[math.random(1, #servers)]
+		serverHopBtn.Text = "Teleporting..."
+		teleportService:TeleportToPlaceInstance(placeId, randomServerId, plr)
+	else
+		-- Nếu không tìm được server qua API public thì dùng Teleport tiêu chuẩn
+		serverHopBtn.Text = "Teleporting..."
+		teleportService:Teleport(placeId, plr)
+	end
+end
+
+serverHopBtn.MouseButton1Click:Connect(function()
+	serverHop()
 end)
 
 -- ==========================================
