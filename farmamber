@@ -1,156 +1,252 @@
 -- [[ Rscripts Risk Notice ]]
 -- This script is not verified by rscripts.net. Deal with caution.
---
--- Stay safe:
---   • Never log in on unofficial Roblox sites or lookalike domains.
---   • Real Roblox links use roblox.com (check the .com ending).
---   • Treat fake Roblox login / "claim reward" pages as phishing.
 -- [[ End Rscripts Risk Notice ]]
 
 --[[
-    Jurassic Blocky - Auto Amber
+    Jurassic Blocky - Auto Amber (With Toggle UI)
 ]]
 
 local plr = game.Players.LocalPlayer
 local rs = game:GetService("RunService")
 
-local speed = 100          -- Đã sửa thành 100
+-- Configuration
+local speed = 100
 local dist = 4
 local holdTime = 1.2
-local heightOffset = 6.5   -- ↑ увеличил высоту зависания
-local hoverTime = 0.6      -- время зависания перед сбором
+local heightOffset = 6.5
+local hoverTime = 0.6
 
+-- State variables
+local isAutoFarmEnabled = false
 local noclip
 local currentChar, hrp, hum
 
+-- ==========================================
+-- CREATING TOGGLE UI
+-- ==========================================
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AutoAmberUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = plr:WaitForChild("PlayerGui")
+
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Name = "ToggleButton"
+toggleBtn.Size = UDim2.new(0, 160, 0, 45)
+toggleBtn.Position = UDim2.new(0.5, -80, 0, 20)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+toggleBtn.Text = "Auto Amber: OFF"
+toggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleBtn.TextSize = 16
+toggleBtn.Font = Enum.Font.SourceSansBold
+toggleBtn.Parent = screenGui
+
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 8)
+uiCorner.Parent = toggleBtn
+
+-- UI Dragging functionality
+local dragging, dragInput, dragStart, startPos
+toggleBtn.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = toggleBtn.Position
+	end
+end)
+
+toggleBtn.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = false
+	end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+	if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+		local delta = input.Position - dragStart
+		toggleBtn.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end)
+
+-- ==========================================
+-- HELPER FUNCTIONS
+-- ==========================================
+local function disableNoclip()
+	if noclip then
+		noclip:Disconnect()
+		noclip = nil
+	end
+	if hum then
+		hum.PlatformStand = false
+	end
+	if currentChar then
+		for _, v in ipairs(currentChar:GetDescendants()) do
+			if v:IsA("BasePart") then
+				v.CanCollide = true
+			end
+		end
+	end
+end
+
 local function enableNoclip()
-    if noclip then noclip:Disconnect() end
-    noclip = rs.Heartbeat:Connect(function()
-        if not currentChar then return end
-        for _, v in ipairs(currentChar:GetDescendants()) do
-            if v:IsA("BasePart") and v.CanCollide then
-                v.CanCollide = false
-            end
-        end
-        if hrp then
-            hrp.AssemblyLinearVelocity = Vector3.zero
-            hrp.AssemblyAngularVelocity = Vector3.zero
-        end
-        if hum then
-            hum.PlatformStand = true
-        end
-    end)
+	disableNoclip()
+	noclip = rs.Heartbeat:Connect(function()
+		if not isAutoFarmEnabled or not currentChar then return end
+		for _, v in ipairs(currentChar:GetDescendants()) do
+			if v:IsA("BasePart") and v.CanCollide then
+				v.CanCollide = false
+			end
+		end
+		if hrp then
+			hrp.AssemblyLinearVelocity = Vector3.zero
+			hrp.AssemblyAngularVelocity = Vector3.zero
+		end
+		if hum then
+			hum.PlatformStand = true
+		end
+	end)
 end
 
 local function goto(pos)
-    if not hrp then return end
-    
-    while (hrp.Position - pos).Magnitude > dist do
-        local diff = pos - hrp.Position
-        local currentDist = diff.Magnitude
-        local stepSize = speed * task.wait()
-        
-        -- Замедляемся ближе к цели
-        if currentDist < 15 then
-            stepSize = stepSize * 0.45   -- плавное торможение
-        end
-        
-        stepSize = math.min(stepSize, currentDist)
-        
-        local lookPos = Vector3.new(pos.X, hrp.Position.Y, pos.Z)
-        hrp.CFrame = CFrame.lookAt(hrp.Position + diff.Unit * stepSize, lookPos)
-        
-        task.wait()
-    end
-    
-    hrp.CFrame = CFrame.new(pos.X, pos.Y, pos.Z)
+	if not hrp then return end
+	
+	while isAutoFarmEnabled and (hrp.Position - pos).Magnitude > dist do
+		local diff = pos - hrp.Position
+		local currentDist = diff.Magnitude
+		local stepSize = speed * task.wait()
+		
+		if currentDist < 15 then
+			stepSize = stepSize * 0.45
+		end
+		
+		stepSize = math.min(stepSize, currentDist)
+		
+		local lookPos = Vector3.new(pos.X, hrp.Position.Y, pos.Z)
+		hrp.CFrame = CFrame.lookAt(hrp.Position + diff.Unit * stepSize, lookPos)
+		
+		task.wait()
+	end
+	
+	if isAutoFarmEnabled then
+		hrp.CFrame = CFrame.new(pos.X, pos.Y, pos.Z)
+	end
 end
 
 local function getPrompts()
-    local t = {}
-    for _, v in ipairs(workspace:GetDescendants()) do
-        if v:IsA("ProximityPrompt") and v.ActionText == "Collect Amber" and v.Enabled then
-            table.insert(t, v)
-        end
-    end
-    return t
+	local t = {}
+	for _, v in ipairs(workspace:GetDescendants()) do
+		if v:IsA("ProximityPrompt") and v.ActionText == "Collect Amber" and v.Enabled then
+			table.insert(t, v)
+		end
+	end
+	return t
 end
 
 local function initCharacter()
-    currentChar = plr.Character or plr.CharacterAdded:Wait()
-    hrp = currentChar:WaitForChild("HumanoidRootPart", 5)
-    hum = currentChar:WaitForChild("Humanoid", 5)
-    
-    if not hrp or not hum then return end
-    
-    hum.PlatformStand = true
-    enableNoclip()
+	currentChar = plr.Character or plr.CharacterAdded:Wait()
+	hrp = currentChar:WaitForChild("HumanoidRootPart", 5)
+	hum = currentChar:WaitForChild("Humanoid", 5)
+	
+	if not hrp or not hum then return end
+	
+	if isAutoFarmEnabled then
+		hum.PlatformStand = true
+		enableNoclip()
+	end
 end
 
+-- Button Toggle Event
+toggleBtn.MouseButton1Click:Connect(function()
+	isAutoFarmEnabled = not isAutoFarmEnabled
+	if isAutoFarmEnabled then
+		toggleBtn.Text = "Auto Amber: ON"
+		toggleBtn.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
+		if hum then hum.PlatformStand = true end
+		enableNoclip()
+	else
+		toggleBtn.Text = "Auto Amber: OFF"
+		toggleBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+		disableNoclip()
+	end
+end)
+
 plr.CharacterAdded:Connect(function()
-    task.wait(0.5)
-    initCharacter()
+	task.wait(0.5)
+	initCharacter()
 end)
 
 initCharacter()
 
-local prompts = getPrompts()
-local lastRefresh = tick()
+-- ==========================================
+-- MAIN LOOP
+-- ==========================================
+task.spawn(function()
+	local prompts = getPrompts()
+	local lastRefresh = tick()
 
-while true do
-    if not hrp or not hum then
-        task.wait(0.5)
-        continue
-    end
+	while true do
+		task.wait(0.1)
+		
+		if not isAutoFarmEnabled then
+			continue
+		end
 
-    if tick() - lastRefresh > 1.5 then
-        prompts = getPrompts()
-        lastRefresh = tick()
-    end
+		if not hrp or not hum then
+			task.wait(0.5)
+			continue
+		end
 
-    for i = #prompts, 1, -1 do
-        if not prompts[i] or not prompts[i].Parent or not prompts[i].Enabled then
-            table.remove(prompts, i)
-        end
-    end
+		if tick() - lastRefresh > 1.5 then
+			prompts = getPrompts()
+			lastRefresh = tick()
+		end
 
-    if #prompts == 0 then
-        task.wait(0.3)
-        continue
-    end
+		for i = #prompts, 1, -1 do
+			if not prompts[i] or not prompts[i].Parent or not prompts[i].Enabled then
+				table.remove(prompts, i)
+			end
+		end
 
-    local closest, idx, minDist
-    for i, p in ipairs(prompts) do
-        local part = p.Parent:IsA("BasePart") and p.Parent or p.Parent:FindFirstChildWhichIsA("BasePart")
-        if part then
-            local d = (hrp.Position - part.Position).Magnitude
-            if not minDist or d < minDist then
-                minDist, idx, closest = d, i, p
-            end
-        end
-    end
+		if #prompts == 0 then
+			task.wait(0.3)
+			continue
+		end
 
-    if closest and hrp then
-        local part = closest.Parent:IsA("BasePart") and closest.Parent or closest.Parent:FindFirstChildWhichIsA("BasePart")
-        
-        if part then
-            local targetPos = part.Position + Vector3.new(0, heightOffset, 0)
-            
-            goto(targetPos)
-            
-            -- Дополнительное зависание перед сбором
-            task.wait(hoverTime)
-            
-            pcall(function()
-                fireproximityprompt(closest, holdTime)
-            end)
-            
-            task.wait(holdTime + 0.4)
-            
-            table.remove(prompts, idx)
-            task.wait(0.25)
-        else
-            table.remove(prompts, idx)
-        end
-    end
-end
+		local closest, idx, minDist
+		for i, p in ipairs(prompts) do
+			local part = p.Parent:IsA("BasePart") and p.Parent or p.Parent:FindFirstChildWhichIsA("BasePart")
+			if part then
+				local d = (hrp.Position - part.Position).Magnitude
+				if not minDist or d < minDist then
+					minDist, idx, closest = d, i, p
+				end
+			end
+		end
+
+		if closest and hrp and isAutoFarmEnabled then
+			local part = closest.Parent:IsA("BasePart") and closest.Parent or closest.Parent:FindFirstChildWhichIsA("BasePart")
+			
+			if part then
+				local targetPos = part.Position + Vector3.new(0, heightOffset, 0)
+				
+				goto(targetPos)
+				
+				if not isAutoFarmEnabled then continue end
+				
+				task.wait(hoverTime)
+				
+				if isAutoFarmEnabled then
+					pcall(function()
+						fireproximityprompt(closest, holdTime)
+					end)
+				end
+				
+				task.wait(holdTime + 0.4)
+				
+				table.remove(prompts, idx)
+				task.wait(0.25)
+			else
+				table.remove(prompts, idx)
+			end
+		end
+	end
+end)
