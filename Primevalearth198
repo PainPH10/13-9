@@ -1,6 +1,6 @@
 --[[ 
 	UI Library - Primeval Earth By 0painph10 
-	(Updated: Default Side Teleport & Dynamic Tail Follow Switch - Vietnamese Version)
+	(Updated: Default Side Teleport, Dynamic Tail Follow Switch & Super Rigid Hitbox)
 ]]
 
 local Players = game:GetService("Players")
@@ -80,7 +80,7 @@ screenGui.Name = "CustomLibraryHubInteractive"
 screenGui.ResetOnSpawn = false
 screenGui.Parent = playerGui
 
--- ==================== TELEPORT & COMBAT LOGIC ====================
+-- ==================== TELEPORT & COMBAT LOGIC (SUPER RIGID HITBOX) ====================
 local lastTargetLookVector = {}
 local currentAngle = 0
 
@@ -93,8 +93,18 @@ task.spawn(function()
 	end
 end)
 
+local overlapParams = OverlapParams.new()
+overlapParams.FilterType = Enum.RaycastFilterType.Blacklist
+overlapParams.RespectCanCollide = false
+
 local function teleportToTarget(myHrp, targetHrp, targetPlayer, distOffset, heightOffset, mode)
 	if not myHrp or not targetHrp then return end
+	
+	-- Cập nhật danh sách loại trừ chính bản thân người chơi cho Hitbox
+	local myChar = player.Character
+	if myChar then
+		overlapParams.FilterDescendantsInstances = {myChar}
+	end
 	
 	-- Tùy chọn xoay vòng tròn
 	if combatConfig.CircleEnabled then
@@ -141,6 +151,20 @@ local function teleportToTarget(myHrp, targetHrp, targetPlayer, distOffset, heig
 		local sidePosition = targetHrp.Position + (rightVector * (distOffset * currentSideMultiplier)) + Vector3.new(0, heightOffset, 0)
 		targetPosFlat = Vector3.new(targetHrp.Position.X, sidePosition.Y, targetHrp.Position.Z)
 		finalPosition = sidePosition
+	end
+	
+	-- Dùng Raycast/Bounds kiểm tra vùng xung quanh để giữ bám dính chắc chắn, chống lướt qua
+	local hitboxSize = Vector3.new(6, 6, 6)
+	local regionCF = CFrame.new(finalPosition)
+	local parts = workspace:GetPartBoundsInBox(regionCF, hitboxSize, overlapParams)
+	
+	for _, part in ipairs(parts) do
+		local hitCharacter = part.Parent
+		local humanoid = hitCharacter:FindFirstChildOfClass("Humanoid")
+		if humanoid and hitCharacter ~= myChar then
+			-- Đã bắt trúng mục tiêu trong vùng quét siêu dính
+			break
+		end
 	end
 	
 	myHrp.CFrame = CFrame.new(finalPosition, targetPosFlat)
@@ -1823,4 +1847,4 @@ player.Idled:Connect(function()
 	VirtualUser:ClickButton2(Vector2.new())
 end)
 
-print("Đã cập nhật logic Bám 2 Bên mặc định và Nút chuyển Bám Đuôi thành công!")
+print("Đã cập nhật logic Bám 2 Bên mặc định, Nút chuyển Bám Đuôi và Hitbox siêu dính thành công!")
