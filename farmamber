@@ -1,0 +1,156 @@
+-- [[ Rscripts Risk Notice ]]
+-- This script is not verified by rscripts.net. Deal with caution.
+--
+-- Stay safe:
+--   • Never log in on unofficial Roblox sites or lookalike domains.
+--   • Real Roblox links use roblox.com (check the .com ending).
+--   • Treat fake Roblox login / "claim reward" pages as phishing.
+-- [[ End Rscripts Risk Notice ]]
+
+--[[
+    Jurassic Blocky - Auto Amber
+]]
+
+local plr = game.Players.LocalPlayer
+local rs = game:GetService("RunService")
+
+local speed = 100          -- Đã sửa thành 100
+local dist = 4
+local holdTime = 1.2
+local heightOffset = 6.5   -- ↑ увеличил высоту зависания
+local hoverTime = 0.6      -- время зависания перед сбором
+
+local noclip
+local currentChar, hrp, hum
+
+local function enableNoclip()
+    if noclip then noclip:Disconnect() end
+    noclip = rs.Heartbeat:Connect(function()
+        if not currentChar then return end
+        for _, v in ipairs(currentChar:GetDescendants()) do
+            if v:IsA("BasePart") and v.CanCollide then
+                v.CanCollide = false
+            end
+        end
+        if hrp then
+            hrp.AssemblyLinearVelocity = Vector3.zero
+            hrp.AssemblyAngularVelocity = Vector3.zero
+        end
+        if hum then
+            hum.PlatformStand = true
+        end
+    end)
+end
+
+local function goto(pos)
+    if not hrp then return end
+    
+    while (hrp.Position - pos).Magnitude > dist do
+        local diff = pos - hrp.Position
+        local currentDist = diff.Magnitude
+        local stepSize = speed * task.wait()
+        
+        -- Замедляемся ближе к цели
+        if currentDist < 15 then
+            stepSize = stepSize * 0.45   -- плавное торможение
+        end
+        
+        stepSize = math.min(stepSize, currentDist)
+        
+        local lookPos = Vector3.new(pos.X, hrp.Position.Y, pos.Z)
+        hrp.CFrame = CFrame.lookAt(hrp.Position + diff.Unit * stepSize, lookPos)
+        
+        task.wait()
+    end
+    
+    hrp.CFrame = CFrame.new(pos.X, pos.Y, pos.Z)
+end
+
+local function getPrompts()
+    local t = {}
+    for _, v in ipairs(workspace:GetDescendants()) do
+        if v:IsA("ProximityPrompt") and v.ActionText == "Collect Amber" and v.Enabled then
+            table.insert(t, v)
+        end
+    end
+    return t
+end
+
+local function initCharacter()
+    currentChar = plr.Character or plr.CharacterAdded:Wait()
+    hrp = currentChar:WaitForChild("HumanoidRootPart", 5)
+    hum = currentChar:WaitForChild("Humanoid", 5)
+    
+    if not hrp or not hum then return end
+    
+    hum.PlatformStand = true
+    enableNoclip()
+end
+
+plr.CharacterAdded:Connect(function()
+    task.wait(0.5)
+    initCharacter()
+end)
+
+initCharacter()
+
+local prompts = getPrompts()
+local lastRefresh = tick()
+
+while true do
+    if not hrp or not hum then
+        task.wait(0.5)
+        continue
+    end
+
+    if tick() - lastRefresh > 1.5 then
+        prompts = getPrompts()
+        lastRefresh = tick()
+    end
+
+    for i = #prompts, 1, -1 do
+        if not prompts[i] or not prompts[i].Parent or not prompts[i].Enabled then
+            table.remove(prompts, i)
+        end
+    end
+
+    if #prompts == 0 then
+        task.wait(0.3)
+        continue
+    end
+
+    local closest, idx, minDist
+    for i, p in ipairs(prompts) do
+        local part = p.Parent:IsA("BasePart") and p.Parent or p.Parent:FindFirstChildWhichIsA("BasePart")
+        if part then
+            local d = (hrp.Position - part.Position).Magnitude
+            if not minDist or d < minDist then
+                minDist, idx, closest = d, i, p
+            end
+        end
+    end
+
+    if closest and hrp then
+        local part = closest.Parent:IsA("BasePart") and closest.Parent or closest.Parent:FindFirstChildWhichIsA("BasePart")
+        
+        if part then
+            local targetPos = part.Position + Vector3.new(0, heightOffset, 0)
+            
+            goto(targetPos)
+            
+            -- Дополнительное зависание перед сбором
+            task.wait(hoverTime)
+            
+            pcall(function()
+                fireproximityprompt(closest, holdTime)
+            end)
+            
+            task.wait(holdTime + 0.4)
+            
+            table.remove(prompts, idx)
+            task.wait(0.25)
+        else
+            table.remove(prompts, idx)
+        end
+    end
+end
