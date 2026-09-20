@@ -1,6 +1,6 @@
 --[[ 
 	UI Library - Primeval Earth By 0painph10 
-	(Updated: Default Side Teleport, Dynamic Tail Follow Switch & Super Rigid Hitbox)
+	(Updated: Default Side Teleport, Dynamic Tail Follow Switch, Super Rigid Hitbox & Notification Tab)
 ]]
 
 local Players = game:GetService("Players")
@@ -514,14 +514,16 @@ local function AddButton(categoryFrame, text, callback)
 	return btn
 end
 
--- Initialize Tabs
-local tabNames = {"FARM", "PVP", "UNIVERSAL"}
-local activeTabName = "FARM"
+-- Initialize Tabs (Thêm tab THÔNG BÁO đầu tiên)
+local tabNames = {"THÔNG BÁO", "FARM", "PVP", "UNIVERSAL"}
+local activeTabName = "THÔNG BÁO"
 
+local notifPage, notifLCol, notifRCol = createTabPage()
 local farmPage, farmLCol, farmRCol = createTabPage()
 local pvpPage, pvpLCol, pvpRCol = createTabPage()
 local univPage, univLCol, univRCol = createTabPage()
 
+tabContainers["THÔNG BÁO"] = notifPage
 tabContainers["FARM"] = farmPage
 tabContainers["PVP"] = pvpPage
 tabContainers["UNIVERSAL"] = univPage
@@ -533,7 +535,7 @@ for _, tabName in ipairs(tabNames) do
 	tBtn.BackgroundTransparency = 1
 	tBtn.Text = tabName
 	tBtn.TextColor3 = Color3.fromRGB(180, 180, 195)
-	tBtn.TextSize = 13
+	tBtn.TextSize = 12
 	tBtn.Font = Enum.Font.FredokaOne
 	tBtn.Parent = subTabHolder
 	tabButtons[tabName] = tBtn
@@ -549,6 +551,35 @@ for _, tabName in ipairs(tabNames) do
 		searchBox.Text = ""
 	end)
 end
+
+-- ==================== TAB THÔNG BÁO SETUP ====================
+local notifCat = createCategory(notifLCol, "📢 Thông Báo Quan Trọng", 1)
+
+local announcementLabel = Instance.new("TextLabel")
+announcementLabel.Size = UDim2.new(1, 0, 0, 90)
+announcementLabel.BackgroundTransparency = 1
+announcementLabel.Text = "Hiện tại nhiều người báo lỗi và cũng có những ng ko lỗi nên mình có làm 1 bản riêng cho ai lỗi thì vào bio mình lấy nhé còn bản này ai ko lỗi cứ dùng bth"
+announcementLabel.TextColor3 = Color3.fromRGB(255, 220, 100)
+announcementLabel.TextSize = 13
+announcementLabel.Font = Enum.Font.FredokaOne
+announcementLabel.TextWrapped = true
+announcementLabel.TextXAlignment = Enum.TextXAlignment.Left
+announcementLabel.TextYAlignment = Enum.TextYAlignment.Top
+announcementLabel.Parent = notifCat
+
+local notifInfoCat = createCategory(notifRCol, "💡 Hướng Dẫn & Lưu Ý", 1)
+
+local guideLabel = Instance.new("TextLabel")
+guideLabel.Size = UDim2.new(1, 0, 0, 90)
+guideLabel.BackgroundTransparency = 1
+guideLabel.Text = "- Nếu bạn gặp tình trạng lỗi script, vui lòng truy cập Bio để lấy bản riêng.\n- Nếu bạn dùng hoàn toàn bình thường, hãy tiếp tục sử dụng bản hiện tại này.\n- Cảm ơn các bạn đã ủng hộ script!"
+guideLabel.TextColor3 = Color3.fromRGB(200, 200, 215)
+guideLabel.TextSize = 12
+guideLabel.Font = Enum.Font.FredokaOne
+guideLabel.TextWrapped = true
+guideLabel.TextXAlignment = Enum.TextXAlignment.Left
+guideLabel.TextYAlignment = Enum.TextYAlignment.Top
+guideLabel.Parent = notifInfoCat
 
 -- ==================== TAB FARM SETUP ====================
 local farmCat1 = createCategory(farmLCol, "⚙️ Tự Động Sinh Tồn", 1)
@@ -1386,8 +1417,9 @@ AddButton(univServerCat, "Đổi Server (Ít Người)", function()
 	end)
 end)
 
-tabContainers["FARM"].Visible = true
-tabButtons["FARM"].TextColor3 = Color3.fromRGB(255, 255, 255)
+-- Mặc định hiển thị tab THÔNG BÁO đầu tiên khi mở menu
+tabContainers["THÔNG BÁO"].Visible = true
+tabButtons["THÔNG BÁO"].TextColor3 = Color3.fromRGB(255, 255, 255)
 
 -- ==================== SYSTEM LOGIC ====================
 
@@ -1847,4 +1879,4 @@ player.Idled:Connect(function()
 	VirtualUser:ClickButton2(Vector2.new())
 end)
 
-print("Đã cập nhật logic Bám 2 Bên mặc định, Nút chuyển Bám Đuôi và Hitbox siêu dính thành công!")
+print("Đã thêm tab THÔNG BÁO thành công!")
