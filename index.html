@@ -213,10 +213,10 @@ main {
   <h1 class="hero-title">PAIN SCRIPT</h1>
   <div class="hero-sub">TẤT CẢ SCRIPT ROBLOX BẠN CẦN TẠI ĐÂY</div>
 
-  <div class="search-box">
+  <form class="search-box" id="searchForm" onsubmit="return false;">
     <input id="q" type="search" placeholder="Tìm kiếm script...">
-    <button id="go">Tìm</button>
-  </div>
+    <button id="go" type="button">Tìm</button>
+  </form>
 
   <div class="tags" id="tags"></div>
   <div class="grid" id="list"></div>
@@ -232,7 +232,6 @@ const SCRIPTS = [
   {hub:"Neva Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/MMk2q", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4145.jpeg"},
   {hub:"PulseHub.gg", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/OvbtgoS", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4147.jpeg"},
   {hub:"Chilli Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YEjVhKM", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4149.jpeg"},
-  {hub:"SourcesHub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/V3Y64j", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4206.jpeg"},
   
   // Ride A Pet
   {hub:"Chilli Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.org/OX5URqr1", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4153.jpeg"},
@@ -258,7 +257,7 @@ const SCRIPTS = [
   {hub:"Infinite Stamina", game:"Illegal Soccer", c:"Tất Cả", link:"https://link4m.net/iKJFmJ2", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4168.jpeg"}
 ];
 
-// Hàm trộn ngẫu nhiên thứ tự (Trộn 1 lần duy nhất khi vừa load trang)
+// Hàm trộn ngẫu nhiên thứ tự 1 lần khi load trang
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -274,10 +273,19 @@ const cats=['Tất Cả', 'Steal An Egg', 'Ride A Pet', 'Tất Cả Script Khủ
 
 function render(){
   const q = $('q').value.trim().toLowerCase();
-  const filtered = SCRIPTS.filter(s => 
-    (cat === 'Tất Cả' || s.c === cat) && 
-    (!q || s.hub.toLowerCase().includes(q) || s.game.toLowerCase().includes(q) || s.c.toLowerCase().includes(q))
-  );
+  
+  const filtered = SCRIPTS.filter(s => {
+    const matchCat = (cat === 'Tất Cả' || s.c === cat);
+    
+    // Kiểm tra an toàn biến tránh bị null/undefined
+    const hubName = (s.hub || '').toLowerCase();
+    const gameName = (s.game || '').toLowerCase();
+    const catName = (s.c || '').toLowerCase();
+
+    const matchSearch = !q || hubName.includes(q) || gameName.includes(q) || catName.includes(q);
+    
+    return matchCat && matchSearch;
+  });
 
   // Render Tags
   $('tags').innerHTML = cats.map((c, i) => `
@@ -288,21 +296,25 @@ function render(){
   `).join('');
 
   // Render Cards
-  $('list').innerHTML = filtered.map(s => `
-    <div class="card">
-      <div class="card-img-box">
-        ${s.img ? `<img src="${s.img}" alt="${s.hub}">` : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
-      </div>
-      <div class="card-body">
-        <h2 class="card-title">
-          ${s.hub} ${s.game ? `<span class="game-name">${s.game}</span>` : ''}
-        </h2>
-        <div class="card-footer">
-          <a class="btn-link" href="${s.link}" target="_blank">LẤY SCRIPT &rarr;</a>
+  if (filtered.length === 0) {
+    $('list').innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b; font-weight: 700;">Không tìm thấy script phù hợp</div>`;
+  } else {
+    $('list').innerHTML = filtered.map(s => `
+      <div class="card">
+        <div class="card-img-box">
+          ${s.img ? `<img src="${s.img}" alt="${s.hub}">` : `<div class="card-img-placeholder">SCRIPT ${(s.c || '').toUpperCase()}</div>`}
+        </div>
+        <div class="card-body">
+          <h2 class="card-title">
+            ${s.hub} ${s.game ? `<span class="game-name">${s.game}</span>` : ''}
+          </h2>
+          <div class="card-footer">
+            <a class="btn-link" href="${s.link}" target="_blank">LẤY SCRIPT &rarr;</a>
+          </div>
         </div>
       </div>
-    </div>
-  `).join('');
+    `).join('');
+  }
 }
 
 function changeCat(c) {
@@ -310,7 +322,9 @@ function changeCat(c) {
   render();
 }
 
-$('q').addEventListener('input', render);$('go').addEventListener('click', render);
+// Bắt sự kiện gõ tìm kiếm chuẩn xác hơn
+$('q').addEventListener('input', render);
+$('q').addEventListener('keyup', render);$('go').addEventListener('click', render);
 
 render();
 </script>
