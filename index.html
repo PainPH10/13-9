@@ -213,10 +213,10 @@ main {
   <h1 class="hero-title">PAIN SCRIPT</h1>
   <div class="hero-sub">TẤT CẢ SCRIPT ROBLOX BẠN CẦN TẠI ĐÂY</div>
 
-  <form class="search-box" id="searchForm" onsubmit="return false;">
+  <div class="search-box">
     <input id="q" type="search" placeholder="Tìm kiếm script...">
-    <button id="go" type="button">Tìm</button>
-  </form>
+    <button id="go">Tìm</button>
+  </div>
 
   <div class="tags" id="tags"></div>
   <div class="grid" id="list"></div>
@@ -257,7 +257,7 @@ const SCRIPTS = [
   {hub:"Infinite Stamina", game:"Illegal Soccer", c:"Tất Cả", link:"https://link4m.net/iKJFmJ2", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4168.jpeg"}
 ];
 
-// Hàm trộn ngẫu nhiên thứ tự 1 lần khi load trang
+// Hàm trộn ngẫu nhiên thứ tự (Chỉ trộn 1 lần khi tải trang)
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -274,18 +274,11 @@ const cats=['Tất Cả', 'Steal An Egg', 'Ride A Pet', 'Tất Cả Script Khủ
 function render(){
   const q = $('q').value.trim().toLowerCase();
   
-  const filtered = SCRIPTS.filter(s => {
-    const matchCat = (cat === 'Tất Cả' || s.c === cat);
-    
-    // Kiểm tra an toàn biến tránh bị null/undefined
-    const hubName = (s.hub || '').toLowerCase();
-    const gameName = (s.game || '').toLowerCase();
-    const catName = (s.c || '').toLowerCase();
-
-    const matchSearch = !q || hubName.includes(q) || gameName.includes(q) || catName.includes(q);
-    
-    return matchCat && matchSearch;
-  });
+  // CHỈ LỌC THEO TÊN SCRIPT (hub) HOẶC TÊN GAME (game)
+  const filtered = SCRIPTS.filter(s => 
+    (cat === 'Tất Cả' || s.c === cat) && 
+    (!q || s.hub.toLowerCase().includes(q) || s.game.toLowerCase().includes(q))
+  );
 
   // Render Tags
   $('tags').innerHTML = cats.map((c, i) => `
@@ -296,25 +289,21 @@ function render(){
   `).join('');
 
   // Render Cards
-  if (filtered.length === 0) {
-    $('list').innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b; font-weight: 700;">Không tìm thấy script phù hợp</div>`;
-  } else {
-    $('list').innerHTML = filtered.map(s => `
-      <div class="card">
-        <div class="card-img-box">
-          ${s.img ? `<img src="${s.img}" alt="${s.hub}">` : `<div class="card-img-placeholder">SCRIPT ${(s.c || '').toUpperCase()}</div>`}
-        </div>
-        <div class="card-body">
-          <h2 class="card-title">
-            ${s.hub} ${s.game ? `<span class="game-name">${s.game}</span>` : ''}
-          </h2>
-          <div class="card-footer">
-            <a class="btn-link" href="${s.link}" target="_blank">LẤY SCRIPT &rarr;</a>
-          </div>
+  $('list').innerHTML = filtered.map(s => `
+    <div class="card">
+      <div class="card-img-box">
+        ${s.img ? `<img src="${s.img}" alt="${s.hub}">` : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
+      </div>
+      <div class="card-body">
+        <h2 class="card-title">
+          ${s.hub} ${s.game ? `<span class="game-name">${s.game}</span>` : ''}
+        </h2>
+        <div class="card-footer">
+          <a class="btn-link" href="${s.link}" target="_blank">LẤY SCRIPT &rarr;</a>
         </div>
       </div>
-    `).join('');
-  }
+    </div>
+  `).join('');
 }
 
 function changeCat(c) {
@@ -322,9 +311,7 @@ function changeCat(c) {
   render();
 }
 
-// Bắt sự kiện gõ tìm kiếm chuẩn xác hơn
-$('q').addEventListener('input', render);
-$('q').addEventListener('keyup', render);$('go').addEventListener('click', render);
+$('q').addEventListener('input', render);$('go').addEventListener('click', render);
 
 render();
 </script>
