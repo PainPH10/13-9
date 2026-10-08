@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pain Script</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-gradient: linear-gradient(180deg, #f3e8ff 0%, #fce7f3 40%, #faf5ff 100%);
+  --purple: #8b5cf6;
+  --purple-light: #ede9fe;
+  --pink: #ec4899;
+  --card-bg: #ffffff;
+  --text-main: #1e1b4b;
+  --text-sub: #64748b;
+  --radius: 18px;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg-gradient) fixed;
+  color: var(--text-main);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 20px;
+}
+.logo {
+  font-weight: 800;
+  font-size: 22px;
+  color: #7c3aed;
+  letter-spacing: -0.5px;
+}
+
+/* Hero Section */
+main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 10px 16px;
+}
+.hero-title {
+  text-align: center;
+  font-size: clamp(32px, 8vw, 48px);
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(168, 85, 247, 0.3);
+  margin: 8px 0;
+  letter-spacing: -1px;
+}
+.hero-sub {
+  text-align: center;
+  color: #6b21a8;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
+}
+
+/* Search Box */
+.search-box {
+  background: #ffffff;
+  border-radius: 30px;
+  padding: 6px 6px 6px 18px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.12);
+  margin-bottom: 20px;
+}
+.search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text-main);
+  background: transparent;
+}
+.search-box button {
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* Tags Wrap */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.tags button {
+  white-space: nowrap;
+  background: #ffffff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 25px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-sub);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tags button.on {
+  background: #94a3b8;
+  color: #ffffff;
+}
+.tags button span.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Grid Script Cards */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+.card-img-box {
+  width: 100%;
+  height: 110px;
+  background: linear-gradient(135deg, #c084fc, #f472b6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+.card-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-img-placeholder {
+  color: white;
+  font-weight: 800;
+  font-size: 14px;
+  text-align: center;
+  padding: 10px;
+}
+.card-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.card-title {
+  font-size: 13px;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  color: #0f172a;
+  line-height: 1.3;
+}
+.game-name {
+  color: #ec4899;
+  font-weight: 700;
+}
+
+.card-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid #f1f5f9;
+}
+.btn-link {
+  color: #7c3aed;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">PAIN SCRIPT</div>
+</div>
+
+<main>
+  <h1 class="hero-title">PAIN SCRIPT</h1>
+  <div class="hero-sub">TẤT CẢ SCRIPT ROBLOX BẠN CẦN TẠI ĐÂY</div>
+
+  <div class="search-box">
+    <input id="q" type="search" placeholder="Tìm kiếm script...">
+    <button id="go">Tìm</button>
+  </div>
+
+  <div class="tags" id="tags"></div>
+  <div class="grid" id="list"></div>
+</main>
+
+<script>
+const SCRIPTS = [
+  // Steal An Egg
+  {hub:"Nox Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/3QBxqhj", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4003.jpeg"},
+  {hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4141.jpeg"},
+  {hub:"Limbo Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/8gijZ", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4146.jpeg"},
+  {hub:"Clout Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/RHy2B", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4143.jpeg"},
+  {hub:"Neva Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/MMk2q", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4145.jpeg"},
+  {hub:"PulseHub.gg", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/OvbtgoS", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4147.jpeg"},
+  {hub:"Chilli Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YEjVhKM", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4149.jpeg"},
+  
+  // Ride A Pet
+  {hub:"Chilli Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.org/OX5URqr1", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4153.jpeg"},
+  {hub:"Chronnix Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.net/dURCgx", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4150.jpeg"},
+  {hub:"R Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.net/Un5BcNem", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4155.jpeg"},
+
+  // Tất Cả Script Khủng Long
+  {hub:"Pn Hub", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/7baHImY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4156.jpeg"},
+  {hub:"Menu Farm", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/guPN2", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4158.jpeg"},
+  {hub:"Auto Farm", game:"Morth Up", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/7VuBc", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4159.jpeg"},
+  {hub:"Pn Hub", game:"My Dino Life", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/D6Y9qpO", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4161.jpeg"},
+  {hub:"Full Script", game:"Jurassic Blocky", c:"Tất Cả Script Khủng Long", link:"https://fnote.net/notes/Nn2nNB", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4169.jpeg"},
+  {hub:"Kill Aura", game:"Jurassic Pixel", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/3B7FeFyC", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4170.jpeg"},
+
+  // Tab Tất Cả (Chung)
+  {hub:"Auto Farm", game:"Prehistoric Farm", c:"Tất Cả", link:"https://link4m.org/A7q4zX", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4160.jpeg"},
+  {hub:"Evade", game:"", c:"Tất Cả", link:"https://link4m.net/1na23", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4162.jpeg"},
+  {hub:"Auto Farm", game:"Fishing Master", c:"Tất Cả", link:"https://link4m.net/PjOkQft", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4163.jpeg"},
+  {hub:"Kill Aura", game:"Attack On Titan Revolution", c:"Tất Cả", link:"https://link4m.org/6EHJc8go", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4164.jpeg"},
+  {hub:"Bất Tử", game:"Dueling Grounds", c:"Tất Cả", link:"https://link4m.net/mnmLtR9x", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4165.jpeg"},
+  {hub:"Auto Farm", game:"+1 Loot To Forge", c:"Tất Cả", link:"https://link4m.org/YckTOM4P", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4166.jpeg"},
+  {hub:"Kill Aura", game:"Pixel Blade", c:"Tất Cả", link:"https://link4m.net/UF22p", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4167.jpeg"},
+  {hub:"Infinite Stamina", game:"Illegal Soccer", c:"Tất Cả", link:"https://link4m.net/iKJFmJ2", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4168.jpeg"}
+];
+
+// Hàm trộn ngẫu nhiên thứ tự (Trộn 1 lần duy nhất khi vừa load trang)
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+shuffle(SCRIPTS);
+
+const colors = ['#8b5cf6', '#ec4899', '#3b82f6', '#10b981', '#f59e0b'];
+const $=id=>document.getElementById(id);
+let cat='Tất Cả';
+const cats=['Tất Cả', 'Steal An Egg', 'Ride A Pet', 'Tất Cả Script Khủng Long'];
+
+function render(){
+  const q = $('q').value.trim().toLowerCase();
+  const filtered = SCRIPTS.filter(s => 
+    (cat === 'Tất Cả' || s.c === cat) && 
+    (!q || s.hub.toLowerCase().includes(q) || s.game.toLowerCase().includes(q) || s.c.toLowerCase().includes(q))
+  );
+
+  // Render Tags
+  $('tags').innerHTML = cats.map((c, i) => `
+    <button class="${c === cat ? 'on' : ''}" onclick="changeCat('${c}')">
+      <span class="dot" style="background:${colors[i % colors.length]}"></span>
+      ${c}
+    </button>
+  `).join('');
+
+  // Render Cards
+  $('list').innerHTML = filtered.map(s => `
+    <div class="card">
+      <div class="card-img-box">
+        ${s.img ? `<img src="${s.img}" alt="${s.hub}">` : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
+      </div>
+      <div class="card-body">
+        <h2 class="card-title">
+          ${s.hub} ${s.game ? `<span class="game-name">${s.game}</span>` : ''}
+        </h2>
+        <div class="card-footer">
+          <a class="btn-link" href="${s.link}" target="_blank">LẤY SCRIPT &rarr;</a>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function changeCat(c) {
+  cat = c;
+  render();
+}
+
+$('q').addEventListener('input', render);$('go').addEventListener('click', render);
+
+render();
+</script>
+</body>
+</html>
