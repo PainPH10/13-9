@@ -35,7 +35,7 @@ body {
   padding: 30px 20px 10px 20px;
 }
 
-/* Glowing Circular Avatar Frame */
+/* Glowing Circular Avatar Frame with Pulse Animation */
 .avatar-wrapper {
   position: relative;
   width: 120px;
@@ -48,22 +48,20 @@ body {
   box-shadow: 0 0 35px rgba(58, 134, 255, 0.6), 0 0 15px rgba(0, 180, 216, 0.4);
   padding: 4px;
   margin-bottom: 12px;
-  will-change: transform, box-shadow;
-  transition: transform 0.08s ease-out;
+  transition: transform 0.3s ease;
 }
 
-/* CSS Pulse Animation fallback if Web Audio API is restricted */
-.avatar-wrapper.css-pulse {
-  animation: pulseBeat 0.8s infinite alternate ease-in-out;
+.avatar-wrapper.playing {
+  animation: musicPulse 1.2s infinite alternate ease-in-out;
 }
 
-@keyframes pulseBeat {
+@keyframes musicPulse {
   0% {
     transform: scale(1);
     box-shadow: 0 0 25px rgba(58, 134, 255, 0.5);
   }
   100% {
-    transform: scale(1.12);
+    transform: scale(1.08);
     box-shadow: 0 0 50px rgba(0, 180, 216, 0.9);
   }
 }
@@ -92,54 +90,102 @@ body {
   letter-spacing: -0.5px;
 }
 
-/* Combined YouTube & Stats Section */
-.stats-bar {
+/* Custom Audio Player Widget with Equalizer Waves */
+.audio-player-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  padding: 10px 20px;
-  margin: 0 auto 25px auto;
-  max-width: 360px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  border-radius: 30px;
+  padding: 8px 18px;
   width: 100%;
+  max-width: 320px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-.stat-item {
-  text-align: left;
+.play-btn {
+  background: linear-gradient(135deg, #3a86ff, #00b4d8);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: white;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(58, 134, 255, 0.5);
 }
-.stat-value {
-  font-size: 20px;
-  font-weight: 800;
+
+.audio-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin: 0 12px;
+}
+
+.audio-title {
+  font-size: 12px;
+  font-weight: 700;
   color: #ffffff;
 }
-.stat-label {
-  font-size: 11px;
-  color: var(--text-sub);
-  font-weight: 600;
+
+.audio-sub {
+  font-size: 10px;
+  color: #94a3b8;
 }
 
+/* Animated Equalizer Sound Waves */
+.equalizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+}
+
+.eq-bar {
+  width: 3px;
+  background: #00b4d8;
+  border-radius: 3px;
+  height: 4px;
+  transition: height 0.2s ease;
+}
+
+.playing .eq-bar {
+  animation: wave 0.8s infinite ease-in-out alternate;
+}
+
+.playing .eq-bar:nth-child(1) { animation-delay: 0.1s; }
+.playing .eq-bar:nth-child(2) { animation-delay: 0.3s; }
+.playing .eq-bar:nth-child(3) { animation-delay: 0.2s; }
+.playing .eq-bar:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes wave {
+  0% { height: 4px; }
+  100% { height: 18px; }
+}
+
+/* YouTube Action Link */
 .yt-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 8px;
   background: linear-gradient(135deg, #ff0000, #cc0000);
   color: #ffffff;
   text-decoration: none;
   font-weight: 700;
-  font-size: 12px;
-  padding: 8px 16px;
-  border-radius: 20px;
+  font-size: 13px;
+  padding: 10px 24px;
+  border-radius: 25px;
   box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  white-space: nowrap;
-}
-.yt-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.6);
+  margin-bottom: 25px;
+  width: 100%;
+  max-width: 320px;
 }
 
 main {
@@ -147,6 +193,7 @@ main {
   margin: 0 auto;
   padding: 10px 16px;
 }
+
 .hero-title {
   text-align: center;
   font-size: clamp(28px, 6vw, 42px);
@@ -156,6 +203,7 @@ main {
   margin: 4px 0;
   letter-spacing: -0.5px;
 }
+
 .hero-sub {
   text-align: center;
   color: #90e0ef;
@@ -175,6 +223,7 @@ main {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
 }
+
 .search-box input {
   border: none;
   outline: none;
@@ -184,9 +233,11 @@ main {
   color: var(--text-main);
   background: transparent;
 }
+
 .search-box input::placeholder {
   color: #64748b;
 }
+
 .search-box button {
   background: linear-gradient(135deg, #3a86ff, #00b4d8);
   border: none;
@@ -204,6 +255,7 @@ main {
   gap: 8px;
   margin-bottom: 16px;
 }
+
 .tags button {
   white-space: nowrap;
   background: rgba(255, 255, 255, 0.06);
@@ -219,10 +271,12 @@ main {
   align-items: center;
   gap: 6px;
 }
+
 .tags button.on {
   background: #3a86ff;
   color: #ffffff;
 }
+
 .tags button span.dot {
   width: 8px;
   height: 8px;
@@ -245,6 +299,7 @@ main {
   display: flex;
   flex-direction: column;
 }
+
 .card-img-box {
   width: 100%;
   height: 110px;
@@ -253,26 +308,21 @@ main {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  position: relative;
 }
+
 .card-img-box img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.card-img-placeholder {
-  color: white;
-  font-weight: 800;
-  font-size: 14px;
-  text-align: center;
-  padding: 10px;
-}
+
 .card-body {
   padding: 12px;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
+
 .card-title {
   font-size: 13px;
   font-weight: 800;
@@ -280,6 +330,7 @@ main {
   color: #ffffff;
   line-height: 1.3;
 }
+
 .game-name {
   color: #00b4d8;
   font-weight: 700;
@@ -288,11 +339,12 @@ main {
 .card-footer {
   margin-top: auto;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   padding-top: 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
+
 .btn-link {
   color: #90e0ef;
   text-decoration: none;
@@ -301,11 +353,6 @@ main {
   display: flex;
   align-items: center;
   gap: 4px;
-}
-.click-count {
-  font-size: 11px;
-  color: #94a3b8;
-  font-weight: 600;
 }
 </style>
 </head>
@@ -321,15 +368,24 @@ main {
   </div>
   <div class="profile-name">Pain Script</div>
 
-  <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-value" id="totalClicks">0</div>
-      <div class="stat-label">Lượt Lấy Script</div>
+  <!-- Audio Equalizer Widget -->
+  <div class="audio-player-card" id="playerWidget">
+    <button class="play-btn" id="playBtn" onclick="toggleAudio()">▶</button>
+    <div class="audio-info">
+      <span class="audio-title">Background Music</span>
+      <span class="audio-sub" id="audioStatus">Nhấp để phát nhạc</span>
     </div>
-    <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank">
-      ▶ YOUTUBE
-    </a>
+    <div class="equalizer" id="equalizer">
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+      <div class="eq-bar"></div>
+    </div>
   </div>
+
+  <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank">
+    ▶ ĐĂNG KÝ KÊNH YOUTUBE
+  </a>
 </div>
 
 <main>
@@ -347,55 +403,49 @@ main {
 
 <script>
 const audio = document.getElementById('bgAudio');
+const playBtn = document.getElementById('playBtn');
 const avatarFrame = document.getElementById('avatarFrame');
+const playerWidget = document.getElementById('playerWidget');
+const audioStatus = document.getElementById('audioStatus');
 
-// Robust Audio Visualizer setup with graceful CSS fallback
-function startAudioProcess() {
+function toggleAudio() {
+  if (audio.paused) {
+    audio.play().then(() => {
+      playBtn.innerText = '❚❚';
+      avatarFrame.classList.add('playing');
+      playerWidget.classList.add('playing');
+      audioStatus.innerText = 'Đang phát...';
+    }).catch(err => {
+      audioStatus.innerText = 'Không tìm thấy nhac.mp3!';
+    });
+  } else {
+    audio.pause();
+    playBtn.innerText = '▶';
+    avatarFrame.classList.remove('playing');
+    playerWidget.classList.remove('playing');
+    audioStatus.innerText = 'Đã tạm dừng';
+  }
+}
+
+// Auto Play attempt on initial page touch/click
+function autoPlayInit() {
   audio.play().then(() => {
-    try {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 64;
-      const sourceNode = audioCtx.createMediaElementSource(audio);
-      sourceNode.connect(analyser);
-      analyser.connect(audioCtx.destination);
-
-      const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-      function renderFrame() {
-        requestAnimationFrame(renderFrame);
-        analyser.getByteFrequencyData(dataArray);
-
-        let sum = 0;
-        for (let i = 0; i < 8; i++) sum += dataArray[i];
-        const averageBass = sum / 8;
-
-        const scale = 1 + (averageBass / 255) * 0.25;
-        const glow = (averageBass / 255) * 50;
-
-        avatarFrame.style.transform = `scale(${scale})`;
-        avatarFrame.style.boxShadow = `0 0 ${35 + glow}px rgba(58, 134, 255, ${0.6 + (averageBass / 255) * 0.4}), 0 0 ${15 + glow / 2}px rgba(0, 180, 216, 0.4)`;
-      }
-      renderFrame();
-    } catch (e) {
-      // Fallback to rhythmic CSS pulse if Web Audio API hits CORS or local file restrictions
-      avatarFrame.classList.add('css-pulse');
-    }
+    playBtn.innerText = '❚❚';
+    avatarFrame.classList.add('playing');
+    playerWidget.classList.add('playing');
+    audioStatus.innerText = 'Đang phát...';
   }).catch(() => {
-    // Enable on user interaction
-    const triggerOnTouch = () => {
-      audio.play().then(() => {
-        avatarFrame.classList.add('css-pulse');
-      });
-      document.removeEventListener('click', triggerOnTouch);
-      document.removeEventListener('touchstart', triggerOnTouch);
+    const triggerTouch = () => {
+      toggleAudio();
+      document.removeEventListener('click', triggerTouch);
+      document.removeEventListener('touchstart', triggerTouch);
     };
-    document.addEventListener('click', triggerOnTouch);
-    document.addEventListener('touchstart', triggerOnTouch);
+    document.addEventListener('click', triggerTouch);
+    document.addEventListener('touchstart', triggerTouch);
   });
 }
 
-window.addEventListener('DOMContentLoaded', startAudioProcess);
+window.addEventListener('DOMContentLoaded', autoPlayInit);
 
 const SCRIPTS = [
   {id: 1, hub:"Nox Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/3QBxqhj", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4003.jpeg"},
@@ -429,24 +479,6 @@ const SCRIPTS = [
   {id: 29, hub:"Infinite Stamina", game:"Illegal Soccer", c:"Tất Cả", link:"https://link4m.net/iKJFmJ2", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4168.jpeg"}
 ];
 
-function getStoredClicks() {
-  return JSON.parse(localStorage.getItem('pain_script_clicks') || '{}');
-}
-
-function registerClick(id) {
-  const stored = getStoredClicks();
-  stored[id] = (stored[id] || 0) + 1;
-  localStorage.setItem('pain_script_clicks', JSON.stringify(stored));
-  updateStats();
-  render();
-}
-
-function updateStats() {
-  const stored = getStoredClicks();
-  const total = Object.values(stored).reduce((a, b) => a + b, 0);
-  document.getElementById('totalClicks').innerText = total;
-}
-
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -462,7 +494,6 @@ const cats=['Tất Cả', 'Steal An Egg', 'Ride A Pet', 'Tất Cả Script Khủ
 
 function render(){
   const q = $('q').value.trim().toLowerCase();
-  const storedClicks = getStoredClicks();
   
   const filtered = SCRIPTS.filter(s => 
     (cat === 'Tất Cả' || s.c === cat) && 
@@ -476,9 +507,7 @@ function render(){
     </button>
   `).join('');
 
-  $('list').innerHTML = filtered.map(s => {
-    const count = storedClicks[s.id] || 0;
-    return `
+  $('list').innerHTML = filtered.map(s => `
     <div class="card">
       <div class="card-img-box">
         ${s.img ? `<img src="${s.img}" alt="${s.hub}">` : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
@@ -488,12 +517,11 @@ function render(){
           ${s.hub} ${s.game ? `<span class="game-name">${s.game}</span>` : ''}
         </h2>
         <div class="card-footer">
-          <a class="btn-link" href="${s.link}" target="_blank" onclick="registerClick(${s.id})">LẤY SCRIPT &rarr;</a>
-          <span class="click-count">👁️ ${count}</span>
+          <a class="btn-link" href="${s.link}" target="_blank">LẤY SCRIPT &rarr;</a>
         </div>
       </div>
     </div>
-  `}).join('');
+  `).join('');
 }
 
 function changeCat(c) {
@@ -503,7 +531,6 @@ function changeCat(c) {
 
 $('q').addEventListener('input', render);$('go').addEventListener('click', render);
 
-updateStats();
 render();
 </script>
 </body>
