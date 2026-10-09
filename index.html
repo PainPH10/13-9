@@ -26,15 +26,6 @@ body {
   padding-bottom: 40px;
 }
 
-/* Screen Overlay to intercept the first touch and unlock sound */
-#audioUnlockOverlay {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  z-index: 99999;
-  background: rgba(0,0,0,0.01);
-  cursor: pointer;
-}
-
 /* Header & Avatar Container */
 .header-container {
   display: flex;
@@ -99,7 +90,7 @@ body {
   letter-spacing: -0.5px;
 }
 
-/* Audio Player Widget */
+/* Permanent Audio Display Widget */
 .audio-player-card {
   display: flex;
   align-items: center;
@@ -148,6 +139,7 @@ body {
   font-weight: 600;
 }
 
+/* Animated Sound Waves */
 .equalizer {
   display: flex;
   align-items: flex-end;
@@ -176,6 +168,7 @@ body {
   100% { height: 18px; }
 }
 
+/* YouTube Action Link */
 .yt-btn {
   display: inline-flex;
   align-items: center;
@@ -284,6 +277,7 @@ main {
   border-color: #ec4899;
 }
 
+/* High Contrast Glowing Dots for Category Tags */
 .tags button span.dot {
   width: 10px;
   height: 10px;
@@ -367,9 +361,6 @@ main {
 </head>
 <body>
 
-<!-- Transparent Fullscreen Overlay to catch first touch instantly -->
-<div id="audioUnlockOverlay"></div>
-
 <audio id="bgAudio" loop autoplay playsinline preload="auto">
   <source src="./nhac.mp3" type="audio/mpeg">
 </audio>
@@ -380,11 +371,12 @@ main {
   </div>
   <div class="profile-name">Pain Script</div>
 
+  <!-- Permanent Unstoppable Audio Widget -->
   <div class="audio-player-card playing" id="playerWidget">
     <div class="play-icon-badge">♫</div>
     <div class="audio-info">
       <span class="audio-title">Passion Silent Anthem</span>
-      <span class="audio-sub" id="audioStatus">Đang phát nhạc</span>
+      <span class="audio-sub" id="audioStatus">Đang phát liên tục</span>
     </div>
     <div class="equalizer" id="equalizer">
       <div class="eq-bar"></div>
@@ -414,24 +406,31 @@ main {
 
 <script>
 const audio = document.getElementById('bgAudio');
-const overlay = document.getElementById('audioUnlockOverlay');
 const avatarFrame = document.getElementById('avatarFrame');
 const playerWidget = document.getElementById('playerWidget');
 const audioStatus = document.getElementById('audioStatus');
 
-function unlockAudio() {
+// Force continuous playback engine
+function forcePlayAudio() {
   audio.muted = false;
   audio.play().then(() => {
     avatarFrame.classList.add('playing');
     playerWidget.classList.add('playing');
-    audioStatus.innerText = 'Đang phát nhạc';
-  }).catch(() => {});
-  
-  if (overlay) overlay.remove();
+    audioStatus.innerText = 'Đang phát liên tục';
+  }).catch(() => {
+    audioStatus.innerText = 'Chạm màn hình để nghe nhạc';
+  });
 }
 
-overlay.addEventListener('click', unlockAudio);
-overlay.addEventListener('touchstart', unlockAudio);
+// Intercept pause attempts and immediately resume playback
+audio.addEventListener('pause', () => {
+  audio.play();
+});
+
+// Enforce execution on DOM load and user interaction events
+['DOMContentLoaded', 'pointerdown', 'touchstart', 'click', 'scroll'].forEach(evt => {
+  window.addEventListener(evt, forcePlayAudio, { passive: true });
+});
 
 const SCRIPTS = [
   {id: 1, hub:"Nox Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/3QBxqhj", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4003.jpeg"},
