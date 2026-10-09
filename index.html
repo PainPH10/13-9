@@ -90,7 +90,7 @@ body {
   letter-spacing: -0.5px;
 }
 
-/* Custom Audio Player Widget */
+/* Permanent Audio Display Widget */
 .audio-player-card {
   display: flex;
   align-items: center;
@@ -103,10 +103,10 @@ body {
   max-width: 320px;
   margin-bottom: 20px;
   box-shadow: 0 8px 20px rgba(236, 72, 153, 0.2);
-  cursor: pointer;
+  user-select: none;
 }
 
-.play-btn {
+.play-icon-badge {
   background: linear-gradient(135deg, #ec4899, #f43f5e);
   border: none;
   width: 36px;
@@ -117,7 +117,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
 }
 
@@ -153,7 +152,6 @@ body {
   background: #ec4899;
   border-radius: 3px;
   height: 4px;
-  transition: height 0.2s ease;
 }
 
 .playing .eq-bar {
@@ -363,7 +361,7 @@ main {
 </head>
 <body>
 
-<audio id="bgAudio" loop autoplay muted playsinline preload="auto">
+<audio id="bgAudio" loop autoplay playsinline preload="auto">
   <source src="./nhac.mp3" type="audio/mpeg">
 </audio>
 
@@ -373,12 +371,12 @@ main {
   </div>
   <div class="profile-name">Pain Script</div>
 
-  <!-- Audio Equalizer Widget -->
-  <div class="audio-player-card playing" id="playerWidget" onclick="toggleAudio()">
-    <button class="play-btn" id="playBtn">❚❚</button>
+  <!-- Permanent Unstoppable Audio Widget -->
+  <div class="audio-player-card playing" id="playerWidget">
+    <div class="play-icon-badge">♫</div>
     <div class="audio-info">
-      <span class="audio-title">Background Music</span>
-      <span class="audio-sub" id="audioStatus">Đang phát tự động</span>
+      <span class="audio-title">Passion Silent Anthem</span>
+      <span class="audio-sub" id="audioStatus">Đang phát liên tục</span>
     </div>
     <div class="equalizer" id="equalizer">
       <div class="eq-bar"></div>
@@ -408,53 +406,30 @@ main {
 
 <script>
 const audio = document.getElementById('bgAudio');
-const playBtn = document.getElementById('playBtn');
 const avatarFrame = document.getElementById('avatarFrame');
 const playerWidget = document.getElementById('playerWidget');
 const audioStatus = document.getElementById('audioStatus');
 
-// Unmute audio stream immediately on any initial browser event
-function startAutoplayNow() {
+// Force continuous playback engine
+function forcePlayAudio() {
+  audio.muted = false;
   audio.play().then(() => {
-    audio.muted = false;
-    playBtn.innerText = '❚❚';
     avatarFrame.classList.add('playing');
     playerWidget.classList.add('playing');
-    audioStatus.innerText = 'Đang phát tự động';
+    audioStatus.innerText = 'Đang phát liên tục';
   }).catch(() => {
-    audioStatus.innerText = 'Bấm để bật âm thanh';
+    audioStatus.innerText = 'Chạm màn hình để nghe nhạc';
   });
 }
 
-function toggleAudio() {
-  if (audio.paused || audio.muted) {
-    audio.muted = false;
-    audio.play().then(() => {
-      playBtn.innerText = '❚❚';
-      avatarFrame.classList.add('playing');
-      playerWidget.classList.add('playing');
-      audioStatus.innerText = 'Đang phát...';
-    });
-  } else {
-    audio.pause();
-    playBtn.innerText = '▶';
-    avatarFrame.classList.remove('playing');
-    playerWidget.classList.remove('playing');
-    audioStatus.innerText = 'Đã tạm dừng';
-  }
-}
+// Intercept pause attempts and immediately resume playback
+audio.addEventListener('pause', () => {
+  audio.play();
+});
 
-// Bypasses browser strict autoplay policy by playing muted first, then unmuting instantly
-window.addEventListener('load', () => {
-  startAutoplayNow();
-  const unlockAudio = () => {
-    audio.muted = false;
-    audio.play();
-    document.removeEventListener('pointerdown', unlockAudio);
-    document.removeEventListener('scroll', unlockAudio);
-  };
-  document.addEventListener('pointerdown', unlockAudio);
-  document.addEventListener('scroll', unlockAudio);
+// Enforce execution on DOM load and user interaction events
+['DOMContentLoaded', 'pointerdown', 'touchstart', 'click', 'scroll'].forEach(evt => {
+  window.addEventListener(evt, forcePlayAudio, { passive: true });
 });
 
 const SCRIPTS = [
