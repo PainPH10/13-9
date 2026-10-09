@@ -66,18 +66,48 @@ body {
   object-fit: cover;
 }
 
-.verified-badge {
-  background: rgba(58, 134, 255, 0.2);
-  border: 1px solid rgba(58, 134, 255, 0.4);
-  color: #90e0ef;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 700;
+.profile-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+/* Audio Player Stylings */
+.audio-box {
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 320px;
   display: flex;
+  justify-content: center;
+}
+audio {
+  width: 100%;
+  height: 36px;
+  border-radius: 20px;
+  outline: none;
+}
+
+/* YouTube Action Button */
+.yt-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
-  margin-bottom: 8px;
+  gap: 8px;
+  background: linear-gradient(135deg, #ff0000, #cc0000);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 10px 22px;
+  border-radius: 25px;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 16px;
+}
+.yt-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.6);
 }
 
 /* Single Stat Counter Section */
@@ -89,7 +119,7 @@ body {
   backdrop-filter: blur(10px);
   border-radius: 16px;
   padding: 12px 30px;
-  margin: 15px auto 25px auto;
+  margin: 10px auto 25px auto;
   max-width: 250px;
 }
 
@@ -284,7 +314,18 @@ main {
   <div class="avatar-wrapper">
     <img class="avatar-img" src="https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_3404.jpeg" alt="Pain Script Avatar">
   </div>
-  <div class="verified-badge">Pain Script ✔</div>
+  <div class="profile-name">Pain Script</div>
+
+  <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank">
+    ▶ KÊNH YOUTUBE
+  </a>
+
+  <div class="audio-box">
+    <audio controls loop>
+      <source src="./nhac.mp3" type="audio/mpeg">
+      Trình duyệt không hỗ trợ phát âm thanh.
+    </audio>
+  </div>
 </div>
 
 <main>
