@@ -90,19 +90,20 @@ body {
   letter-spacing: -0.5px;
 }
 
-/* Custom Audio Player Widget (Pink & White) */
+/* Custom Audio Player Widget */
 .audio-player-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: #ffffff;
-  border: 1px solid #fbcfe8;
+  border: 2px solid #f472b6;
   border-radius: 30px;
   padding: 8px 18px;
   width: 100%;
   max-width: 320px;
   margin-bottom: 20px;
-  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.15);
+  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.2);
+  cursor: pointer;
 }
 
 .play-btn {
@@ -135,7 +136,8 @@ body {
 
 .audio-sub {
   font-size: 10px;
-  color: #9d174d;
+  color: #be185d;
+  font-weight: 600;
 }
 
 /* Animated Sound Waves */
@@ -257,30 +259,34 @@ main {
 .tags button {
   white-space: nowrap;
   background: #ffffff;
-  border: 1px solid #fbcfe8;
+  border: 2px solid #f472b6;
   padding: 8px 14px;
   border-radius: 25px;
   font-family: inherit;
   font-size: 12px;
-  font-weight: 700;
-  color: #be185d;
+  font-weight: 800;
+  color: #831843;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  box-shadow: 0 4px 10px rgba(236, 72, 153, 0.05);
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.12);
 }
 
 .tags button.on {
   background: #ec4899;
   color: #ffffff;
+  border-color: #ec4899;
 }
 
+/* High Contrast Glowing Dots for Category Tags */
 .tags button span.dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   display: inline-block;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  border: 1.5px solid #ffffff;
 }
 
 .grid {
@@ -357,22 +363,22 @@ main {
 </head>
 <body>
 
-<audio id="bgAudio" loop autoplay preload="auto">
+<audio id="bgAudio" loop preload="auto">
   <source src="./nhac.mp3" type="audio/mpeg">
 </audio>
 
 <div class="header-container">
-  <div class="avatar-wrapper playing" id="avatarFrame">
+  <div class="avatar-wrapper" id="avatarFrame">
     <img class="avatar-img" src="https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_3404.jpeg" alt="Pain Script Avatar">
   </div>
   <div class="profile-name">Pain Script</div>
 
   <!-- Audio Equalizer Widget -->
-  <div class="audio-player-card playing" id="playerWidget">
-    <button class="play-btn" id="playBtn" onclick="toggleAudio()">❚❚</button>
+  <div class="audio-player-card" id="playerWidget" onclick="toggleAudio()">
+    <button class="play-btn" id="playBtn">▶</button>
     <div class="audio-info">
       <span class="audio-title">Background Music</span>
-      <span class="audio-sub" id="audioStatus">Đang phát...</span>
+      <span class="audio-sub" id="audioStatus">Chạm màn hình để phát nhạc</span>
     </div>
     <div class="equalizer" id="equalizer">
       <div class="eq-bar"></div>
@@ -407,49 +413,53 @@ const avatarFrame = document.getElementById('avatarFrame');
 const playerWidget = document.getElementById('playerWidget');
 const audioStatus = document.getElementById('audioStatus');
 
-function toggleAudio() {
-  if (audio.paused) {
-    audio.play().then(() => {
-      playBtn.innerText = '❚❚';
-      avatarFrame.classList.add('playing');
-      playerWidget.classList.add('playing');
-      audioStatus.innerText = 'Đang phát...';
-    }).catch(() => {
-      audioStatus.innerText = 'Lỗi phát nhạc!';
-    });
-  } else {
-    audio.pause();
-    playBtn.innerText = '▶';
-    avatarFrame.classList.remove('playing');
-    playerWidget.classList.remove('playing');
-    audioStatus.innerText = 'Đã tạm dừng';
-  }
-}
+let isAttempting = false;
 
-// Global listener to trigger autoplay on user interaction if blocked by browser
-function enableAutoplay() {
+function playAudio() {
+  if (isAttempting) return;
+  isAttempting = true;
   audio.play().then(() => {
     playBtn.innerText = '❚❚';
     avatarFrame.classList.add('playing');
     playerWidget.classList.add('playing');
-    audioStatus.innerText = 'Đang phát...';
+    audioStatus.innerText = 'Đang phát nhạc...';
+    // Remove global trigger once successfully playing
+    document.removeEventListener('click', globalTouchPlay);
+    document.removeEventListener('touchstart', globalTouchPlay);
   }).catch(() => {
-    const triggerTouch = () => {
-      audio.play().then(() => {
-        playBtn.innerText = '❚❚';
-        avatarFrame.classList.add('playing');
-        playerWidget.classList.add('playing');
-        audioStatus.innerText = 'Đang phát...';
-      });
-      document.removeEventListener('click', triggerTouch);
-      document.removeEventListener('touchstart', triggerTouch);
-    };
-    document.addEventListener('click', triggerTouch);
-    document.addEventListener('touchstart', triggerTouch);
+    audioStatus.innerText = 'Bấm vào đây để nghe nhạc';
+  }).finally(() => {
+    isAttempting = false;
   });
 }
 
-window.addEventListener('DOMContentLoaded', enableAutoplay);
+function pauseAudio() {
+  audio.pause();
+  playBtn.innerText = '▶';
+  avatarFrame.classList.remove('playing');
+  playerWidget.classList.remove('playing');
+  audioStatus.innerText = 'Đã tạm dừng';
+}
+
+function toggleAudio() {
+  if (audio.paused) {
+    playAudio();
+  } else {
+    pauseAudio();
+  }
+}
+
+// Global user interaction hook to unlock audio playback automatically
+function globalTouchPlay() {
+  if (audio.paused) {
+    playAudio();
+  }
+}
+
+document.addEventListener('click', globalTouchPlay);
+document.addEventListener('touchstart', globalTouchPlay);
+
+window.addEventListener('DOMContentLoaded', playAudio);
 
 const SCRIPTS = [
   {id: 1, hub:"Nox Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/3QBxqhj", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4003.jpeg"},
@@ -491,7 +501,8 @@ function shuffle(array) {
 }
 shuffle(SCRIPTS);
 
-const colors = ['#ec4899', '#f43f5e', '#be185d', '#fb7185', '#d946ef'];
+// High Contrast Neon Colors for Category Dots
+const dotColors = ['#ff0055', '#7000ff', '#00d4ff', '#ffaa00'];
 const $=id=>document.getElementById(id);
 let cat='Tất Cả';
 const cats=['Tất Cả', 'Steal An Egg', 'Ride A Pet', 'Tất Cả Script Khủng Long'];
@@ -506,7 +517,7 @@ function render(){
 
   $('tags').innerHTML = cats.map((c, i) => `
     <button class="${c === cat ? 'on' : ''}" onclick="changeCat('${c}')">
-      <span class="dot" style="background:${colors[i % colors.length]}"></span>
+      <span class="dot" style="background:${dotColors[i % dotColors.length]}"></span>
       ${c}
     </button>
   `).join('');
