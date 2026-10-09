@@ -48,6 +48,8 @@ body {
   box-shadow: 0 0 35px rgba(58, 134, 255, 0.6), 0 0 15px rgba(0, 180, 216, 0.4);
   padding: 4px;
   margin-bottom: 12px;
+  will-change: transform, box-shadow;
+  transition: transform 0.05s ease-out;
 }
 
 .avatar-wrapper::after {
@@ -104,7 +106,7 @@ body {
   font-weight: 600;
 }
 
-/* YouTube Action Button Inside Stats */
+/* YouTube Action Button */
 .yt-btn {
   display: inline-flex;
   align-items: center;
@@ -298,13 +300,12 @@ main {
 </head>
 <body>
 
-<!-- Hidden Audio Player for Automatic Background Playback -->
-<audio id="bgAudio" loop autoplay>
+<audio id="bgAudio" loop autoplay crossorigin="anonymous">
   <source src="./nhac.mp3" type="audio/mpeg">
 </audio>
 
 <div class="header-container">
-  <div class="avatar-wrapper">
+  <div class="avatar-wrapper" id="avatarFrame">
     <img class="avatar-img" src="https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_3404.jpeg" alt="Pain Script Avatar">
   </div>
   <div class="profile-name">Pain Script</div>
@@ -334,13 +335,54 @@ main {
 </main>
 
 <script>
-// Auto Play Audio Bypass Strategy for modern browsers
 const audio = document.getElementById('bgAudio');
+const avatarFrame = document.getElementById('avatarFrame');
+
+let audioCtx, analyser, sourceNode;
+
+function initAudioVisualizer() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 64;
+  sourceNode = audioCtx.createMediaElementSource(audio);
+  sourceNode.connect(analyser);
+  analyser.connect(audioCtx.destination);
+
+  const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+  function renderFrame() {
+    requestAnimationFrame(renderFrame);
+    analyser.getByteFrequencyData(dataArray);
+
+    // Calculate average bass frequency (first few bins)
+    let sum = 0;
+    const bassBins = 8;
+    for (let i = 0; i < bassBins; i++) {
+      sum += dataArray[i];
+    }
+    const averageBass = sum / bassBins;
+    
+    // Scale factor from 1.0 to 1.25
+    const scale = 1 + (averageBass / 255) * 0.25;
+    const glow = (averageBass / 255) * 50;
+
+    avatarFrame.style.transform = `scale(${scale})`;
+    avatarFrame.style.boxShadow = `0 0 ${35 + glow}px rgba(58, 134, 255, ${0.6 + (averageBass / 255) * 0.4}), 0 0 ${15 + glow / 2}px rgba(0, 180, 216, 0.4)`;
+  }
+  renderFrame();
+}
+
 function attemptAutoplay() {
-  audio.play().catch(() => {
-    // If browser blocks autoplay, play audio on first user touch/click
+  audio.play().then(() => {
+    initAudioVisualizer();
+  }).catch(() => {
     const playOnInteraction = () => {
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
       audio.play();
+      initAudioVisualizer();
       document.removeEventListener('click', playOnInteraction);
       document.removeEventListener('touchstart', playOnInteraction);
     };
