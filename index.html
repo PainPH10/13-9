@@ -7,13 +7,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-gradient: linear-gradient(180deg, #f3e8ff 0%, #fce7f3 40%, #faf5ff 100%);
+  --bg-gradient: linear-gradient(180deg, #0d0714 0%, #170d2b 50%, #0d0714 100%);
   --purple: #8b5cf6;
-  --purple-light: #ede9fe;
+  --purple-glow: #a855f7;
   --pink: #ec4899;
-  --card-bg: #ffffff;
-  --text-main: #1e1b4b;
-  --text-sub: #64748b;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --text-main: #ffffff;
+  --text-sub: #94a3b8;
   --radius: 18px;
 }
 
@@ -27,18 +27,85 @@ body {
   padding-bottom: 40px;
 }
 
-/* Header */
-.header {
+/* Header & Avatar Container */
+.header-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  padding: 16px 20px;
+  justify-content: center;
+  padding: 30px 20px 10px 20px;
 }
-.logo {
+
+/* Glowing Circular Avatar Frame */
+.avatar-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+  box-shadow: 0 0 35px rgba(168, 85, 247, 0.6), 0 0 15px rgba(236, 72, 153, 0.4);
+  padding: 4px;
+  margin-bottom: 12px;
+}
+
+.avatar-wrapper::after {
+  content: '';
+  position: absolute;
+  top: -6px; left: -6px; right: -6px; bottom: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.verified-badge {
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  color: #c084fc;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+/* Stats Counter Section */
+.stats-bar {
+  display: flex;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 12px 20px;
+  margin: 15px auto 25px auto;
+  max-width: 400px;
+}
+
+.stat-item {
+  text-align: center;
+}
+.stat-value {
+  font-size: 18px;
   font-weight: 800;
-  font-size: 22px;
-  color: #7c3aed;
-  letter-spacing: -0.5px;
+  color: #ffffff;
+}
+.stat-label {
+  font-size: 11px;
+  color: var(--text-sub);
+  font-weight: 600;
 }
 
 /* Hero Section */
@@ -49,16 +116,16 @@ main {
 }
 .hero-title {
   text-align: center;
-  font-size: clamp(32px, 8vw, 48px);
+  font-size: clamp(28px, 6vw, 42px);
   font-weight: 800;
   color: #ffffff;
-  text-shadow: 0 2px 10px rgba(168, 85, 247, 0.3);
-  margin: 8px 0;
-  letter-spacing: -1px;
+  text-shadow: 0 2px 10px rgba(168, 85, 247, 0.4);
+  margin: 4px 0;
+  letter-spacing: -0.5px;
 }
 .hero-sub {
   text-align: center;
-  color: #6b21a8;
+  color: #c084fc;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -67,12 +134,13 @@ main {
 
 /* Search Box */
 .search-box {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 30px;
   padding: 6px 6px 6px 18px;
   display: flex;
   align-items: center;
-  box-shadow: 0 10px 25px -5px rgba(168, 85, 247, 0.12);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
   margin-bottom: 20px;
 }
 .search-box input {
@@ -83,6 +151,9 @@ main {
   font-size: 14px;
   color: var(--text-main);
   background: transparent;
+}
+.search-box input::placeholder {
+  color: #64748b;
 }
 .search-box button {
   background: linear-gradient(135deg, #a855f7, #ec4899);
@@ -104,22 +175,21 @@ main {
 }
 .tags button {
   white-space: nowrap;
-  background: #ffffff;
-  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 8px 14px;
   border-radius: 25px;
   font-family: inherit;
   font-size: 12px;
   font-weight: 700;
   color: var(--text-sub);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 .tags button.on {
-  background: #94a3b8;
+  background: #a855f7;
   color: #ffffff;
 }
 .tags button span.dot {
@@ -138,16 +208,17 @@ main {
 
 .card {
   background: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
 }
 .card-img-box {
   width: 100%;
   height: 110px;
-  background: linear-gradient(135deg, #c084fc, #f472b6);
+  background: linear-gradient(135deg, #a855f7, #ec4899);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,7 +247,7 @@ main {
   font-size: 13px;
   font-weight: 800;
   margin: 0 0 8px 0;
-  color: #0f172a;
+  color: #ffffff;
   line-height: 1.3;
 }
 .game-name {
@@ -187,13 +258,13 @@ main {
 .card-footer {
   margin-top: auto;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   padding-top: 8px;
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 .btn-link {
-  color: #7c3aed;
+  color: #c084fc;
   text-decoration: none;
   font-weight: 700;
   font-size: 12px;
@@ -201,17 +272,40 @@ main {
   align-items: center;
   gap: 4px;
 }
+.click-count {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="logo">PAIN SCRIPT</div>
+<div class="header-container">
+  <div class="avatar-wrapper">
+    <img class="avatar-img" src="https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_3404.jpeg" alt="Pain Script Avatar">
+  </div>
+  <div class="verified-badge">Pain Script ✔</div>
 </div>
 
 <main>
-  <h1 class="hero-title">PAIN SCRIPT</h1>
+  <h1 class="hero-title">Ghi Rõ Tên Game Cần Tìm</h1>
   <div class="hero-sub">TẤT CẢ SCRIPT ROBLOX BẠN CẦN TẠI ĐÂY</div>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-value" id="totalClicks">0</div>
+      <div class="stat-label">Lượt Tải Script</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">2026</div>
+      <div class="stat-label">Cập nhật</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">#1</div>
+      <div class="stat-label">Roblox Hub</div>
+    </div>
+  </div>
 
   <div class="search-box">
     <input id="q" type="search" placeholder="Tìm kiếm script...">
@@ -224,42 +318,55 @@ main {
 
 <script>
 const SCRIPTS = [
-  // Steal An Egg
-  {hub:"Nox Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/3QBxqhj", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4003.jpeg"},
-  {hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4141.jpeg"},
-  {hub:"Limbo Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/8gijZ", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4146.jpeg"},
-  {hub:"Clout Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/RHy2B", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4143.jpeg"},
-  {hub:"Neva Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/MMk2q", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4145.jpeg"},
-  {hub:"PulseHub.gg", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/OvbtgoS", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4147.jpeg"},
-  {hub:"Chilli Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YEjVhKM", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4149.jpeg"},
-  {hub:"SourcesHub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/V3Y64j", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4206.jpeg"},
-  
-  // Ride A Pet
-  {hub:"Chilli Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.org/OX5URqr1", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4153.jpeg"},
-  {hub:"Chronnix Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.net/dURCgx", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4150.jpeg"},
-  {hub:"R Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.net/Un5BcNem", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4155.jpeg"},
-
-  // Tất Cả Script Khủng Long
-  {hub:"Pn Hub", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/7baHImY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4156.jpeg"},
-  {hub:"Menu Farm", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/guPN2", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4158.jpeg"},
-  {hub:"Auto Farm", game:"Morth Up", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/7VuBc", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4159.jpeg"},
-  {hub:"Pn Hub", game:"My Dino Life", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/D6Y9qpO", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4161.jpeg"},
-  {hub:"Full Script", game:"Jurassic Blocky", c:"Tất Cả Script Khủng Long", link:"https://fnote.net/notes/Nn2nNB", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4169.jpeg"},
-  {hub:"Kill Aura", game:"Jurassic Pixel", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/3B7FeFyC", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4170.jpeg"},
-
-  // Tab Tất Cả (Chung)
-  {hub:"Auto Farm Mới", game:"Prehistoric Farm", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/qEIjJhb", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4216.jpeg"},
-  {hub:"Auto Farm Cũ", game:"Prehistoric Farm", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/A7q4zX", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4160.jpeg"},
-  {hub:"Evade", game:"", c:"Tất Cả", link:"https://link4m.net/1na23", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4162.jpeg"},
-  {hub:"Auto Farm", game:"Fishing Master", c:"Tất Cả", link:"https://link4m.net/PjOkQft", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4163.jpeg"},
-  {hub:"Kill Aura", game:"Attack On Titan Revolution", c:"Tất Cả", link:"https://link4m.org/6EHJc8go", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4164.jpeg"},
-  {hub:"Bất Tử", game:"Dueling Grounds", c:"Tất Cả", link:"https://link4m.net/mnmLtR9x", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4165.jpeg"},
-  {hub:"Auto Farm", game:"+1 Loot To Forge", c:"Tất Cả", link:"https://link4m.org/YckTOM4P", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4166.jpeg"},
-  {hub:"Kill Aura", game:"Pixel Blade", c:"Tất Cả", link:"https://link4m.net/UF22p", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4167.jpeg"},
-  {hub:"Infinite Stamina", game:"Illegal Soccer", c:"Tất Cả", link:"https://link4m.net/iKJFmJ2", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4168.jpeg"}
+  {id: 1, hub:"Nox Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/3QBxqhj", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4003.jpeg"},
+  {id: 2, hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4141.jpeg"},
+  {id: 3, hub:"Limbo Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/8gijZ", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4146.jpeg"},
+  {id: 4, hub:"Clout Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/RHy2B", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4143.jpeg"},
+  {id: 5, hub:"Neva Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/MMk2q", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4145.jpeg"},
+  {id: 6, hub:"PulseHub.gg", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/OvbtgoS", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4147.jpeg"},
+  {id: 7, hub:"Chilli Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YEjVhKM", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4149.jpeg"},
+  {id: 8, hub:"SourcesHub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/V3Y64j", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4206.jpeg"},
+  {id: 9, hub:"Chilli Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.org/OX5URqr1", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4153.jpeg"},
+  {id: 10, hub:"Chronnix Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.net/dURCgx", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4150.jpeg"},
+  {id: 11, hub:"R Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.net/Un5BcNem", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4155.jpeg"},
+  {id: 12, hub:"Afk Farm Mới", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/DTfuxYO", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4239.jpeg"},
+  {id: 13, hub:"Pn Hub", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/7baHImY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4156.jpeg"},
+  {id: 14, hub:"Farm Pvp Cũ", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/guPN2", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4158.jpeg"},
+  {id: 15, hub:"Auto Farm", game:"Morth Up", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/7VuBc", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4159.jpeg"},
+  {id: 16, hub:"Pn Hub", game:"My Dino Life", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/D6Y9qpO", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4161.jpeg"},
+  {id: 17, hub:"Full Script", game:"Jurassic Blocky", c:"Tất Cả Script Khủng Long", link:"https://fnote.net/notes/Nn2nNB", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4169.jpeg"},
+  {id: 18, hub:"Kill Aura", game:"Jurassic Pixel", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/3B7FeFyC", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4170.jpeg"},
+  {id: 19, hub:"Auto Farm", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/BR2tBG", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4244.jpeg"},
+  {id: 20, hub:"Huss Valley", game:"", c:"Tất Cả", link:"https://link4m.net/4ENlH", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4229.jpeg"},
+  {id: 21, hub:"Auto Farm Mới", game:"Prehistoric Farm", c:"Tất Cả", link:"https://link4m.net/qEIjJhb", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4216.jpeg"},
+  {id: 22, hub:"Auto Farm Cũ", game:"Prehistoric Farm", c:"Tất Cả", link:"https://link4m.org/A7q4zX", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4160.jpeg"},
+  {id: 23, hub:"Evade", game:"", c:"Tất Cả", link:"https://link4m.net/1na23", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4162.jpeg"},
+  {id: 24, hub:"Auto Farm", game:"Fishing Master", c:"Tất Cả", link:"https://link4m.net/PjOkQft", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4163.jpeg"},
+  {id: 25, hub:"Kill Aura No Key", game:"Attack On Titan Revolution", c:"Tất Cả", link:"https://link4m.org/6EHJc8go", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4164.jpeg"},
+  {id: 26, hub:"Bất Tử", game:"Dueling Grounds", c:"Tất Cả", link:"https://link4m.net/mnmLtR9x", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4165.jpeg"},
+  {id: 27, hub:"Auto Farm", game:"+1 Loot To Forge", c:"Tất Cả", link:"https://link4m.org/YckTOM4P", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4166.jpeg"},
+  {id: 28, hub:"Kill Aura", game:"Pixel Blade", c:"Tất Cả", link:"https://link4m.net/UF22p", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4167.jpeg"},
+  {id: 29, hub:"Infinite Stamina", game:"Illegal Soccer", c:"Tất Cả", link:"https://link4m.net/iKJFmJ2", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4168.jpeg"}
 ];
 
-// Hàm trộn ngẫu nhiên thứ tự (Chỉ trộn 1 lần khi tải trang)
+function getStoredClicks() {
+  return JSON.parse(localStorage.getItem('pain_script_clicks') || '{}');
+}
+
+function registerClick(id) {
+  const stored = getStoredClicks();
+  stored[id] = (stored[id] || 0) + 1;
+  localStorage.setItem('pain_script_clicks', JSON.stringify(stored));
+  updateStats();
+  render();
+}
+
+function updateStats() {
+  const stored = getStoredClicks();
+  const total = Object.values(stored).reduce((a, b) => a + b, 0);
+  document.getElementById('totalClicks').innerText = total;
+}
+
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -275,14 +382,13 @@ const cats=['Tất Cả', 'Steal An Egg', 'Ride A Pet', 'Tất Cả Script Khủ
 
 function render(){
   const q = $('q').value.trim().toLowerCase();
+  const storedClicks = getStoredClicks();
   
-  // CHỈ LỌC THEO TÊN SCRIPT (hub) HOẶC TÊN GAME (game)
   const filtered = SCRIPTS.filter(s => 
     (cat === 'Tất Cả' || s.c === cat) && 
     (!q || s.hub.toLowerCase().includes(q) || s.game.toLowerCase().includes(q))
   );
 
-  // Render Tags
   $('tags').innerHTML = cats.map((c, i) => `
     <button class="${c === cat ? 'on' : ''}" onclick="changeCat('${c}')">
       <span class="dot" style="background:${colors[i % colors.length]}"></span>
@@ -290,8 +396,9 @@ function render(){
     </button>
   `).join('');
 
-  // Render Cards
-  $('list').innerHTML = filtered.map(s => `
+  $('list').innerHTML = filtered.map(s => {
+    const count = storedClicks[s.id] || 0;
+    return `
     <div class="card">
       <div class="card-img-box">
         ${s.img ? `<img src="${s.img}" alt="${s.hub}">` : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
@@ -301,11 +408,12 @@ function render(){
           ${s.hub} ${s.game ? `<span class="game-name">${s.game}</span>` : ''}
         </h2>
         <div class="card-footer">
-          <a class="btn-link" href="${s.link}" target="_blank">LẤY SCRIPT &rarr;</a>
+          <a class="btn-link" href="${s.link}" target="_blank" onclick="registerClick(${s.id})">LẤY SCRIPT &rarr;</a>
+          <span class="click-count">👁️ ${count}</span>
         </div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 }
 
 function changeCat(c) {
@@ -315,6 +423,7 @@ function changeCat(c) {
 
 $('q').addEventListener('input', render);$('go').addEventListener('click', render);
 
+updateStats();
 render();
 </script>
 </body>
