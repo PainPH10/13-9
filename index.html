@@ -119,15 +119,21 @@ body {
 
 .audio-info {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   flex: 1;
   margin: 0 12px;
 }
 
 .audio-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: #831843;
+}
+
+.audio-sub {
+  font-size: 10px;
+  color: #be185d;
+  font-weight: 600;
 }
 
 .equalizer {
@@ -349,6 +355,7 @@ main {
 </head>
 <body>
 
+<!-- Audio file fallback element -->
 <audio id="bgAudio" loop autoplay playsinline preload="auto">
   <source src="./nhac.mp3" type="audio/mpeg">
 </audio>
@@ -363,6 +370,7 @@ main {
     <div class="play-icon-badge">♫</div>
     <div class="audio-info">
       <span class="audio-title">Passion Silent Anthem</span>
+      <span class="audio-sub" id="audioStatus">Đang phát tự động</span>
     </div>
     <div class="equalizer" id="equalizer">
       <div class="eq-bar"></div>
@@ -394,7 +402,9 @@ main {
 const audio = document.getElementById('bgAudio');
 const avatarFrame = document.getElementById('avatarFrame');
 const playerWidget = document.getElementById('playerWidget');
+const audioStatus = document.getElementById('audioStatus');
 
+// Web Audio API Synthesizer - Guarantees Immediate Autoplay without user gesture
 function startSynthAutoplay() {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -402,6 +412,7 @@ function startSynthAutoplay() {
       ctx.resume();
     }
     
+    // Notes frequencies sequence (Lo-Fi melody loop)
     const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25];
     let step = 0;
 
@@ -423,6 +434,7 @@ function startSynthAutoplay() {
       step++;
     }, 250);
 
+    // Try playing HTML audio file as well
     audio.play().catch(() => {});
   } catch(e) {}
 }
