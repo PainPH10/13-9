@@ -70,71 +70,59 @@ body {
   font-size: 20px;
   font-weight: 800;
   color: #ffffff;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   letter-spacing: -0.5px;
 }
 
-/* Audio Player Stylings */
-.audio-box {
-  margin-bottom: 16px;
-  width: 100%;
-  max-width: 320px;
-  display: flex;
-  justify-content: center;
-}
-audio {
-  width: 100%;
-  height: 36px;
-  border-radius: 20px;
-  outline: none;
-}
-
-/* YouTube Action Button */
-.yt-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #ff0000, #cc0000);
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 13px;
-  padding: 10px 22px;
-  border-radius: 25px;
-  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  margin-bottom: 16px;
-}
-.yt-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.6);
-}
-
-/* Single Stat Counter Section */
+/* Combined YouTube & Stats Section */
 .stats-bar {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(10px);
   border-radius: 16px;
-  padding: 12px 30px;
-  margin: 10px auto 25px auto;
-  max-width: 250px;
+  padding: 10px 20px;
+  margin: 0 auto 25px auto;
+  max-width: 360px;
+  width: 100%;
 }
 
 .stat-item {
-  text-align: center;
+  text-align: left;
 }
 .stat-value {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
   color: #ffffff;
 }
 .stat-label {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-sub);
   font-weight: 600;
+}
+
+/* YouTube Action Button Inside Stats */
+.yt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #ff0000, #cc0000);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+.yt-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.6);
 }
 
 /* Hero Section */
@@ -310,34 +298,31 @@ main {
 </head>
 <body>
 
+<!-- Hidden Audio Player for Automatic Background Playback -->
+<audio id="bgAudio" loop autoplay>
+  <source src="./nhac.mp3" type="audio/mpeg">
+</audio>
+
 <div class="header-container">
   <div class="avatar-wrapper">
     <img class="avatar-img" src="https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_3404.jpeg" alt="Pain Script Avatar">
   </div>
   <div class="profile-name">Pain Script</div>
 
-  <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank">
-    ▶ KÊNH YOUTUBE
-  </a>
-
-  <div class="audio-box">
-    <audio controls loop>
-      <source src="./nhac.mp3" type="audio/mpeg">
-      Trình duyệt không hỗ trợ phát âm thanh.
-    </audio>
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-value" id="totalClicks">0</div>
+      <div class="stat-label">Lượt Lấy Script</div>
+    </div>
+    <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank">
+      ▶ YOUTUBE
+    </a>
   </div>
 </div>
 
 <main>
   <h1 class="hero-title">Ghi Rõ Tên Game Cần Tìm</h1>
   <div class="hero-sub">TẤT CẢ SCRIPT ROBLOX BẠN CẦN TẠI ĐÂY</div>
-
-  <div class="stats-bar">
-    <div class="stat-item">
-      <div class="stat-value" id="totalClicks">0</div>
-      <div class="stat-label">Lượt Lấy Script</div>
-    </div>
-  </div>
 
   <div class="search-box">
     <input id="q" type="search" placeholder="Tìm kiếm script...">
@@ -349,6 +334,22 @@ main {
 </main>
 
 <script>
+// Auto Play Audio Bypass Strategy for modern browsers
+const audio = document.getElementById('bgAudio');
+function attemptAutoplay() {
+  audio.play().catch(() => {
+    // If browser blocks autoplay, play audio on first user touch/click
+    const playOnInteraction = () => {
+      audio.play();
+      document.removeEventListener('click', playOnInteraction);
+      document.removeEventListener('touchstart', playOnInteraction);
+    };
+    document.addEventListener('click', playOnInteraction);
+    document.addEventListener('touchstart', playOnInteraction);
+  });
+}
+attemptAutoplay();
+
 const SCRIPTS = [
   {id: 1, hub:"Nox Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/3QBxqhj", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4003.jpeg"},
   {id: 2, hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4141.jpeg"},
