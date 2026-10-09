@@ -363,22 +363,22 @@ main {
 </head>
 <body>
 
-<audio id="bgAudio" loop preload="auto">
+<audio id="bgAudio" loop autoplay muted playsinline preload="auto">
   <source src="./nhac.mp3" type="audio/mpeg">
 </audio>
 
 <div class="header-container">
-  <div class="avatar-wrapper" id="avatarFrame">
+  <div class="avatar-wrapper playing" id="avatarFrame">
     <img class="avatar-img" src="https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_3404.jpeg" alt="Pain Script Avatar">
   </div>
   <div class="profile-name">Pain Script</div>
 
   <!-- Audio Equalizer Widget -->
-  <div class="audio-player-card" id="playerWidget" onclick="toggleAudio()">
-    <button class="play-btn" id="playBtn">▶</button>
+  <div class="audio-player-card playing" id="playerWidget" onclick="toggleAudio()">
+    <button class="play-btn" id="playBtn">❚❚</button>
     <div class="audio-info">
       <span class="audio-title">Background Music</span>
-      <span class="audio-sub" id="audioStatus">Chạm màn hình để phát nhạc</span>
+      <span class="audio-sub" id="audioStatus">Đang phát tự động</span>
     </div>
     <div class="equalizer" id="equalizer">
       <div class="eq-bar"></div>
@@ -413,53 +413,49 @@ const avatarFrame = document.getElementById('avatarFrame');
 const playerWidget = document.getElementById('playerWidget');
 const audioStatus = document.getElementById('audioStatus');
 
-let isAttempting = false;
-
-function playAudio() {
-  if (isAttempting) return;
-  isAttempting = true;
+// Unmute audio stream immediately on any initial browser event
+function startAutoplayNow() {
   audio.play().then(() => {
+    audio.muted = false;
     playBtn.innerText = '❚❚';
     avatarFrame.classList.add('playing');
     playerWidget.classList.add('playing');
-    audioStatus.innerText = 'Đang phát nhạc...';
-    // Remove global trigger once successfully playing
-    document.removeEventListener('click', globalTouchPlay);
-    document.removeEventListener('touchstart', globalTouchPlay);
+    audioStatus.innerText = 'Đang phát tự động';
   }).catch(() => {
-    audioStatus.innerText = 'Bấm vào đây để nghe nhạc';
-  }).finally(() => {
-    isAttempting = false;
+    audioStatus.innerText = 'Bấm để bật âm thanh';
   });
 }
 
-function pauseAudio() {
-  audio.pause();
-  playBtn.innerText = '▶';
-  avatarFrame.classList.remove('playing');
-  playerWidget.classList.remove('playing');
-  audioStatus.innerText = 'Đã tạm dừng';
-}
-
 function toggleAudio() {
-  if (audio.paused) {
-    playAudio();
+  if (audio.paused || audio.muted) {
+    audio.muted = false;
+    audio.play().then(() => {
+      playBtn.innerText = '❚❚';
+      avatarFrame.classList.add('playing');
+      playerWidget.classList.add('playing');
+      audioStatus.innerText = 'Đang phát...';
+    });
   } else {
-    pauseAudio();
+    audio.pause();
+    playBtn.innerText = '▶';
+    avatarFrame.classList.remove('playing');
+    playerWidget.classList.remove('playing');
+    audioStatus.innerText = 'Đã tạm dừng';
   }
 }
 
-// Global user interaction hook to unlock audio playback automatically
-function globalTouchPlay() {
-  if (audio.paused) {
-    playAudio();
-  }
-}
-
-document.addEventListener('click', globalTouchPlay);
-document.addEventListener('touchstart', globalTouchPlay);
-
-window.addEventListener('DOMContentLoaded', playAudio);
+// Bypasses browser strict autoplay policy by playing muted first, then unmuting instantly
+window.addEventListener('load', () => {
+  startAutoplayNow();
+  const unlockAudio = () => {
+    audio.muted = false;
+    audio.play();
+    document.removeEventListener('pointerdown', unlockAudio);
+    document.removeEventListener('scroll', unlockAudio);
+  };
+  document.addEventListener('pointerdown', unlockAudio);
+  document.addEventListener('scroll', unlockAudio);
+});
 
 const SCRIPTS = [
   {id: 1, hub:"Nox Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/3QBxqhj", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4003.jpeg"},
@@ -501,7 +497,6 @@ function shuffle(array) {
 }
 shuffle(SCRIPTS);
 
-// High Contrast Neon Colors for Category Dots
 const dotColors = ['#ff0055', '#7000ff', '#00d4ff', '#ffaa00'];
 const $=id=>document.getElementById(id);
 let cat='Tất Cả';
