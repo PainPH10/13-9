@@ -49,7 +49,23 @@ body {
   padding: 4px;
   margin-bottom: 12px;
   will-change: transform, box-shadow;
-  transition: transform 0.05s ease-out;
+  transition: transform 0.08s ease-out;
+}
+
+/* CSS Pulse Animation fallback if Web Audio API is restricted */
+.avatar-wrapper.css-pulse {
+  animation: pulseBeat 0.8s infinite alternate ease-in-out;
+}
+
+@keyframes pulseBeat {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 25px rgba(58, 134, 255, 0.5);
+  }
+  100% {
+    transform: scale(1.12);
+    box-shadow: 0 0 50px rgba(0, 180, 216, 0.9);
+  }
 }
 
 .avatar-wrapper::after {
@@ -106,7 +122,6 @@ body {
   font-weight: 600;
 }
 
-/* YouTube Action Button */
 .yt-btn {
   display: inline-flex;
   align-items: center;
@@ -127,7 +142,6 @@ body {
   box-shadow: 0 6px 20px rgba(255, 0, 0, 0.6);
 }
 
-/* Hero Section */
 main {
   max-width: 800px;
   margin: 0 auto;
@@ -151,7 +165,6 @@ main {
   margin-bottom: 24px;
 }
 
-/* Search Box */
 .search-box {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -185,7 +198,6 @@ main {
   cursor: pointer;
 }
 
-/* Tags Wrap */
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -218,7 +230,6 @@ main {
   display: inline-block;
 }
 
-/* Grid Script Cards */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -300,7 +311,7 @@ main {
 </head>
 <body>
 
-<audio id="bgAudio" loop autoplay crossorigin="anonymous">
+<audio id="bgAudio" loop preload="auto">
   <source src="./nhac.mp3" type="audio/mpeg">
 </audio>
 
@@ -338,59 +349,53 @@ main {
 const audio = document.getElementById('bgAudio');
 const avatarFrame = document.getElementById('avatarFrame');
 
-let audioCtx, analyser, sourceNode;
-
-function initAudioVisualizer() {
-  if (audioCtx) return;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 64;
-  sourceNode = audioCtx.createMediaElementSource(audio);
-  sourceNode.connect(analyser);
-  analyser.connect(audioCtx.destination);
-
-  const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-  function renderFrame() {
-    requestAnimationFrame(renderFrame);
-    analyser.getByteFrequencyData(dataArray);
-
-    // Calculate average bass frequency (first few bins)
-    let sum = 0;
-    const bassBins = 8;
-    for (let i = 0; i < bassBins; i++) {
-      sum += dataArray[i];
-    }
-    const averageBass = sum / bassBins;
-    
-    // Scale factor from 1.0 to 1.25
-    const scale = 1 + (averageBass / 255) * 0.25;
-    const glow = (averageBass / 255) * 50;
-
-    avatarFrame.style.transform = `scale(${scale})`;
-    avatarFrame.style.boxShadow = `0 0 ${35 + glow}px rgba(58, 134, 255, ${0.6 + (averageBass / 255) * 0.4}), 0 0 ${15 + glow / 2}px rgba(0, 180, 216, 0.4)`;
-  }
-  renderFrame();
-}
-
-function attemptAutoplay() {
+// Robust Audio Visualizer setup with graceful CSS fallback
+function startAudioProcess() {
   audio.play().then(() => {
-    initAudioVisualizer();
-  }).catch(() => {
-    const playOnInteraction = () => {
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
+    try {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 64;
+      const sourceNode = audioCtx.createMediaElementSource(audio);
+      sourceNode.connect(analyser);
+      analyser.connect(audioCtx.destination);
+
+      const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+      function renderFrame() {
+        requestAnimationFrame(renderFrame);
+        analyser.getByteFrequencyData(dataArray);
+
+        let sum = 0;
+        for (let i = 0; i < 8; i++) sum += dataArray[i];
+        const averageBass = sum / 8;
+
+        const scale = 1 + (averageBass / 255) * 0.25;
+        const glow = (averageBass / 255) * 50;
+
+        avatarFrame.style.transform = `scale(${scale})`;
+        avatarFrame.style.boxShadow = `0 0 ${35 + glow}px rgba(58, 134, 255, ${0.6 + (averageBass / 255) * 0.4}), 0 0 ${15 + glow / 2}px rgba(0, 180, 216, 0.4)`;
       }
-      audio.play();
-      initAudioVisualizer();
-      document.removeEventListener('click', playOnInteraction);
-      document.removeEventListener('touchstart', playOnInteraction);
+      renderFrame();
+    } catch (e) {
+      // Fallback to rhythmic CSS pulse if Web Audio API hits CORS or local file restrictions
+      avatarFrame.classList.add('css-pulse');
+    }
+  }).catch(() => {
+    // Enable on user interaction
+    const triggerOnTouch = () => {
+      audio.play().then(() => {
+        avatarFrame.classList.add('css-pulse');
+      });
+      document.removeEventListener('click', triggerOnTouch);
+      document.removeEventListener('touchstart', triggerOnTouch);
     };
-    document.addEventListener('click', playOnInteraction);
-    document.addEventListener('touchstart', playOnInteraction);
+    document.addEventListener('click', triggerOnTouch);
+    document.addEventListener('touchstart', triggerOnTouch);
   });
 }
-attemptAutoplay();
+
+window.addEventListener('DOMContentLoaded', startAudioProcess);
 
 const SCRIPTS = [
   {id: 1, hub:"Nox Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/3QBxqhj", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4003.jpeg"},
