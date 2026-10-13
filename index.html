@@ -344,7 +344,7 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   padding-top: 8px;
   border-top: 1px solid #fce7f3;
 }
@@ -353,11 +353,15 @@ main {
   color: #be185d;
   text-decoration: none;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 11px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   white-space: nowrap;
+}
+
+.btn-sub {
+  color: #ec4899;
 }
 
 /* Pagination Styling */
@@ -585,7 +589,7 @@ function render(){
         </h2>
         <div class="card-footer">
           <a class="btn-link" href="${s.link}" target="_blank">LẤY SCRIPT &rarr;</a>
-          <a class="btn-link" href="${s.subLink}" target="_blank" style="color: #ec4899;">LINK PHỤ &rarr;</a>
+          <a class="btn-link btn-sub" href="${s.subLink}" target="_blank">LINK PHỤ &rarr;</a>
         </div>
       </div>
     </div>
