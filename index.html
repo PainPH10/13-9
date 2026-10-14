@@ -1,32 +1,30 @@
 <script>
-    // Hàm tạo key tự động dựa theo ngày tháng năm hiện tại
+    // Hàm tính key tự động đổi theo ngày hôm nay (14/10/2026 -> 0painph_14102026)
     function getDailyKey() {
         const date = new Date();
         const d = String(date.getDate()).padStart(2, '0');
         const m = String(date.getMonth() + 1).padStart(2, '0');
         const y = date.getFullYear();
-        
-        // Key sẽ có dạng: 0painph_14102026 (Cứ mỗi ngày sẽ tự đổi một lần)
         return `0painph_${d}${m}${y}`;
     }
 
-    // Hiển thị key lên web
     document.getElementById('userKey').innerText = getDailyKey();
 
-    function openLink() {
-        // Link vượt link của boss man
+    function goToLink4M() {
+        // Gắn link Link4M của boss man vào đây
         window.location.href = "https://link4m.net/MfDoh"; 
     }
 
+    // Kiểm tra khi người chơi vượt link xong quay lại
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('completed') === 'true') {
-        document.querySelector('.btn').style.display = 'none';
+    if (urlParams.get('completed') === 'true' || urlParams.has('k') || document.referrer.includes('link4m')) {
+        document.getElementById('getLinkBtn').style.display = 'none';
         document.getElementById('keySection').style.display = 'block';
     }
 
     function copyKey() {
         const keyText = document.getElementById('userKey').innerText;
         navigator.clipboard.writeText(keyText);
-        alert("Đã sao chép key của ngày hôm nay!");
+        alert("Đã sao chép key thành công, vào game dán vào bảng Rayfield thôi boss man!");
     }
 </script>
