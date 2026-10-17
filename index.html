@@ -371,7 +371,7 @@ body::before {
   <div class="audio-player-card" id="playerWidget" onclick="manualPlayTrigger()">
     <div class="play-icon-badge" id="iconBadge">▶</div>
     <div class="audio-info">
-      <span class="audio-title"> Passion Silent Anthem</span>
+      <span class="audio-title"> CANTA LA (ULTRA SLOWED)</span>
       <span class="audio-sub" id="audioStatus">Chạm 1 lần để bật nhạc</span>
     </div>
     <div class="equalizer" id="equalizer">
@@ -397,7 +397,7 @@ body::before {
 
 <main>
   <h1 class="hero-title">Ghi Rõ Tên Game Cần Tìm</h1>
-  <div class="hero-sub">TẤT CẢ SCRIPT ROBLOX BẠN CẦN TẠI ĐÂY</div>
+  <div class="hero-sub">Lưu Ý Tìm Kiếm Hãy Ghi Tiếng Anh</div>
 
   <div class="search-box">
     <input id="q" type="search" placeholder="Tìm kiếm script...">
@@ -484,8 +484,8 @@ const SCRIPTS = [
   {id: 27, hub:"Dueling Grounds", game:"", c:"Tất Cả", link:"https://link4m.net/mnmLtR9x", subLink:"https://link4m.net/rkMS3FO", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4165.jpeg"},
   {id: 28, hub:"Ouroboros", game:"+1 Loot To Forge", c:"Tất Cả", link:"https://link4m.org/YckTOM4P", subLink:"https://link4m.org/VvuEClXp", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4474.jpeg"},
   {id: 29, hub:"Chnronix Hub", game:"lllegal Soccer", c:"Tất Cả", link:"https://link4m.org/PK04nNx", subLink:"https://link4m.net/bawtv1", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4263.jpeg"},
-  {id: 30, hub:"Gemeric Hub", game:"Pixel Blade", c:"Tất Cả", link:"https://link4m.net/UF22p", subLink:"https://link4m.org/44QEFRSS", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4167.jpeg"},
-  {id: 31, hub:"StarCrow Hub", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/6TJB2zTN", subLink:"https://link4m.org/pjoJeAuk", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4276.jpeg"},
+  {id: 30, hub:"Generic Hub", game:"Pixel Blade", c:"Tất Cả", link:"https://link4m.net/UF22p", subLink:"https://link4m.org/44QEFRSS", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4500.jpeg"},
+  {id: 31, hub:"StarCrow Hub", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/Fn3gD5", subLink:"https://link4m.org/6xjeTLxa", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4503.jpeg"},
   {id: 33, hub:"Anime Dice", game:"", c:"Tất Cả", link:"https://link4m.org/FxtMnM", subLink:"https://link4m.net/eZnl8", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4486.jpeg"},
   {id: 34, hub:"Dueling Grounds Mới", game:"", c:"Tất Cả", link:"https://link4m.org/I0Mms7e", subLink:"https://link4m.org/T3M6haE", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4305.jpeg"},
   {id: 35, hub:"Nexus Panel", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.org/ux692X", subLink:"https://link4m.net/FPNI27", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4313.jpeg"},
@@ -619,7 +619,7 @@ function render(){
           ${s.hub} ${s.game ? `<span class="game-name">${s.game}</span>` : ''}
         </h2>
         <div class="card-footer">
-          <a class="btn-link" href="${s.link}" target="_blank" rel="noopener">LẤY SCRIPT</a>
+          <a class="btn-link" href="${s.link}" target="_blank" rel="noopener">LINK CHÍNH</a>
           <a class="btn-link btn-sub" href="${s.subLink}" target="_blank" rel="noopener">LINK PHỤ</a>
         </div>
       </div>
@@ -643,8 +643,17 @@ function render(){
 function changeCat(c) { cat = c; currentPage = 1; render(); }
 function changePage(p) { currentPage = p; render(); window.scrollTo({ top: 300, behavior: 'smooth' }); }
 
-$('q').addEventListener('input', () => { currentPage = 1; render(); });
-$('go').addEventListener('click', () => { currentPage = 1; render(); });
+/* ===== TỰ ĐỘNG CHUYỂN VỀ TAB "TẤT CẢ" KHI GÕ TÌM KIẾM ===== */
+$('q').addEventListener('input', () => {
+  if ($('q').value.trim() !== '') cat = 'Tất Cả';
+  currentPage = 1;
+  render();
+});
+$('go').addEventListener('click', () => {
+  if ($('q').value.trim() !== '') cat = 'Tất Cả';
+  currentPage = 1;
+  render();
+});
 
 // Gọi render() ở cuối cùng để đảm bảo mọi thứ đã load xong
 render();
