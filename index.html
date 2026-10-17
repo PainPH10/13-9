@@ -306,18 +306,17 @@ main {
 .card-img-box {
   width: 100%;
   height: 110px;
-  background: #fff0f5;
+  background: linear-gradient(135deg, #f472b6, #fb7185);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 4px;
 }
 
 .card-img-box img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .card-body {
@@ -410,7 +409,7 @@ main {
 
 <div class="header-container">
   <div class="avatar-wrapper" id="avatarFrame">
-    <img class="avatar-img" src="https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_3404.jpeg" alt="Pain Script Avatar">
+    <img class="avatar-img" src="https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_3404.jpeg" alt="Pain Script Avatar" decoding="async">
   </div>
   <div class="profile-name">Pain Script</div>
 
@@ -504,56 +503,56 @@ function removeInteractionListeners() {
 window.addEventListener('DOMContentLoaded', tryAutoplay);
 
 const SCRIPTS = [
-  {id: 1, hub:"Nox Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/3QBxqhj", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4003.jpeg"},
-  {id: 2, hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4141.jpeg"},
-  {id: 3, hub:"Limbo Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/8gijZ", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4146.jpeg"},
-  {id: 4, hub:"Clout Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/RHy2B", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4143.jpeg"},
-  {id: 5, hub:"Neva Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/MMk2q", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4145.jpeg"},
-  {id: 6, hub:"PulseHub.gg", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/OvbtgoS", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4147.jpeg"},
-  {id: 7, hub:"Chilli Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YEjVhKM", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4149.jpeg"},
-  {id: 8, hub:"SourcesHub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/V3Y64j", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4206.jpeg"},
-  {id: 9, hub:"Nasi Rendang", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/Tiaoh", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4280.jpeg"},
-  {id: 10, hub:"Chilli Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.org/OX5URqr1", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4153.jpeg"},
-  {id: 11, hub:"Chronnix Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.net/dURCgx", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4150.jpeg"},
-  {id: 12, hub:"R Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.net/Un5BcNem", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4155.jpeg"},
-  {id: 13, hub:"Afk Farm Mới", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/DTfuxYO", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4239.jpeg"},
-  {id: 14, hub:"Pn Hub", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/7baHImY", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4156.jpeg"},
-  {id: 15, hub:"Farm Pvp Cũ", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/guPN2", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4158.jpeg"},
-  {id: 16, hub:"MorthUp", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/7VuBc", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4471.jpeg"},
-  {id: 17, hub:"Pn Hub", game:"My Dino Life", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/D6Y9qpO", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4161.jpeg"},
-  {id: 18, hub:"Jurassic Blocky", game:"", c:"Tất Cả Script Khủng Long", link:"https://fnote.net/notes/Nn2nNB", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4169.jpeg"},
-  {id: 19, hub:"Jurassic Pixel", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/3B7FeFyC", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4470.jpeg"},
-  {id: 20, hub:"Rayfield", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/vWVdnl", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4401.jpeg"},
-  {id: 21, hub:"Gold", game:"Creatures Of Sonaria", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/Brqiz", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4475.jpeg"},
-  {id: 22, hub:"Ouroboros", game:"Prehistoric Farm", c:"Tất Cả", link:"https://link4m.net/qEIjJhb", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4216.jpeg"},
-  {id: 23, hub:"Auto Farm Cũ", game:"Prehistoric Farm", c:"Tất Cả", link:"https://link4m.org/A7q4zX", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4160.jpeg"},
-  {id: 24, hub:"Strawbery Hub", game:"Primeval Earth", c:"Tất Cả", link:"https://link4m.org/nKb0Dl", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4492.jpeg"},
-  {id: 25, hub:"Ouroboros", game:"Fishing Master", c:"Tất Cả", link:"https://link4m.net/PjOkQft", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4472.jpeg"},
-  {id: 26, hub:"Kira Hub", game:"Attack On Titan Revolution", c:"Tất Cả", link:"https://link4m.org/6EHJc8go", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4476.jpeg"},
-  {id: 27, hub:"Dueling Grounds", game:"", c:"Tất Cả", link:"https://link4m.net/mnmLtR9x", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4165.jpeg"},
-  {id: 28, hub:"Ouroboros", game:"+1 Loot To Forge", c:"Tất Cả", link:"https://link4m.org/YckTOM4P", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4474.jpeg"},
-  {id: 29, hub:"Chnronix Hub", game:"lllegal Soccer", c:"Tất Cả", link:"https://link4m.org/PK04nNx", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4263.jpeg"},
-  {id: 30, hub:"Gemeric Hub", game:"Pixel Blade", c:"Tất Cả", link:"https://link4m.net/UF22p", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4167.jpeg"},
-  {id: 31, hub:"StarCrow Hub", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/6TJB2zTN", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4276.jpeg"},
-  {id: 32, hub:"lllegal Soccer", game:"", c:"Tất Cả", link:"https://link4m.net/iKJFmJ2", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4168.jpeg"},
-  {id: 33, hub:"Anime Dice", game:"", c:"Tất Cả", link:"https://link4m.org/FxtMnM", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4486.jpeg"},
-  {id: 34, hub:"Dueling Grounds Mới", game:"", c:"Tất Cả", link:"https://link4m.org/I0Mms7e", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4305.jpeg"},
-  {id: 35, hub:"Nexus Panel", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.org/ux692X", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4313.jpeg"},
-  {id: 36, hub:"Panora Hub", game:"Break And Steal An Egg", c:"Tất Cả", link:"https://link4m.org/Ez5htzT5", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4326.jpeg"},
-  {id: 37, hub:"Serenity Hub", game:"Break And Steal An Egg", c:"Tất Cả", link:"https://link4m.org/inVfwsE", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4337.jpeg"},
-  {id: 38, hub:"Vex Client", game:"Huss Valley", c:"Tất Cả", link:"https://link4m.net/4ENlH", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4229.jpeg"},
-  {id: 39, hub:"Khfresh", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/fVZpeH", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4350.jpeg"},
-  {id: 40, hub:"Kaiju Alpha", game:"", c:"Tất Cả", link:"https://link4m.net/KeJbwBEK", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4386.jpeg"},
-  {id: 41, hub:"No Dash Cooldown", game:"Evolve A Cell", c:"Tất Cả", link:"https://link4m.net/MfDoh", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4390.jpeg"},
-  {id: 42, hub:"Ouroboros", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/BR2tBG", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4244.jpeg"},
-  {id: 43, hub:"Solve The Cube", game:"", c:"Tất Cả", link:"https://link4m.org/5Mlcl", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4422.jpeg"},
-  {id: 44, hub:"Survival A Million Monkey", game:"", c:"Tất Cả", link:"https://link4m.org/ErGSJC", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4468.jpeg"},
-  {id: 45, hub:"Ouroboros", game:"Harpoon A Fish", c:"Tất Cả", link:"https://link4m.org/t7quIB", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4465.jpeg"},
-  {id: 46, hub:"Ouroboros", game:"Chop A Forest", c:"Tất Cả", link:"https://link4m.org/AGvhjWRu", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4469.jpeg"},
-  {id: 47, hub:"My Anime Mine", game:"", c:"Tất Cả", link:"https://link4m.org/FKak8So", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4454.jpeg"},
-  {id: 48, hub:"Sell Fries", game:"", c:"Tất Cả", link:"https://link4m.org/3qJ9xc0P", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4483.jpeg"},
-  {id: 49, hub:"Valinc Syndicate", game:"Evade", c:"Tất Cả", link:"https://link4m.net/1na23", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4162.jpeg"},
-  {id: 50, hub:"Banana Hub", game:"Blox Fruits", c:"Tất Cả", link:"https://link4m.org/Sv6dfcnq", subLink:"DIEN_LINK_PHU_VAO_DAY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4291.jpeg"}
+  {id: 1, hub:"Nox Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/3QBxqhj", subLink:"https://link4m.net/kopA3p", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4003.jpeg"},
+  {id: 2, hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", subLink:"https://link4m.net/WClWj", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4141.jpeg"},
+  {id: 3, hub:"Limbo Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/8gijZ", subLink:"https://link4m.net/gDD2Zk", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4146.jpeg"},
+  {id: 4, hub:"Clout Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/RHy2B", subLink:"https://link4m.net/24CQ30", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4143.jpeg"},
+  {id: 5, hub:"Neva Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/MMk2q", subLink:"https://link4m.org/24CQ30", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4145.jpeg"},
+  {id: 6, hub:"PulseHub.gg", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/OvbtgoS", subLink:"https://link4m.org/qYSX7q0", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4147.jpeg"},
+  {id: 7, hub:"Chilli Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YEjVhKM", subLink:"https://link4m.net/zTAlTcbx", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4149.jpeg"},
+  {id: 8, hub:"SourcesHub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/V3Y64j", subLink:"https://link4m.org/OMBBidj", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4206.jpeg"},
+  {id: 9, hub:"Nasi Rendang", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/Tiaoh", subLink:"https://link4m.org/2RCzmiI5", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4280.jpeg"},
+  {id: 10, hub:"Chilli Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.org/OX5URqr1", subLink:"https://link4m.net/ndpSE", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4153.jpeg"},
+  {id: 11, hub:"Chronnix Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.net/dURCgx", subLink:"https://link4m.org/aq1SPQ9", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4150.jpeg"},
+  {id: 12, hub:"R Hub", game:"Ride A Pet", c:"Ride A Pet", link:"https://link4m.net/Un5BcNem", subLink:"https://link4m.org/V6yRgx", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4155.jpeg"},
+  {id: 13, hub:"Afk Farm Mới", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/DTfuxYO", subLink:"https://link4m.net/xR3WS", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4239.jpeg"},
+  {id: 14, hub:"Pn Hub", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/7baHImY", subLink:"https://link4m.net/dg9o1FIg", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4156.jpeg"},
+  {id: 15, hub:"Farm Pvp Cũ", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/guPN2", subLink:"https://link4m.org/oZFvFn", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4158.jpeg"},
+  {id: 16, hub:"MorthUp", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/7VuBc", subLink:"https://link4m.net/NoY94", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4471.jpeg"},
+  {id: 17, hub:"Pn Hub", game:"My Dino Life", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/D6Y9qpO", subLink:"https://link4m.net/YYzUmwc", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4161.jpeg"},
+  {id: 18, hub:"Jurassic Blocky", game:"", c:"Tất Cả Script Khủng Long", link:"https://fnote.net/notes/Nn2nNB", subLink:"https://fnote.net/notes/Nn2nNB", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4169.jpeg"},
+  {id: 19, hub:"Jurassic Pixel", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/3B7FeFyC", subLink:"https://link4m.org/GKszg1", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4470.jpeg"},
+  {id: 20, hub:"Rayfield", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/vWVdnl", subLink:"https://link4m.org/QsjNSy", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4401.jpeg"},
+  {id: 21, hub:"Gold", game:"Creatures Of Sonaria", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/Brqiz", subLink:"https://link4m.net/bHjqVi", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4475.jpeg"},
+  {id: 22, hub:"Ouroboros", game:"Prehistoric Farm", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/qEIjJhb", subLink:"https://link4m.org/cB2Eq", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4216.jpeg"},
+  {id: 23, hub:"Auto Farm Cũ", game:"Prehistoric Farm", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/A7q4zX", subLink:"https://link4m.net/FrN5e", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4160.jpeg"},
+  {id: 24, hub:"Strawbery Hub", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/nKb0Dl", subLink:"https://link4m.net/pxSLU", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4492.jpeg"},
+  {id: 25, hub:"Ouroboros", game:"Fishing Master", c:"Tất Cả", link:"https://link4m.net/PjOkQft", subLink:"https://link4m.org/quqJQ6z7", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4472.jpeg"},
+  {id: 26, hub:"Kira Hub", game:"Attack On Titan Revolution", c:"Tất Cả", link:"https://link4m.org/6EHJc8go", subLink:"https://link4m.net/MWlFg", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4476.jpeg"},
+  {id: 27, hub:"Dueling Grounds", game:"", c:"Tất Cả", link:"https://link4m.net/mnmLtR9x", subLink:"https://link4m.net/rkMS3FO", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4165.jpeg"},
+  {id: 28, hub:"Ouroboros", game:"+1 Loot To Forge", c:"Tất Cả", link:"https://link4m.org/YckTOM4P", subLink:"https://link4m.org/VvuEClXp", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4474.jpeg"},
+  {id: 29, hub:"Chnronix Hub", game:"lllegal Soccer", c:"Tất Cả", link:"https://link4m.org/PK04nNx", subLink:"https://link4m.net/bawtv1", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4263.jpeg"},
+  {id: 30, hub:"Gemeric Hub", game:"Pixel Blade", c:"Tất Cả", link:"https://link4m.net/UF22p", subLink:"https://link4m.org/44QEFRSS", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4167.jpeg"},
+  {id: 31, hub:"StarCrow Hub", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/6TJB2zTN", subLink:"https://link4m.org/pjoJeAuk", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4276.jpeg"},
+  {id: 32, hub:"lllegal Soccer", game:"", c:"Tất Cả", link:"https://link4m.net/iKJFmJ2", subLink:"https://link4m.org/BP9Y0t", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4168.jpeg"},
+  {id: 33, hub:"Anime Dice", game:"", c:"Tất Cả", link:"https://link4m.org/FxtMnM", subLink:"https://link4m.net/eZnl8", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4486.jpeg"},
+  {id: 34, hub:"Dueling Grounds Mới", game:"", c:"Tất Cả", link:"https://link4m.org/I0Mms7e", subLink:"https://link4m.org/T3M6haE", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4305.jpeg"},
+  {id: 35, hub:"Nexus Panel", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.org/ux692X", subLink:"https://link4m.net/FPNI27", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4313.jpeg"},
+  {id: 36, hub:"Panora Hub", game:"Break And Steal An Egg", c:"Tất Cả", link:"https://link4m.org/Ez5htzT5", subLink:"https://link4m.org/p8MdY6g", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4326.jpeg"},
+  {id: 37, hub:"Serenity Hub", game:"Break And Steal An Egg", c:"Tất Cả", link:"https://link4m.org/inVfwsE", subLink:"https://link4m.org/1DLxkjmd", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4337.jpeg"},
+  {id: 38, hub:"Vex Client", game:"Huss Valley", c:"Tất Cả", link:"https://link4m.net/4ENlH", subLink:"https://link4m.org/9kuhvGL", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4229.jpeg"},
+  {id: 39, hub:"Khfresh", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/fVZpeH", subLink:"https://link4m.net/En5iuml1", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4350.jpeg"},
+  {id: 40, hub:"Kaiju Alpha", game:"", c:"Tất Cả", link:"https://link4m.net/KeJbwBEK", subLink:"https://link4m.net/dy2wY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4386.jpeg"},
+  {id: 41, hub:"No Dash Cooldown", game:"Evolve A Cell", c:"Tất Cả", link:"https://link4m.net/MfDoh", subLink:"https://link4m.org/jgNECw", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4390.jpeg"},
+  {id: 42, hub:"Ouroboros", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/BR2tBG", subLink:"https://link4m.org/IHrFjOb", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4244.jpeg"},
+  {id: 43, hub:"Solve The Cube", game:"", c:"Tất Cả", link:"https://link4m.org/5Mlcl", subLink:"https://link4m.net/IKlEd6hb", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4422.jpeg"},
+  {id: 44, hub:"Survival A Million Monkey", game:"", c:"Tất Cả", link:"https://link4m.org/ErGSJC", subLink:"https://link4m.net/WkaqNI", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4468.jpeg"},
+  {id: 45, hub:"Ouroboros", game:"Harpoon A Fish", c:"Tất Cả", link:"https://link4m.org/t7quIB", subLink:"https://link4m.net/1ghqV", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4465.jpeg"},
+  {id: 46, hub:"Ouroboros", game:"Chop A Forest", c:"Tất Cả", link:"https://link4m.org/AGvhjWRu", subLink:"https://link4m.org/kwb1lit", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4469.jpeg"},
+  {id: 47, hub:"My Anime Mine", game:"", c:"Tất Cả", link:"https://link4m.org/FKak8So", subLink:"https://link4m.org/xSJm58", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4454.jpeg"},
+  {id: 48, hub:"Sell Fries", game:"", c:"Tất Cả", link:"https://link4m.org/3qJ9xc0P", subLink:"https://link4m.org/5OBeQ5Nu", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4483.jpeg"},
+  {id: 49, hub:"Valinc Syndicate", game:"Evade", c:"Tất Cả", link:"https://link4m.net/1na23", subLink:"https://link4m.org/yPVOs", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4162.jpeg"},
+  {id: 50, hub:"Banana Hub", game:"Blox Fruits", c:"Tất Cả", link:"https://link4m.org/Sv6dfcnq", subLink:"https://link4m.org/N7Uy0Ib", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4291.jpeg"}
 ];
 
 function shuffle(array) {
@@ -592,14 +591,10 @@ function render(){
     </button>
   `).join('');
 
-  $('list').innerHTML = paginated.map(s => {
-    // Tự động nén ảnh siêu nhẹ qua wsrv.nl CDN và giữ nguyên tỷ lệ không cắt
-    const optimizedImg = s.img ? `https://wsrv.nl/?url=${encodeURIComponent(s.img)}&w=300&output=webp` : '';
-    
-    return `
+  $('list').innerHTML = paginated.map(s => `
     <div class="card">
       <div class="card-img-box">
-        ${s.img ? `<img src="${optimizedImg}" alt="${s.hub}" loading="lazy">` : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
+        ${s.img ? `<img src="${s.img}" loading="lazy" decoding="async" alt="${s.hub}">` : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
       </div>
       <div class="card-body">
         <h2 class="card-title">
@@ -611,7 +606,7 @@ function render(){
         </div>
       </div>
     </div>
-  `}).join('');
+  `).join('');
 
   let pageButtons = '';
   if (totalPages > 1) {
