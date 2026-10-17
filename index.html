@@ -317,6 +317,12 @@ main {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}
+
+.card-img-box img.loaded {
+  opacity: 1;
 }
 
 .card-body {
@@ -409,7 +415,7 @@ main {
 
 <div class="header-container">
   <div class="avatar-wrapper" id="avatarFrame">
-    <img class="avatar-img" src="https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_3404.jpeg" alt="Pain Script Avatar" decoding="async">
+    <img class="avatar-img loaded" src="https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_3404.jpeg" alt="Pain Script Avatar">
   </div>
   <div class="profile-name">Pain Script</div>
 
@@ -570,6 +576,49 @@ let currentPage=1;
 const ITEMS_PER_PAGE=20;
 const cats=['Tất Cả', 'Steal An Egg', 'Ride A Pet', 'Tất Cả Script Khủng Long'];
 
+// Smart Image Caching & Preloading Pipeline
+const imageBlobCache = new Map();
+
+async function getCachedImageURL(url) {
+  if (imageBlobCache.has(url)) {
+    return imageBlobCache.get(url);
+  }
+  try {
+    const response = await fetch(url, { cache: 'force-cache' });
+    const blob = await response.blob();
+    const objectURL = URL.createObjectURL(blob);
+    imageBlobCache.set(url, objectURL);
+    return objectURL;
+  } catch (err) {
+    return url;
+  }
+}
+
+const lazyImageObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const img = entry.target;
+      const rawSrc = img.getAttribute('data-src');
+      if (rawSrc) {
+        getCachedImageURL(rawSrc).then(cachedSrc => {
+          img.src = cachedSrc;
+          img.classList.add('loaded');
+          img.removeAttribute('data-src');
+        });
+      }
+      observer.unobserve(img);
+    }
+  });
+}, { rootMargin: '200px 0px' });
+
+function prefetchNextPageImages(items) {
+  items.forEach(item => {
+    if (item.img && !imageBlobCache.has(item.img)) {
+      getCachedImageURL(item.img);
+    }
+  });
+}
+
 function render(){
   const q = $('q').value.trim().toLowerCase();
   
@@ -584,6 +633,12 @@ function render(){
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginated = filtered.slice(start, start + ITEMS_PER_PAGE);
 
+  // Background Pre-fetch next page data
+  if (currentPage < totalPages) {
+    const nextPageItems = filtered.slice(start + ITEMS_PER_PAGE, start + (ITEMS_PER_PAGE * 2));
+    prefetchNextPageImages(nextPageItems);
+  }
+
   $('tags').innerHTML = cats.map((c, i) => `
     <button class="${c === cat ? 'on' : ''}" onclick="changeCat('${c}')">
       <span class="dot" style="background:${dotColors[i % dotColors.length]}"></span>
@@ -591,10 +646,12 @@ function render(){
     </button>
   `).join('');
 
-  $('list').innerHTML = paginated.map(s => `
+  $('list').innerHTML = paginated.map(s => {
+    const cachedUrl = imageBlobCache.get(s.img);
+    return `
     <div class="card">
       <div class="card-img-box">
-        ${s.img ? `<img src="${s.img}" loading="lazy" decoding="async" alt="${s.hub}">` : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
+        ${s.img ? `<img ${cachedUrl ? `src="${cachedUrl}" class="loaded"` : `data-src="${s.img}"`} alt="${s.hub}">` : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
       </div>
       <div class="card-body">
         <h2 class="card-title">
@@ -606,7 +663,9 @@ function render(){
         </div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
+
+  document.querySelectorAll('img[data-src]').forEach(img => lazyImageObserver.observe(img));
 
   let pageButtons = '';
   if (totalPages > 1) {
