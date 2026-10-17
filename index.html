@@ -195,31 +195,52 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   cursor: pointer;
 }
 
-.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+/* ===== TAGS: 3 equal columns so every tab sits dead straight ===== */
+.tags {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
 
 .tags button {
-  white-space: nowrap;
+  width: 100%;
+  min-width: 0;
   background: #ffffff;
   border: 2px solid #f472b6;
-  padding: 8px 14px;
+  padding: 8px 6px;
   border-radius: 25px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   color: #831843;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 5px;
+  line-height: 1.2;
+  text-align: center;
+  white-space: normal;
+  word-break: break-word;
+  overflow: hidden;
   box-shadow: 0 4px 12px rgba(236, 72, 153, 0.12);
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
 }
 
 .tags button.on { background: #ec4899; color: #ffffff; border-color: #ec4899; }
+
 .tags button span.dot {
-  width: 10px; height: 10px; border-radius: 50%;
+  flex: 0 0 auto;
+  width: 9px; height: 9px; border-radius: 50%;
   display: inline-block;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
   border: 1.5px solid #ffffff;
+}
+
+@media (max-width: 380px) {
+  .tags button { font-size: 10px; padding: 7px 4px; gap: 4px; }
+  .tags button span.dot { width: 7px; height: 7px; }
 }
 
 .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -234,7 +255,6 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   flex-direction: column;
 }
 
-/* --- Fast image box: fixed aspect ratio + shimmer skeleton --- */
 .card-img-box {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -499,7 +519,7 @@ function shuffle(array) {
 }
 shuffle(SCRIPTS);
 
-const dotColors = ['#ff0055', '#7000ff', '#00d4ff', '#ffaa00'];
+const dotColors = ['#ff0055', '#7000ff', '#00d4ff'];
 const $ = id => document.getElementById(id);
 let cat = 'Tất Cả';
 let currentPage = 1;
@@ -557,7 +577,7 @@ function render(){
   $('tags').innerHTML = cats.map((c, i) => `
     <button class="${c === cat ? 'on' : ''}" onclick="changeCat('${c}')">
       <span class="dot" style="background:${dotColors[i % dotColors.length]}"></span>
-      ${c}
+      <span>${c}</span>
     </button>
   `).join('');
 
