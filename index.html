@@ -327,7 +327,6 @@ main { max-width: 860px; margin: 0 auto; padding: 10px 12px; }
   .tags button span.dot { width: 7px; height: 7px; }
 }
 
-/* ===== Grid: 2 cột desktop, 1 cột mobile cho ảnh rộng ===== */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -357,16 +356,15 @@ main { max-width: 860px; margin: 0 auto; padding: 10px 12px; }
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 22px rgba(236, 72, 153, 0.18);
 }
 
-/* ===== Ảnh rộng hơn, ít crop hơn ===== */
+/* ===== ẢNH TRÀN FULL KHUNG — không co vô giữa nữa ===== */
 .card-img-box {
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
   background: linear-gradient(135deg, #2a1030, #1a0e22);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
   position: relative;
+  display: block;
+  padding: 0;
 }
 
 @media (max-width: 620px) {
@@ -394,12 +392,15 @@ main { max-width: 860px; margin: 0 auto; padding: 10px 12px; }
 }
 
 .card-img-box img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  display: block;
   opacity: 0;
   transition: opacity .35s ease;
-  position: relative;
   z-index: 2;
 }
 
@@ -412,7 +413,11 @@ main { max-width: 860px; margin: 0 auto; padding: 10px 12px; }
   letter-spacing: 0.5px;
   text-align: center;
   padding: 0 8px;
-  position: relative;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 2;
   text-shadow: 0 0 12px rgba(236, 72, 153, 0.7);
 }
@@ -455,7 +460,6 @@ main { max-width: 860px; margin: 0 auto; padding: 10px 12px; }
 .btn-sub { color: #b794f6; }
 .btn-sub:hover { color: #ffffff; text-shadow: 0 0 12px rgba(168, 85, 247, 0.8); }
 
-/* mobile: card-body thoáng hơn, chữ to hơn chút khi 1 cột */
 @media (max-width: 620px) {
   main { padding: 10px 8px; }
   .card-body { padding: 14px; }
@@ -735,7 +739,7 @@ function render(){
     <div class="card">
       <div class="card-img-box">
         ${s.img
-          ? `<img data-src="${fastCDN(s.img)}" alt="${s.hub}" decoding="async" width="480" height="360">`
+          ? `<img data-src="${fastCDN(s.img)}" alt="${s.hub}" decoding="async">`
           : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
       </div>
       <div class="card-body">
