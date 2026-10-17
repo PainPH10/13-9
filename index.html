@@ -11,7 +11,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* dark base with soft pink ambient glow */
   --bg-base: #0a0a12;
   --bg-gradient: radial-gradient(1200px 600px at 50% -10%, #1f0a1f 0%, #0a0a12 55%, #06060b 100%);
   --surface: #14141f;
@@ -142,25 +141,75 @@ body {
 
 @keyframes wave { 0% { height: 4px; } 100% { height: 18px; } }
 
-.yt-btn {
+/* ===== Social row: YouTube + TikTok side by side ===== */
+.social-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 25px;
+}
+
+.yt-btn,
+.tt-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #ff0033, #b3001b);
+  gap: 7px;
   color: #ffffff;
   text-decoration: none;
   font-weight: 700;
-  font-size: 13px;
-  padding: 10px 24px;
+  font-size: 12px;
+  padding: 10px 12px;
   border-radius: 25px;
-  box-shadow: 0 6px 22px rgba(255, 0, 51, 0.35);
-  margin-bottom: 25px;
   width: 100%;
-  max-width: 320px;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  min-width: 0;
+  letter-spacing: 0.3px;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
-.yt-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(255, 0, 51, 0.5); }
+
+.yt-btn {
+  background: linear-gradient(135deg, #ff0033, #b3001b);
+  box-shadow: 0 6px 22px rgba(255, 0, 51, 0.35);
+}
+.yt-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 26px rgba(255, 0, 51, 0.55);
+}
+
+.tt-btn {
+  background: linear-gradient(135deg, #0f0f14, #1a1a24);
+  border: 1px solid rgba(236, 72, 153, 0.45);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55),
+              0 0 0 1px rgba(56, 189, 248, 0.15) inset,
+              0 0 18px rgba(236, 72, 153, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+.tt-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgba(56, 189, 248, 0.18),
+    rgba(236, 72, 153, 0.18));
+  opacity: 0;
+  transition: opacity .2s ease;
+  pointer-events: none;
+}
+.tt-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.15);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6),
+              0 0 26px rgba(236, 72, 153, 0.45);
+}
+.tt-btn:hover::before { opacity: 1; }
+.tt-btn svg { filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.65)); }
+
+@media (max-width: 340px) {
+  .yt-btn, .tt-btn { font-size: 11px; padding: 9px 8px; gap: 5px; }
+}
 
 main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 
@@ -227,7 +276,6 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 }
 .search-box button:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(236, 72, 153, 0.65); }
 
-/* ===== TAGS: 3 equal columns, dead straight ===== */
 .tags {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -425,7 +473,6 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 }
 .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* subtle background ambience */
 body::before {
   content: '';
   position: fixed;
@@ -465,9 +512,17 @@ body::before {
     </div>
   </div>
 
-  <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank" rel="noopener">
-    ▶ ĐĂNG KÝ KÊNH YOUTUBE
-  </a>
+  <div class="social-row">
+    <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank" rel="noopener">
+      ▶ YOUTUBE
+    </a>
+    <a class="tt-btn" href="https://www.tiktok.com/@0painph10?_r=1&_t=ZS-9AcqbYeLDCD" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M16.6 5.82a5.19 5.19 0 0 0 3.4 1.25V10a8.1 8.1 0 0 1-3.53-.86v5.48a6.15 6.15 0 1 1-6.15-6.15c.34 0 .67.03 1 .09v3.15a3.05 3.05 0 1 0 2.15 2.91V2h2.98a5.19 5.19 0 0 0 .15 3.82z"/>
+      </svg>
+      TIKTOK
+    </a>
+  </div>
 </div>
 
 <main>
