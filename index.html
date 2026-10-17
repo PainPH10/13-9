@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pain Script</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://raw.githubusercontent.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -26,7 +30,6 @@ body {
   padding-bottom: 40px;
 }
 
-/* Header & Avatar Container */
 .header-container {
   display: flex;
   flex-direction: column;
@@ -35,7 +38,6 @@ body {
   padding: 30px 20px 10px 20px;
 }
 
-/* Glowing Circular Avatar Frame */
 .avatar-wrapper {
   position: relative;
   width: 120px;
@@ -51,19 +53,11 @@ body {
   transition: transform 0.3s ease;
 }
 
-.avatar-wrapper.playing {
-  animation: musicPulse 1.2s infinite alternate ease-in-out;
-}
+.avatar-wrapper.playing { animation: musicPulse 1.2s infinite alternate ease-in-out; }
 
 @keyframes musicPulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 25px rgba(236, 72, 153, 0.4);
-  }
-  100% {
-    transform: scale(1.08);
-    box-shadow: 0 0 50px rgba(244, 63, 94, 0.8);
-  }
+  0% { transform: scale(1); box-shadow: 0 0 25px rgba(236, 72, 153, 0.4); }
+  100% { transform: scale(1.08); box-shadow: 0 0 50px rgba(244, 63, 94, 0.8); }
 }
 
 .avatar-wrapper::after {
@@ -75,12 +69,7 @@ body {
   box-shadow: 0 0 20px rgba(244, 63, 94, 0.3);
 }
 
-.avatar-img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-}
+.avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
 .profile-name {
   font-size: 22px;
@@ -90,7 +79,6 @@ body {
   letter-spacing: -0.5px;
 }
 
-/* Audio Player Widget */
 .audio-player-card {
   display: flex;
   align-items: center;
@@ -121,55 +109,20 @@ body {
   box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
 }
 
-.audio-info {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  margin: 0 12px;
-}
+.audio-info { display: flex; flex-direction: column; flex: 1; margin: 0 12px; }
+.audio-title { font-size: 12px; font-weight: 700; color: #831843; }
+.audio-sub { font-size: 10px; color: #be185d; font-weight: 600; }
 
-.audio-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: #831843;
-}
-
-.audio-sub {
-  font-size: 10px;
-  color: #be185d;
-  font-weight: 600;
-}
-
-/* Animated Sound Waves */
-.equalizer {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 18px;
-}
-
-.eq-bar {
-  width: 3px;
-  background: #ec4899;
-  border-radius: 3px;
-  height: 4px;
-}
-
-.playing .eq-bar {
-  animation: wave 0.8s infinite ease-in-out alternate;
-}
-
+.equalizer { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
+.eq-bar { width: 3px; background: #ec4899; border-radius: 3px; height: 4px; }
+.playing .eq-bar { animation: wave 0.8s infinite ease-in-out alternate; }
 .playing .eq-bar:nth-child(1) { animation-delay: 0.1s; }
 .playing .eq-bar:nth-child(2) { animation-delay: 0.3s; }
 .playing .eq-bar:nth-child(3) { animation-delay: 0.2s; }
 .playing .eq-bar:nth-child(4) { animation-delay: 0.4s; }
 
-@keyframes wave {
-  0% { height: 4px; }
-  100% { height: 18px; }
-}
+@keyframes wave { 0% { height: 4px; } 100% { height: 18px; } }
 
-/* YouTube Action Link */
 .yt-btn {
   display: inline-flex;
   align-items: center;
@@ -188,11 +141,7 @@ body {
   max-width: 320px;
 }
 
-main {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 10px 16px;
-}
+main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 
 .hero-title {
   text-align: center;
@@ -233,9 +182,7 @@ main {
   background: transparent;
 }
 
-.search-box input::placeholder {
-  color: #f472b6;
-}
+.search-box input::placeholder { color: #f472b6; }
 
 .search-box button {
   background: linear-gradient(135deg, #ec4899, #f43f5e);
@@ -248,12 +195,7 @@ main {
   cursor: pointer;
 }
 
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
-}
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 
 .tags button {
   white-space: nowrap;
@@ -272,26 +214,15 @@ main {
   box-shadow: 0 4px 12px rgba(236, 72, 153, 0.12);
 }
 
-.tags button.on {
-  background: #ec4899;
-  color: #ffffff;
-  border-color: #ec4899;
-}
-
+.tags button.on { background: #ec4899; color: #ffffff; border-color: #ec4899; }
 .tags button span.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 10px; height: 10px; border-radius: 50%;
   display: inline-block;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
   border: 1.5px solid #ffffff;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
 .card {
   background: var(--card-bg);
@@ -303,28 +234,60 @@ main {
   flex-direction: column;
 }
 
+/* --- Fast image box: fixed aspect ratio + shimmer skeleton --- */
 .card-img-box {
   width: 100%;
-  height: 110px;
+  aspect-ratio: 16 / 9;
   background: linear-gradient(135deg, #f472b6, #fb7185);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  position: relative;
+}
+
+.card-img-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #fbcfe8 25%, #fce7f3 50%, #fbcfe8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  z-index: 1;
+  transition: opacity .35s ease;
+}
+
+.card-img-box.loaded::before { opacity: 0; pointer-events: none; }
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .card-img-box img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0;
+  transition: opacity .35s ease;
+  position: relative;
+  z-index: 2;
 }
 
-.card-body {
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+.card-img-box img.img-ready { opacity: 1; }
+
+.card-img-placeholder {
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-align: center;
+  padding: 0 8px;
+  position: relative;
+  z-index: 2;
 }
+
+.card-body { padding: 12px; display: flex; flex-direction: column; flex: 1; }
 
 .card-title {
   font-size: 13px;
@@ -334,10 +297,7 @@ main {
   line-height: 1.3;
 }
 
-.game-name {
-  color: #ec4899;
-  font-weight: 700;
-}
+.game-name { color: #ec4899; font-weight: 700; }
 
 .card-footer {
   margin-top: auto;
@@ -360,11 +320,8 @@ main {
   white-space: nowrap;
 }
 
-.btn-sub {
-  color: #ec4899;
-}
+.btn-sub { color: #ec4899; }
 
-/* Pagination Styling */
 .pagination {
   display: flex;
   justify-content: center;
@@ -388,17 +345,8 @@ main {
   transition: all 0.2s ease;
 }
 
-.pagination button.active {
-  background: #ec4899;
-  color: #ffffff;
-  border-color: #ec4899;
-}
-
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  border-color: #fbcfe8;
-}
+.pagination button.active { background: #ec4899; color: #ffffff; border-color: #ec4899; }
+.pagination button:disabled { opacity: 0.5; cursor: not-allowed; border-color: #fbcfe8; }
 </style>
 </head>
 <body>
@@ -413,7 +361,6 @@ main {
   </div>
   <div class="profile-name">Pain Script</div>
 
-  <!-- Audio Equalizer Widget -->
   <div class="audio-player-card" id="playerWidget" onclick="manualPlayTrigger()">
     <div class="play-icon-badge" id="iconBadge">▶</div>
     <div class="audio-info">
@@ -428,7 +375,7 @@ main {
     </div>
   </div>
 
-  <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank">
+  <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank" rel="noopener">
     ▶ ĐĂNG KÝ KÊNH YOUTUBE
   </a>
 </div>
@@ -448,12 +395,12 @@ main {
 </main>
 
 <script>
+/* ============ Audio ============ */
 const audio = document.getElementById('bgAudio');
 const avatarFrame = document.getElementById('avatarFrame');
 const playerWidget = document.getElementById('playerWidget');
 const audioStatus = document.getElementById('audioStatus');
 const iconBadge = document.getElementById('iconBadge');
-
 let isPlaying = false;
 
 function activateAudioUI() {
@@ -463,45 +410,37 @@ function activateAudioUI() {
   iconBadge.innerText = '♫';
   audioStatus.innerText = 'Đang phát liên tục';
 }
-
 function tryAutoplay() {
-  audio.play().then(() => {
-    activateAudioUI();
-    removeInteractionListeners();
-  }).catch(() => {
-    audioStatus.innerText = 'Chạm bất kỳ đâu để nghe';
-  });
+  audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); })
+    .catch(() => { audioStatus.innerText = 'Chạm bất kỳ đâu để nghe'; });
 }
-
 function unlockAndPlay() {
   if (!isPlaying) {
-    audio.play().then(() => {
-      activateAudioUI();
-      removeInteractionListeners();
-    }).catch(e => console.log('Audio wait user tap'));
+    audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); })
+      .catch(() => {});
   }
 }
-
 function manualPlayTrigger() {
-  if (audio.paused) {
-    audio.play().then(() => {
-      activateAudioUI();
-    });
-  }
+  if (audio.paused) { audio.play().then(activateAudioUI).catch(()=>{}); }
 }
-
 function removeInteractionListeners() {
-  ['pointerdown', 'touchstart', 'click', 'scroll'].forEach(evt => {
-    document.removeEventListener(evt, unlockAndPlay);
-  });
+  ['pointerdown','touchstart','click','scroll'].forEach(evt => document.removeEventListener(evt, unlockAndPlay));
 }
-
-['pointerdown', 'touchstart', 'click', 'scroll'].forEach(evt => {
+['pointerdown','touchstart','click','scroll'].forEach(evt => {
   document.addEventListener(evt, unlockAndPlay, { passive: true });
 });
-
 window.addEventListener('DOMContentLoaded', tryAutoplay);
 
+/* ============ Fast CDN rewrite ============ */
+function fastCDN(url){
+  if (!url) return url;
+  const m = url.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/);
+  if (!m) return url;
+  const [, user, repo, branch, path] = m;
+  return `https://cdn.jsdelivr.net/gh/${user}/${repo}@${branch}/${path}`;
+}
+
+/* ============ Data ============ */
 const SCRIPTS = [
   {id: 1, hub:"Nox Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/3QBxqhj", subLink:"https://link4m.net/kopA3p", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4003.jpeg"},
   {id: 2, hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", subLink:"https://link4m.net/WClWj", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4141.jpeg"},
@@ -564,17 +503,51 @@ function shuffle(array) {
 shuffle(SCRIPTS);
 
 const dotColors = ['#ff0055', '#7000ff', '#00d4ff', '#ffaa00'];
-const $=id=>document.getElementById(id);
-let cat='Tất Cả';
-let currentPage=1;
-const ITEMS_PER_PAGE=20;
-const cats=['Tất Cả', 'Steal An Egg', 'Ride A Pet', 'Tất Cả Script Khủng Long'];
+const $ = id => document.getElementById(id);
+let cat = 'Tất Cả';
+let currentPage = 1;
+const ITEMS_PER_PAGE = 20;
+const cats = ['Tất Cả', 'Steal An Egg', 'Ride A Pet', 'Tất Cả Script Khủng Long'];
 
+/* ============ Fast image pipeline ============ */
+const imgObserver = new IntersectionObserver((entries) => {
+  for (const entry of entries) {
+    if (!entry.isIntersecting) continue;
+    const img = entry.target;
+    const url = img.dataset.src;
+    if (url && !img.src) {
+      img.src = url;
+      img.onload = () => {
+        img.classList.add('img-ready');
+        img.closest('.card-img-box')?.classList.add('loaded');
+      };
+      img.onerror = () => img.closest('.card-img-box')?.classList.add('loaded');
+    }
+    imgObserver.unobserve(img);
+  }
+}, { rootMargin: '600px 0px', threshold: 0.01 });
+
+function primeFirstImages(count = 6) {
+  const imgs = [...document.querySelectorAll('.card-img-box img[data-src]')].slice(0, count);
+  imgs.forEach(img => {
+    const url = img.dataset.src;
+    if (!url) return;
+    img.src = url;
+    img.onload = () => {
+      img.classList.add('img-ready');
+      img.closest('.card-img-box')?.classList.add('loaded');
+    };
+    img.onerror = () => img.closest('.card-img-box')?.classList.add('loaded');
+    imgObserver.unobserve(img);
+  });
+}
+
+/* ============ Render ============ */
 function render(){
   const q = $('q').value.trim().toLowerCase();
-  
-  const filtered = SCRIPTS.filter(s => 
-    (cat === 'Tất Cả' || s.c === cat) && 
+
+  const filtered = SCRIPTS.filter(s =>
+    (cat === 'Tất Cả' || s.c === cat) &&
     (!q || s.hub.toLowerCase().includes(q) || s.game.toLowerCase().includes(q))
   );
 
@@ -594,19 +567,24 @@ function render(){
   $('list').innerHTML = paginated.map(s => `
     <div class="card">
       <div class="card-img-box">
-        ${s.img ? `<img src="${s.img}" loading="lazy" decoding="async" alt="${s.hub}">` : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
+        ${s.img
+          ? `<img data-src="${fastCDN(s.img)}" alt="${s.hub}" decoding="async" width="320" height="180">`
+          : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
       </div>
       <div class="card-body">
         <h2 class="card-title">
           ${s.hub} ${s.game ? `<span class="game-name">${s.game}</span>` : ''}
         </h2>
         <div class="card-footer">
-          <a class="btn-link" href="${s.link}" target="_blank">LẤY SCRIPT &rarr;</a>
-          <a class="btn-link btn-sub" href="${s.subLink}" target="_blank">LINK PHỤ &rarr;</a>
+          <a class="btn-link" href="${s.link}" target="_blank" rel="noopener">LẤY SCRIPT &rarr;</a>
+          <a class="btn-link btn-sub" href="${s.subLink}" target="_blank" rel="noopener">LINK PHỤ &rarr;</a>
         </div>
       </div>
     </div>
   `).join('');
+
+  document.querySelectorAll('.card-img-box img[data-src]').forEach(img => imgObserver.observe(img));
+  primeFirstImages(6);
 
   let pageButtons = '';
   if (totalPages > 1) {
@@ -619,19 +597,11 @@ function render(){
   $('pagination').innerHTML = pageButtons;
 }
 
-function changeCat(c) {
-  cat = c;
-  currentPage = 1;
-  render();
-}
+function changeCat(c) { cat = c; currentPage = 1; render(); }
+function changePage(p) { currentPage = p; render(); window.scrollTo({ top: 300, behavior: 'smooth' }); }
 
-function changePage(p) {
-  currentPage = p;
-  render();
-  window.scrollTo({ top: 300, behavior: 'smooth' });
-}
-
-$('q').addEventListener('input', () => { currentPage = 1; render(); });$('go').addEventListener('click', () => { currentPage = 1; render(); });
+$('q').addEventListener('input', () => { currentPage = 1; render(); });
+$('go').addEventListener('click', () => { currentPage = 1; render(); });
 
 render();
 </script>
