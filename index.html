@@ -16,8 +16,9 @@
   --surface: #14141f;
   --surface-2: #1b1b2a;
   --surface-hover: #22223a;
-  --border-soft: rgba(236, 72, 153, 0.18);
-  --border-strong: rgba(236, 72, 153, 0.45);
+  --border-soft: rgba(236;
+, 72, 153,  0.18);
+  --border color-strong: rgba(236, 72,: 153, 0.45);
   --pink-bright: #f472b6;
   --pink-glow: #ec4899;
   --pink-core: #ff4fa3;
@@ -87,8 +88,7 @@ body {
   font-weight: 800;
   background: linear-gradient(90deg, #ff9ad5, #f472b6, #a855f7);
   -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  background-clip: text transparent;
   margin-bottom: 16px;
   letter-spacing: -0.5px;
   filter: drop-shadow(0 0 12px rgba(236, 72, 153, 0.35));
@@ -259,7 +259,7 @@ main { max-width: 600px; margin: 0 auto; padding: 10px 16px; }
   .tags button span.dot { width: 7px; height: 7px; }
 }
 
-/* ===== CHỈNH LẠI THÀNH 1 CỘT DUY NHẤT ===== */
+/* ===== 1 CỘT DUY NHẤT ===== */
 .grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -282,10 +282,11 @@ main { max-width: 600px; margin: 0 auto; padding: 10px 16px; }
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 22px rgba(236, 72, 153, 0.18);
 }
 
+/* Sửa lỗi zoom ảnh */
 .card-img-box {
   width: 100%;
   aspect-ratio: 16 / 9;
-  background: linear-gradient(135deg, #2a1030, #1a0e22);
+  background: #000000; /* Đổi nền đen để khung viền ảnh trông tự nhiên hơn */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -302,7 +303,9 @@ main { max-width: 600px; margin: 0 auto; padding: 10px 16px; }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
 .card-img-box img {
-  width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s ease; position: relative; z-index: 2;
+  width: 100%; height: 100%; 
+  object-fit: contain; /* Đã sửa từ cover sang contain để lấy full ảnh */
+  opacity: 0; transition: opacity .35s ease; position: relative; z-index: 2;
 }
 .card-img-box img.img-ready { opacity: 1; }
 
@@ -467,7 +470,6 @@ const SCRIPTS = [
   {id: 12, hub:"R Hub", game:"Ride A Pet", c:"Tất Cả", link:"https://link4m.net/Un5BcNem", subLink:"https://link4m.org/V6yRgx", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4155.jpeg"},
   {id: 13, hub:"Afk Farm Mới", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/DTfuxYO", subLink:"https://link4m.net/xR3WS", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4239.jpeg"},
   {id: 14, hub:"Pn Hub", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/7baHImY", subLink:"https://link4m.net/dg9o1FIg", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4156.jpeg"},
-  {id: 15, hub:"Farm Pvp Cũ", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/guPN2", subLink:"https://link4m.org/oZFvFn", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4158.jpeg"},
   {id: 16, hub:"MorthUp", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/7VuBc", subLink:"https://link4m.net/NoY94", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4471.jpeg"},
   {id: 17, hub:"Pn Hub", game:"My Dino Life", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/D6Y9qpO", subLink:"https://link4m.net/YYzUmwc", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4161.jpeg"},
   {id: 18, hub:"Jurassic Blocky", game:"", c:"Tất Cả Script Khủng Long", link:"https://fnote.net/notes/Nn2nNB", subLink:"https://fnote.net/notes/Nn2nNB", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4169.jpeg"},
