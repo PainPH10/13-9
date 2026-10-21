@@ -8,19 +8,17 @@
 <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
-<!-- Đổi Font chữ sang phong cách tròn trịa, dày (Game Style) -->
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* Bảng màu Retro Mario */
-  --bg-base: #B3D4F3; /* Xanh da trời */
-  --surface: #FAF6EE; /* Trắng ngà (Khung) */
-  --surface-2: #EFE8D8; /* Trắng ngà đậm hơn (Nút) */
-  --border-color: #2B2B2B; /* Viền đen đậm */
-  --accent-red: #E52521; /* Đỏ Mario */
-  --accent-yellow: #FBD000; /* Vàng đồng xu */
-  --accent-green: #43B047; /* Xanh lá */
-  --accent-blue: #3B5998; /* Xanh dương đậm */
+  --bg-base: #B3D4F3;
+  --surface: #FAF6EE;
+  --surface-2: #EFE8D8;
+  --border-color: #2B2B2B;
+  --accent-red: #E52521;
+  --accent-yellow: #FBD000;
+  --accent-green: #43B047;
+  --accent-blue: #3B5998;
   
   --text-main: #2B2B2B;
   --text-sub: #666;
@@ -34,7 +32,6 @@ html { color-scheme: light; }
 body {
   margin: 0;
   background-color: var(--bg-base);
-  /* Thêm họa tiết chấm bi nhẹ cho nền đỡ trống */
   background-image: radial-gradient(#9bbfe3 15%, transparent 16%);
   background-size: 20px 20px;
   color: var(--text-main);
@@ -78,11 +75,11 @@ body {
 
 .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); }
 
+/* SỬA LỖI CHỮ MÉO: Bỏ viền text-stroke, dùng text-shadow đổ bóng cứng */
 .profile-name {
   font-size: 28px;
   font-weight: 700;
   color: var(--accent-red);
-  -webkit-text-stroke: 1.5px var(--border-color); /* Viền chữ */
   text-shadow: 3px 3px 0px var(--border-color);
   margin-bottom: 20px;
   letter-spacing: 0.5px;
@@ -152,7 +149,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
   color: #ffffff;
   text-decoration: none;
   font-weight: 700;
@@ -175,12 +172,12 @@ body {
 /* ===== MAIN CONTENT ===== */
 main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 
+/* SỬA LỖI CHỮ MÉO: Bỏ text-stroke */
 .hero-title {
   text-align: center;
   font-size: clamp(24px, 5vw, 36px);
   font-weight: 700;
   color: #fff;
-  -webkit-text-stroke: 1.5px var(--border-color);
   text-shadow: 3px 3px 0px var(--border-color);
   margin: 10px 0;
 }
@@ -286,7 +283,6 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   border-bottom: 3px solid var(--border-color);
 }
 
-/* Hiệu ứng load ảnh */
 .card-img-box::before {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(90deg, var(--surface-2) 25%, #e0d8c8 50%, var(--surface-2) 75%);
@@ -379,8 +375,12 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   </div>
 
   <div class="social-row">
+    <!-- SỬA LỖI ICON YOUTUBE: Dùng SVG chuẩn -->
     <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank" rel="noopener">
-      ▶ YOUTUBE
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+      </svg>
+      YOUTUBE
     </a>
     <a class="tt-btn" href="https://www.tiktok.com/@0painph10?_r=1&_t=ZS-9AcqbYeLDCD" target="_blank" rel="noopener">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -517,14 +517,13 @@ function shuffle(array) {
 }
 shuffle(SCRIPTS);
 
-const dotColors = ['#E52521', '#43B047', '#3B5998']; // Đổi màu chấm cho hợp tone Mario
+const dotColors = ['#E52521', '#43B047', '#3B5998'];
 const $ = id => document.getElementById(id);
 let cat = 'Tất Cả';
 let currentPage = 1;
 const ITEMS_PER_PAGE = 20;
 const cats = ['Tất Cả', 'Steal An Egg', 'Tất Cả Script Khủng Long'];
 
-/* ============ Fast image pipeline ============ */
 let imgObserver;
 if (typeof IntersectionObserver !== 'undefined') {
   imgObserver = new IntersectionObserver((entries) => {
@@ -548,7 +547,6 @@ if (typeof IntersectionObserver !== 'undefined') {
     }
   }, { rootMargin: '600px 0px', threshold: 0.01 });
 } else {
-  // Fallback cho trình duyệt cũ
   imgObserver = {
     observe: (img) => {
       const url = img.dataset.src;
@@ -588,7 +586,6 @@ function primeFirstImages(count = 6) {
   });
 }
 
-/* ============ Render ============ */
 function render(){
   const q = $('q').value.trim().toLowerCase();
 
@@ -646,7 +643,6 @@ function render(){
 function changeCat(c) { cat = c; currentPage = 1; render(); }
 function changePage(p) { currentPage = p; render(); window.scrollTo({ top: 300, behavior: 'smooth' }); }
 
-/* ===== TỰ ĐỘNG CHUYỂN VỀ TAB "TẤT CẢ" KHI GÕ TÌM KIẾM ===== */
 $('q').addEventListener('input', () => {
   if ($('q').value.trim() !== '') cat = 'Tất Cả';
   currentPage = 1;
@@ -658,7 +654,6 @@ $('go').addEventListener('click', () => {
   render();
 });
 
-// Gọi render() ở cuối cùng để đảm bảo mọi thứ đã load xong
 render();
 </script>
 </body>
