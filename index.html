@@ -86,8 +86,7 @@ body {
 .brand-name {
   font-size: 22px;
   font-weight: 900;
-  color: var(--border-color;
-);
+  color: var(--border-color);
   text-shadow: 1px 1px 0 #fff;
   line-height: 1.1;
 }
@@ -96,7 +95,8 @@ body {
 .header-controls {
   display: flex;
   align-items: center;
-  gap : 12px flex-wrap: wrap;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .music-widget {
@@ -143,7 +143,7 @@ body {
 .btn-yt { background: var(--red); color: #fff; }
 .btn-tt { background: #fff; color: var(--border-color); }
 
-/* ================= CATEGORIES (Thanh Danh Mục) ================= */
+/* ================= CATEGORIES ================= */
 .category-bar {
   background: #8d6e63;
   border-bottom: 3px solid var(--border-color);
@@ -186,7 +186,6 @@ body {
   padding: 20px 16px;
 }
 
-/* Đã đổi thành Tất Cả Script */
 .page-title {
   font-size: 26px;
   font-weight: 900;
@@ -236,7 +235,7 @@ body {
 /* ================= GRID THẺ SCRIPT ================= */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr); /* Mặc định 2 cột */
   gap: 16px;
 }
 
@@ -356,8 +355,25 @@ body {
   .music-widget { justify-content: center; }
   .social-btns { justify-content: center; }
   
-  .grid-container { grid-template-columns: 1fr; gap: 12px; }
+  .main-content { padding: 16px 10px; }
   .page-title { font-size: 22px; }
+  
+  /* Giữ 2 cột trên mobile nhưng thu nhỏ khoảng cách và chữ để vừa vặn */
+  .grid-container { 
+    gap: 8px; 
+  }
+  
+  .card-header { padding: 6px 8px; font-size: 11px; }
+  .card-body { padding: 8px; }
+  .hub-name { font-size: 14px; }
+  .game-name { font-size: 11px; margin-bottom: 8px; }
+  
+  .btn-link { 
+    font-size: 11px; 
+    padding: 6px 0; 
+    border-width: 2px; 
+  }
+  .card-actions { gap: 4px; }
 }
 </style>
 </head>
@@ -405,7 +421,6 @@ body {
 
   <!-- NỘI DUNG CHÍNH -->
   <main class="main-content">
-    <!-- Đã đổi tiêu đề -->
     <h1 class="page-title">Tất Cả Script</h1>
     
     <div class="search-area">
