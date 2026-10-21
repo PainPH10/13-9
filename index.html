@@ -3,377 +3,402 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pain Hub - Script Library</title>
+<title>Pain Script - Mario Hub Style</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* Bảng màu Game UI hiện đại */
-  --bg-body: #e9f0ec;
-  --bg-pattern: radial-gradient(#d1dfd6 2px, transparent 2px);
-  --window-bg: #fdfaf3;
-  --border-color: #2b2b2b;
-  --primary: #ffca28;
-  --primary-hover: #ffb300;
-  --text-main: #2b2b2b;
-  --text-sub: #6b6b6b;
-  --red: #ff5252;
-  --green: #4caf50;
-  --blue: #42a5f5;
-  
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 24px;
-  --shadow-soft: 0 8px 24px rgba(0,0,0,0.08);
-  --shadow-hard: 0 4px 0 var(--border-color);
-  --shadow-btn: 0 4px 0 var(--border-color);
+  --bg-page: #7eb0d5; /* Màu nền xanh của game */
+  --window-bg: #b2d6eb; /* Nền xanh nhạt của vùng chính */
+  --sidebar-bg: #8b5a42; /* Màu nâu của sidebar */
+  --sidebar-hover: #a36a4e;
+  --text-dark: #2b2b2b;
+  --text-light: #ffffff;
+  --card-bg: #fcf8eb; /* Trắng ngà của card */
+  --card-header-bg: #e8dfc8;
+  --border-color: #3b3b3b;
+  --accent-yellow: #ffca3a;
+  --accent-red: #e63946;
+  --accent-green: #5cb85c;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-hard: 4px 4px 0px rgba(0,0,0,0.2);
+  --shadow-btn: 0 4px 0px #3b3b3b;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
+* { box-sizing: border-box; }
 body {
-  background-color: var(--bg-body);
-  background-image: var(--bg-pattern);
-  background-size: 24px 24px;
-  color: var(--text-main);
-  font-family: 'Nunito', system-ui, sans-serif;
+  margin: 0;
+  background-color: var(--bg-page);
+  /* Tạo hiệu ứng nền lưới nhẹ */
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--text-dark);
+  font-family: 'Fredoka', system-ui, sans-serif;
   min-height: 100vh;
-  padding: 16px;
-  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
 }
 
-/* Khung viền chính */
-.app-container {
-  max-width: 900px;
-  margin: 0 auto;
+/* ===== KHUNG CỬA SỔ CHÍNH ===== */
+.app-window {
+  width: 100%;
+  max-width: 1100px;
   background: var(--window-bg);
-  border: 3px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-soft), inset 0 -4px 0 rgba(0,0,0,0.05);
+  border: 4px solid #5a7a92;
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+}
+
+/* ===== THANH TIÊU ĐỀ TRÊN CÙNG ===== */
+.top-bar {
+  background: #6b8cae;
+  border-bottom: 4px solid #5a7a92;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-yellow);
+  text-shadow: 2px 2px 0 #333, -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333;
+  letter-spacing: 1px;
+}
+
+.status-area {
+  display: flex;
+  gap: 15px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  background: rgba(0,0,0,0.15);
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.window-controls { display: flex; gap: 8px; }
+.win-btn {
+  width: 30px; height: 30px; border-radius: 8px; border: 2px solid var(--border-color);
+  display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer;
+  box-shadow: var(--shadow-btn); transition: transform 0.1s;
+}
+.win-btn:active { transform: translateY(4px); box-shadow: none; }
+.btn-min { background: var(--accent-yellow); color: var(--border-color); }
+.btn-close { background: var(--accent-red); color: white; }
+
+/* ===== KHU VỰC NỘI DUNG (SIDEBAR + MAIN) ===== */
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* --- SIDEBAR (BÊN TRÁI) --- */
+.sidebar {
+  width: 260px;
+  background: var(--sidebar-bg);
+  padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+  border-right: 4px solid #5a3d2b;
+}
+
+.sidebar-title {
+  color: #d1beb0;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+/* Nút Menu trong Sidebar */
+.side-btn {
+  background: var(--card-bg);
+  border: 3px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-dark);
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+  transition: transform 0.1s, background 0.2s;
+  width: 100%;
+  text-align: left;
+}
+.side-btn:hover { background: #fff; }
+.side-btn:active { transform: translateY(4px); box-shadow: none; }
+.side-btn.on {
+  background: #ffca3a; /* Màu vàng khi active */
+  border-color: #d49f00;
+  box-shadow: 0 4px 0 #d49f00;
+}
+
+/* Avatar & Profile */
+.profile-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0,0,0,0.2);
+  padding: 10px;
+  border-radius: var(--radius-md);
+  margin-bottom: 10px;
+}
+.avatar-wrapper {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  border: 3px solid var(--border-color);
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+}
+.avatar-img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-wrapper.playing { border-color: var(--accent-green); }
+.profile-name { color: #fff; font-weight: 700; font-size: 16px; text-shadow: 1px 1px 0 #333; }
+
+/* Audio Player */
+.audio-player-card {
+  background: #333;
+  border: 3px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: var(--shadow-btn);
+}
+.audio-player-card:active { transform: translateY(4px); box-shadow: none; }
+.play-icon-badge { background: var(--accent-green); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; }
+.audio-info { flex: 1; display: flex; flex-direction: column; }
+.audio-title { color: #fff; font-size: 12px; font-weight: 600; }
+.audio-sub { color: #aaa; font-size: 10px; }
+.equalizer { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
+.eq-bar { width: 3px; background: var(--accent-green); height: 4px; border-radius: 2px; }
+.playing .eq-bar { animation: wave 0.8s infinite ease-in-out alternate; }
+.playing .eq-bar:nth-child(2) { animation-delay: 0.2s; }
+.playing .eq-bar:nth-child(3) { animation-delay: 0.4s; }
+.playing .eq-bar:nth-child(4) { animation-delay: 0.1s; }
+@keyframes wave { 0% { height: 4px; } 100% { height: 14px; } }
+
+/* Social */
+.social-row { display: flex; flex-direction: column; gap: 8px; margin-top: auto; }
+.social-btn {
+  border: 3px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  text-align: center;
+  font-weight: 700;
+  text-decoration: none;
+  color: white;
+  box-shadow: var(--shadow-btn);
+  display: flex; justify-content: center; align-items: center; gap: 8px;
+}
+.social-btn:active { transform: translateY(4px); box-shadow: none; }
+.yt-btn { background: #ff0000; }
+.tt-btn { background: #000000; }
+
+/* --- MAIN CONTENT (BÊN PHẢI) --- */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px;
+}
+
+.hero-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+  color: #2b2b2b;
+  text-shadow: 2px 2px 0 #fff;
+}
+
+/* Thanh tìm kiếm */
+.search-box {
+  background: var(--card-bg);
+  border: 3px solid var(--border-color);
+  border-radius: 30px;
+  padding: 5px 5px 5px 15px;
+  display: flex;
+  align-items: center;
+  box-shadow: var(--shadow-hard);
+  width: 300px;
+}
+.search-box input {
+  border: none; outline: none; background: transparent;
+  font-family: inherit; font-size: 14px; width: 100%; color: var(--text-dark);
+}
+.search-box button {
+  background: var(--accent-yellow); border: 2px solid var(--border-color);
+  border-radius: 20px; padding: 6px 15px; font-family: inherit; font-weight: 700;
+  cursor: pointer; box-shadow: 0 2px 0 var(--border-color);
+}
+.search-box button:active { transform: translateY(2px); box-shadow: none; }
+
+/* Lưới Thẻ Script */
+.grid-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Custom Scrollbar */
+.grid-container::-webkit-scrollbar { width: 10px; }
+.grid-container::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
+.grid-container::-webkit-scrollbar-thumb { background: var(--sidebar-bg); border-radius: 10px; border: 2px solid var(--window-bg); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+  padding-bottom: 20px;
+}
+
+/* Card Style (Giống ảnh Auto Steal) */
+.card {
+  background: var(--card-bg);
+  border: 3px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-hard);
   display: flex;
   flex-direction: column;
 }
 
-/* ================= HEADER ================= */
-.top-header {
-  background: #a5d3ef;
+/* Phần Header của Card (Giống dòng chữ Auto Steal) */
+.card-header {
+  background: var(--card-header-bg);
   border-bottom: 3px solid var(--border-color);
-  padding: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.brand-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.avatar {
-  width: 50px; height: 50px;
-  border-radius: 12px;
-  border: 3px solid var(--border-color);
-  background: #fff;
-  object-fit: cover;
-  box-shadow: 2px 2px 0 var(--border-color);
-}
-
-.brand-name {
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--border-color);
-  text-shadow: 1px 1px 0 #fff;
-  line-height: 1.1;
-}
-
-/* Nút Nhạc & MXH */
-.header-controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.music-widget {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border: 2px solid var(--border-color);
-  border-radius: 30px;
-  padding: 6px 16px 6px 6px;
-  cursor: pointer;
-  box-shadow: 0 2px 0 var(--border-color);
-  transition: transform 0.1s;
-}
-.music-widget:active { transform: translateY(2px); box-shadow: none; }
-
-.music-icon {
-  width: 32px; height: 32px;
-  background: var(--green);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: 16px;
-  border: 2px solid var(--border-color);
-  margin-right: 10px;
-}
-
-.music-text {
-  display: flex; flex-direction: column;
-}
-.music-title { font-size: 13px; font-weight: 800; color: var(--border-color); }
-.music-status { font-size: 11px; font-weight: 700; color: var(--text-sub); }
-
-.social-btns { display: flex; gap: 8px; }
-.social-btn {
-  text-decoration: none;
-  font-size: 13px; font-weight: 800;
-  padding: 8px 16px;
-  border-radius: 12px;
-  border: 2px solid var(--border-color);
-  box-shadow: 0 3px 0 var(--border-color);
-  display: flex; align-items: center; gap: 6px;
-  transition: transform 0.1s;
-}
-.social-btn:active { transform: translateY(3px); box-shadow: none; }
-.btn-yt { background: var(--red); color: #fff; }
-.btn-tt { background: #fff; color: var(--border-color); }
-
-/* ================= CATEGORIES ================= */
-.category-bar {
-  background: #8d6e63;
-  border-bottom: 3px solid var(--border-color);
-  padding: 12px 16px;
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  scrollbar-width: none; /* Firefox */
-}
-.category-bar::-webkit-scrollbar { display: none; } /* Chrome */
-
-.cat-btn {
-  white-space: nowrap;
-  background: transparent;
-  border: 2px solid transparent;
-  color: #fff;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 800;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
+  padding: 10px 12px;
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s;
-}
-.cat-btn:hover { background: rgba(255,255,255,0.1); }
-.cat-btn.active {
-  background: var(--primary);
-  color: var(--border-color);
-  border-color: var(--border-color);
-  box-shadow: 0 3px 0 var(--border-color);
-  transform: translateY(-2px);
-}
-.cat-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--border-color); }
-
-/* ================= MAIN CONTENT ================= */
-.main-content {
-  padding: 20px 16px;
-}
-
-.page-title {
-  font-size: 26px;
-  font-weight: 900;
-  color: var(--border-color);
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  text-shadow: 1px 1px 0 #fff;
-}
-
-.search-area {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 24px;
-}
-
-.search-input {
-  flex: 1;
-  background: #fff;
-  border: 2px solid var(--border-color);
-  border-radius: 12px;
-  padding: 12px 16px;
-  font-family: inherit;
-  font-size: 15px;
   font-weight: 700;
-  color: var(--text-main);
-  outline: none;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+  font-size: 16px;
 }
-.search-input::placeholder { color: #a0a0a0; }
-.search-input:focus { border-color: var(--blue); }
-
-.btn-search {
-  background: var(--primary);
-  border: 2px solid var(--border-color);
-  border-radius: 12px;
-  padding: 0 20px;
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 900;
-  color: var(--border-color);
-  cursor: pointer;
-  box-shadow: 0 3px 0 var(--border-color);
-  transition: transform 0.1s;
-}
-.btn-search:active { transform: translateY(3px); box-shadow: none; }
-
-/* ================= GRID THẺ SCRIPT ================= */
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Mặc định 2 cột */
-  gap: 16px;
-}
-
-.card {
-  background: #fff;
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: 0 4px 0 rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s;
-}
-.card:hover { transform: translateY(-2px); }
-
-.card-header {
-  background: #f8f1e5;
-  border-bottom: 2px solid var(--border-color);
-  padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--text-sub);
-  display: flex; align-items: center; gap: 6px;
-}
-
-.img-container {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #e0e0e0;
-  position: relative;
-  border-bottom: 2px solid var(--border-color);
-}
-
-/* Skeleton loading */
-.img-container::before {
-  content: ""; position: absolute; inset: 0;
-  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
-  background-size: 200% 100%;
-  animation: loading 1.2s infinite;
-  z-index: 1;
-}
-.img-container.loaded::before { display: none; }
-@keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-.img-container img {
-  width: 100%; height: 100%;
-  object-fit: cover; object-position: top;
-  position: relative; z-index: 2;
-  opacity: 0; transition: opacity 0.3s;
-}
-.img-container img.loaded { opacity: 1; }
+.card-header img { width: 20px; height: 20px; image-rendering: pixelated; }
 
 .card-body {
   padding: 12px;
-  display: flex; flex-direction: column; flex: 1;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
-.hub-name {
-  font-size: 16px; font-weight: 900;
-  color: var(--text-main);
-  margin-bottom: 4px;
+.card-img-box {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #e0e0e0;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 10px;
 }
+.card-img-box img {
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transition: opacity 0.3s ease;
+}
+.card-img-box img.img-ready { opacity: 1; }
+.card-img-placeholder {
+  position: absolute; inset: 0; display: flex; justify-content: center; align-items: center;
+  font-weight: 700; color: #888;
+}
+
 .game-name {
-  font-size: 13px; font-weight: 700;
-  color: var(--blue);
-  margin-bottom: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 10px;
+  line-height: 1.3;
 }
 
-.card-actions {
+.card-footer {
   margin-top: auto;
-  display: flex; gap: 8px;
+  display: flex;
+  gap: 8px;
 }
-
 .btn-link {
   flex: 1;
   text-align: center;
-  text-decoration: none;
-  font-size: 13px; font-weight: 800;
-  padding: 8px 0;
-  border-radius: 8px;
+  background: #fff;
   border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-dark);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 8px 0;
   box-shadow: 0 3px 0 var(--border-color);
   transition: transform 0.1s;
 }
 .btn-link:active { transform: translateY(3px); box-shadow: none; }
-.btn-main { background: var(--green); color: #fff; }
-.btn-sub { background: #e0e0e0; color: var(--border-color); }
+.btn-sub { background: #f0f0f0; }
 
-/* ================= PHÂN TRANG ================= */
+/* Phân trang */
 .pagination {
-  display: flex; justify-content: center; align-items: center;
-  gap: 8px; margin-top: 24px; flex-wrap: wrap;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 2px dashed rgba(0,0,0,0.1);
 }
-.page-btn {
-  background: #fff;
-  border: 2px solid var(--border-color);
-  padding: 8px 16px;
-  border-radius: 10px;
-  font-family: inherit; font-size: 14px; font-weight: 800;
-  color: var(--text-main);
-  cursor: pointer;
+.pagination button {
+  background: #fff; border: 2px solid var(--border-color);
+  border-radius: var(--radius-sm); padding: 6px 12px;
+  font-family: inherit; font-weight: 700; cursor: pointer;
   box-shadow: 0 3px 0 var(--border-color);
-  transition: all 0.1s;
 }
-.page-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
-.page-btn.active { background: var(--primary); }
-.page-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; background: #eee; }
+.pagination button.active { background: var(--accent-yellow); }
+.pagination button:active { transform: translateY(3px); box-shadow: none; }
+.pagination button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: 0 3px 0 var(--border-color); }
 
-/* ================= RESPONSIVE (MOBILE) ================= */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  body { padding: 8px; }
-  .app-container { border-radius: 16px; }
-  
-  .top-header { flex-direction: column; align-items: stretch; gap: 12px; }
-  .brand-info { justify-content: center; }
-  .header-controls { flex-direction: column; align-items: stretch; gap: 10px; }
-  .music-widget { justify-content: center; }
-  .social-btns { justify-content: center; }
-  
-  .main-content { padding: 16px 10px; }
-  .page-title { font-size: 22px; }
-  
-  /* Giữ 2 cột trên mobile nhưng thu nhỏ khoảng cách và chữ để vừa vặn */
-  .grid-container { 
-    gap: 8px; 
-  }
-  
-  .card-header { padding: 6px 8px; font-size: 11px; }
-  .card-body { padding: 8px; }
-  .hub-name { font-size: 14px; }
-  .game-name { font-size: 11px; margin-bottom: 8px; }
-  
-  .btn-link { 
-    font-size: 11px; 
-    padding: 6px 0; 
-    border-width: 2px; 
-  }
-  .card-actions { gap: 4px; }
+  .app-window { height: 100vh; border-radius: 0; border: none; }
+  .app-body { flex-direction: column; }
+  .sidebar { width: 100%; border-right: none; border-bottom: 4px solid #5a3d2b; flex-direction: row; flex-wrap: wrap; padding: 10px; }
+  .sidebar-title { display: none; }
+  .profile-area { width: 100%; justify-content: center; }
+  .side-btn { width: calc(50% - 5px); margin-bottom: 5px; padding: 8px; font-size: 13px; }
+  .social-row { flex-direction: row; width: 100%; }
+  .audio-player-card { width: 100%; }
+  .main-header { flex-direction: column; align-items: flex-start; }
+  .search-box { width: 100%; }
+  .grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -383,93 +408,117 @@ body {
   <source src="./nhac.mp3" type="audio/mpeg">
 </audio>
 
-<div class="app-container">
-  
-  <!-- HEADER -->
-  <header class="top-header">
-    <div class="brand-info">
-      <img class="avatar" src="https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4609.jpeg" alt="Avatar">
-      <div class="brand-name">PAIN<br>HUB</div>
+<div class="app-window">
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="logo-area">
+      <span style="font-size: 28px;">🍄</span> PAIN HUB
     </div>
+    <div class="status-area">
+      <span id="fps">FPS 60</span>
+      <span id="ping">PING 99ms</span>
+    </div>
+    <div class="window-controls">
+      <div class="win-btn btn-min">-</div>
+      <div class="win-btn btn-close">×</div>
+    </div>
+  </div>
 
-    <div class="header-controls">
-      <!-- Nhạc -->
-      <div class="music-widget" onclick="togglePlay()">
-        <div class="music-icon" id="musicIcon">▶</div>
-        <div class="music-text">
-          <span class="music-title">CANTA LA (SLOWED)</span>
-          <span class="music-status" id="musicStatus">Chạm để bật nhạc</span>
+  <div class="app-body">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="profile-area">
+        <div class="avatar-wrapper" id="avatarFrame">
+          <img class="avatar-img" src="https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4609.jpeg" alt="Avatar">
+        </div>
+        <div class="profile-name">Pain Script</div>
+      </div>
+
+      <div class="audio-player-card" id="playerWidget" onclick="manualPlayTrigger()">
+        <div class="play-icon-badge" id="iconBadge">▶</div>
+        <div class="audio-info">
+          <span class="audio-title">CANTA LA (SLOWED)</span>
+          <span class="audio-sub" id="audioStatus">Chạm để bật nhạc</span>
+        </div>
+        <div class="equalizer" id="equalizer">
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
         </div>
       </div>
-      
-      <!-- MXH -->
-      <div class="social-btns">
-        <a href="https://youtube.com/@painph09" target="_blank" class="social-btn btn-yt">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
-          YOUTUBE
-        </a>
-        <a href="https://www.tiktok.com/@0painph10" target="_blank" class="social-btn btn-tt">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82a5.19 5.19 0 0 0 3.4 1.25V10a8.1 8.1 0 0 1-3.53-.86v5.48a6.15 6.15 0 1 1-6.15-6.15c.34 0 .67.03 1 .09v3.15a3.05 3.05 0 1 0 2.15 2.91V2h2.98a5.19 5.19 0 0 0 .15 3.82z"/></svg>
-          TIKTOK
-        </a>
+
+      <div class="sidebar-title">Danh mục (Categories)</div>
+      <div id="sidebar-tags" style="display: flex; flex-direction: column; gap: 8px;"></div>
+
+      <div class="social-row">
+        <a class="social-btn yt-btn" href="https://youtube.com/@painph09" target="_blank">▶ YOUTUBE</a>
+        <a class="social-btn tt-btn" href="https://www.tiktok.com/@0painph10" target="_blank">🎵 TIKTOK</a>
       </div>
     </div>
-  </header>
 
-  <!-- DANH MỤC -->
-  <nav class="category-bar" id="categories"></nav>
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="main-header">
+        <h1 class="hero-title">Script Hub</h1>
+        <div class="search-box">
+          <input id="q" type="search" placeholder="Tìm tên game/hub...">
+          <button id="go">Tìm</button>
+        </div>
+      </div>
 
-  <!-- NỘI DUNG CHÍNH -->
-  <main class="main-content">
-    <h1 class="page-title">Tất Cả Script</h1>
-    
-    <div class="search-area">
-      <input type="search" class="search-input" id="searchInput" placeholder="Tìm kiếm script...">
-      <button class="btn-search" onclick="render()">Tìm</button>
+      <div class="grid-container">
+        <div class="grid" id="list"></div>
+        <div class="pagination" id="pagination"></div>
+      </div>
     </div>
-
-    <div class="grid-container" id="cardGrid"></div>
-    <div class="pagination" id="pagination"></div>
-  </main>
-  
+  </div>
 </div>
 
 <script>
-/* ============ AUDIO ============ */
+/* ============ Audio Logic ============ */
 const audio = document.getElementById('bgAudio');
-const musicIcon = document.getElementById('musicIcon');
-const musicStatus = document.getElementById('musicStatus');
+const avatarFrame = document.getElementById('avatarFrame');
+const playerWidget = document.getElementById('playerWidget');
+const audioStatus = document.getElementById('audioStatus');
+const iconBadge = document.getElementById('iconBadge');
 let isPlaying = false;
 
-function togglePlay() {
-  if (audio.paused) {
-    audio.play().then(() => {
-      isPlaying = true;
-      musicIcon.innerText = '♫';
-      musicStatus.innerText = 'Đang phát...';
-    }).catch(()=>{});
-  } else {
-    audio.pause();
-    isPlaying = false;
-    musicIcon.innerText = '▶';
-    musicStatus.innerText = 'Đã tạm dừng';
+function activateAudioUI() {
+  isPlaying = true;
+  avatarFrame.classList.add('playing');
+  playerWidget.classList.add('playing');
+  iconBadge.innerText = '♫';
+  audioStatus.innerText = 'Đang phát...';
+}
+function tryAutoplay() {
+  audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); })
+    .catch(() => { audioStatus.innerText = 'Chạm để nghe'; });
+}
+function unlockAndPlay() {
+  if (!isPlaying) {
+    audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); }).catch(() => {});
   }
 }
-
-// Tự động phát khi có tương tác đầu tiên
-['click', 'touchstart', 'scroll'].forEach(evt => {
-  document.addEventListener(evt, function autoPlay() {
-    if (!isPlaying && audio.paused) {
-      audio.play().then(() => {
-        isPlaying = true;
-        musicIcon.innerText = '♫';
-        musicStatus.innerText = 'Đang phát...';
-      }).catch(()=>{});
-    }
-  }, { once: true, passive: true });
+function manualPlayTrigger() {
+  if (audio.paused) { audio.play().then(activateAudioUI).catch(()=>{}); }
+}
+function removeInteractionListeners() {
+  ['pointerdown','touchstart','click','scroll'].forEach(evt => document.removeEventListener(evt, unlockAndPlay));
+}
+['pointerdown','touchstart','click','scroll'].forEach(evt => {
+  document.addEventListener(evt, unlockAndPlay, { passive: true });
 });
+window.addEventListener('DOMContentLoaded', tryAutoplay);
 
-/* ============ DATA ============ */
+/* ============ CDN & Data ============ */
+function fastCDN(url){
+  if (!url) return url;
+  const m = url.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/);
+  if (!m) return url;
+  const [, user, repo, branch, path] = m;
+  return `https://cdn.jsdelivr.net/gh/${user}/${repo}@${branch}/${path}`;
+}
+
 const SCRIPTS = [
   {id: 1, hub:"Miranda Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YBKOl", subLink:"https://link4m.org/SUmNR", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4660.jpeg"},
   {id: 2, hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", subLink:"https://link4m.net/WClWj", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4141.jpeg"},
@@ -525,158 +574,129 @@ const SCRIPTS = [
   {id: 50, hub:"Banana Hub", game:"Blox Fruits", c:"Tất Cả", link:"https://link4m.org/Sv6dfcnq", subLink:"https://link4m.org/N7Uy0Ib", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4291.jpeg"}
 ];
 
-// Hàm xáo trộn mảng
-SCRIPTS.sort(() => Math.random() - 0.5);
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+shuffle(SCRIPTS);
 
-const cats = ['Tất Cả', 'Steal An Egg', 'Tất Cả Script Khủng Long'];
-const catColors = ['#ffca28', '#4caf50', '#ff5252'];
-
-let currentCat = 'Tất Cả';
+const $ = id => document.getElementById(id);
+let cat = 'Tất Cả';
 let currentPage = 1;
-const itemsPerPage = 20;
+const ITEMS_PER_PAGE = 20;
+const cats = ['Tất Cả', 'Steal An Egg', 'Tất Cả Script Khủng Long'];
 
-// Hàm chuyển link Github sang Jsdelivr cho nhanh
-function fastCDN(url){
-  if (!url) return url;
-  const m = url.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/);
-  if (!m) return url;
-  const [, user, repo, branch, path] = m;
-  return `https://cdn.jsdelivr.net/gh/${user}/${repo}@${branch}/${path}`;
+/* ============ Hình ảnh tải chậm ============ */
+let imgObserver;
+if (typeof IntersectionObserver !== 'undefined') {
+  imgObserver = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      const img = entry.target;
+      const url = img.dataset.src;
+      if (url && !img.src) {
+        img.src = url;
+        img.onload = () => { img.classList.add('img-ready'); };
+      }
+      imgObserver.unobserve(img);
+    }
+  }, { rootMargin: '600px 0px', threshold: 0.01 });
+} else {
+  imgObserver = { observe: (img) => { if (img.dataset.src && !img.src) { img.src = img.dataset.src; img.onload = () => img.classList.add('img-ready'); } }, unobserve: () => {} };
 }
 
-// Render Danh mục
-function renderCategories() {
-  const catContainer = document.getElementById('categories');
-  catContainer.innerHTML = cats.map((c, i) => `
-    <button class="cat-btn ${c === currentCat ? 'active' : ''}" onclick="changeCat('${c}')">
-      <span class="cat-dot" style="background:${catColors[i % catColors.length]}"></span>
+function primeFirstImages(count = 6) {
+  const imgs = [...document.querySelectorAll('.card-img-box img[data-src]')].slice(0, count);
+  imgs.forEach(img => {
+    const url = img.dataset.src;
+    if (!url) return;
+    img.src = url;
+    img.onload = () => img.classList.add('img-ready');
+    imgObserver.unobserve(img);
+  });
+}
+
+/* ============ Render ============ */
+function render(){
+  const q = $('q').value.trim().toLowerCase();
+
+  const filtered = SCRIPTS.filter(s =>
+    (cat === 'Tất Cả' || s.c === cat) &&
+    (!q || s.hub.toLowerCase().includes(q) || s.game.toLowerCase().includes(q))
+  );
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const start = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginated = filtered.slice(start, start + ITEMS_PER_PAGE);
+
+  // Render nút Categories ở Sidebar
+  $('sidebar-tags').innerHTML = cats.map((c) => `
+    <button class="side-btn ${c === cat ? 'on' : ''}" onclick="changeCat('${c}')">
       ${c}
     </button>
   `).join('');
-}
 
-// Đổi danh mục
-function changeCat(cat) {
-  currentCat = cat;
-  currentPage = 1;
-  render();
-}
-
-// Render Giao diện chính
-function render() {
-  renderCategories();
-  
-  const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-  
-  const filtered = SCRIPTS.filter(s => {
-    const matchCat = currentCat === 'Tất Cả' || s.c === currentCat;
-    const matchSearch = s.hub.toLowerCase().includes(searchTerm) || s.game.toLowerCase().includes(searchTerm);
-    return matchCat && matchSearch;
-  });
-
-  const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
-  if (currentPage > totalPages) currentPage = totalPages;
-
-  const start = (currentPage - 1) * itemsPerPage;
-  const paginated = filtered.slice(start, start + itemsPerPage);
-
-  // Render thẻ
-  const grid = document.getElementById('cardGrid');
-  if (paginated.length === 0) {
-    grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; font-weight: bold; padding: 40px; color: #888;">Không tìm thấy script nào!</div>`;
-  } else {
-    grid.innerHTML = paginated.map(s => `
-      <div class="card">
-        <div class="card-header">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="${catColors[cats.indexOf(s.c) !== -1 ? cats.indexOf(s.c) : 0]}"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          ${s.c}
+  // Render Cards
+  $('list').innerHTML = paginated.map(s => `
+    <div class="card">
+      <div class="card-header">
+        <span style="font-size: 18px;">⭐</span> ${s.hub}
+      </div>
+      <div class="card-body">
+        <div class="card-img-box">
+          ${s.img
+            ? `<img data-src="${fastCDN(s.img)}" alt="${s.hub}" decoding="async">`
+            : `<div class="card-img-placeholder">NO IMAGE</div>`}
         </div>
-        <div class="img-container">
-          <img data-src="${fastCDN(s.img)}" alt="${s.hub}" loading="lazy">
+        <div class="game-name">
+          ${s.game ? `Game: ${s.game}` : 'Script Tổng Hợp'}
         </div>
-        <div class="card-body">
-          <div class="hub-name">${s.hub}</div>
-          <div class="game-name">${s.game || 'Script Game'}</div>
-          <div class="card-actions">
-            <a href="${s.link}" target="_blank" class="btn-link btn-main">LINK CHÍNH</a>
-            <a href="${s.subLink}" target="_blank" class="btn-link btn-sub">LINK PHỤ</a>
-          </div>
+        <div class="card-footer">
+          <a class="btn-link" href="${s.link}" target="_blank" rel="noopener">LINK CHÍNH</a>
+          <a class="btn-link btn-sub" href="${s.subLink}" target="_blank" rel="noopener">LINK PHỤ</a>
         </div>
       </div>
-    `).join('');
-  }
+    </div>
+  `).join('');
 
-  // Kích hoạt lazy load ảnh
-  lazyLoadImages();
+  document.querySelectorAll('.card-img-box img[data-src]').forEach(img => imgObserver.observe(img));
+  primeFirstImages(6);
 
-  // Render Phân trang
-  const pag = document.getElementById('pagination');
+  let pageButtons = '';
   if (totalPages > 1) {
-    let html = `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">Trước</button>`;
-    for (let i = 1; i <= totalPages; i++) {
-      html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+    pageButtons += `<button ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">Trước</button>`;
+    // Chỉ hiện tối đa 5 trang để không bị vỡ layout
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+    if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+    for (let p = startPage; p <= endPage; p++) {
+      pageButtons += `<button class="${p === currentPage ? 'active' : ''}" onclick="changePage(${p})">${p}</button>`;
     }
-    html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">Sau</button>`;
-    pag.innerHTML = html;
-  } else {
-    pag.innerHTML = '';
+    pageButtons += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Sau</button>`;
   }
+  $('pagination').innerHTML = pageButtons;
 }
 
-function goToPage(p) {
-  currentPage = p;
-  render();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+function changeCat(c) { cat = c; currentPage = 1; render(); }
+function changePage(p) { currentPage = p; render(); document.querySelector('.grid-container').scrollTo({ top: 0, behavior: 'smooth' }); }
 
-// Xử lý ảnh
-function lazyLoadImages() {
-  const images = document.querySelectorAll('.img-container img[data-src]');
-  
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          loadImg(img);
-          observer.unobserve(img);
-        }
-      });
-    }, { rootMargin: '200px' });
-    
-    images.forEach(img => observer.observe(img));
-  } else {
-    // Fallback cho trình duyệt cũ
-    images.forEach(img => loadImg(img));
-  }
-}
-
-function loadImg(img) {
-  if (img.dataset.src) {
-    img.src = img.dataset.src;
-    img.onload = () => {
-      img.classList.add('loaded');
-      img.parentElement.classList.add('loaded');
-    };
-    img.onerror = () => {
-      img.parentElement.classList.add('loaded'); // Tắt skeleton nếu lỗi ảnh
-    };
-    img.removeAttribute('data-src');
-  }
-}
-
-// Sự kiện tìm kiếm
-document.getElementById('searchInput').addEventListener('input', () => {
+$('q').addEventListener('input', () => {
+  if ($('q').value.trim() !== '') cat = 'Tất Cả';
   currentPage = 1;
-  if(document.getElementById('searchInput').value.trim() !== '') {
-    currentCat = 'Tất Cả'; // Reset về tất cả khi tìm kiếm
-  }
+  render();
+});
+$('go').addEventListener('click', () => {
+  if ($('q').value.trim() !== '') cat = 'Tất Cả';
+  currentPage = 1;
   render();
 });
 
-// Khởi chạy
 render();
 </script>
-
 </body>
 </html>
