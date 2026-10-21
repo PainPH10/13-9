@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
-<!-- Đổi sang font Fredoka để giống phong cách hoạt hình của ảnh -->
+<!-- Font Fredoka giống phong cách hoạt hình -->
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -31,7 +31,6 @@
 html { color-scheme: light; }
 body {
   margin: 0;
-  /* Tạo hiệu ứng nền lưới nhẹ giống game */
   background-color: var(--bg-base);
   background-image: 
     linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
@@ -81,7 +80,6 @@ body {
   font-size: 26px;
   font-weight: 700;
   color: var(--accent-yellow);
-  /* Hiệu ứng viền chữ giống game */
   text-shadow: 2px 2px 0 #333, -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333;
   margin-bottom: 16px;
   letter-spacing: 1px;
@@ -206,9 +204,10 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 }
 .search-box button:active { transform: translateY(3px); box-shadow: none; }
 
+/* Cập nhật tags để chứa 4 tab đẹp hơn */
 .tags {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 10px;
   margin-bottom: 20px;
 }
@@ -224,11 +223,11 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 .tags button.on { background: var(--accent-yellow); color: var(--text-main); }
 .tags button span.dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; display: inline-block; border: 2px solid var(--border-color); }
 
-/* ===== GRID 2 CỘT ===== */
+/* ===== GRID LUÔN LUÔN 2 CỘT ===== */
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+  grid-template-columns: repeat(2, 1fr); /* Ép cứng 2 cột */
+  gap: 12px;
 }
 
 .card {
@@ -275,23 +274,23 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   text-align: center; padding: 0 8px; position: relative; z-index: 2;
 }
 
-.card-body { padding: 12px; display: flex; flex-direction: column; flex: 1; }
+.card-body { padding: 10px; display: flex; flex-direction: column; flex: 1; }
 
 .card-title {
-  font-size: 15px; font-weight: 700; margin: 0 0 10px 0; color: var(--text-main); line-height: 1.3;
+  font-size: 14px; font-weight: 700; margin: 0 0 10px 0; color: var(--text-main); line-height: 1.3;
   text-align: center;
 }
 
-.game-name { color: #e63946; font-weight: 600; } /* Đổi màu chữ game cho nổi bật */
+.game-name { color: #e63946; font-weight: 600; display: block; margin-top: 4px; font-size: 12px; }
 
 .card-footer {
   margin-top: auto; display: flex; justify-content: space-between; align-items: center;
-  gap: 8px; padding-top: 10px; border-top: 2px dashed rgba(0,0,0,0.1);
+  gap: 6px; padding-top: 10px; border-top: 2px dashed rgba(0,0,0,0.1);
 }
 
 .btn-link {
   flex: 1; text-align: center; background: #ffffff; border: 2px solid var(--border-color);
-  color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 13px; padding: 8px 0;
+  color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 12px; padding: 6px 0;
   border-radius: 8px; transition: all .1s ease; display: flex; justify-content: center; align-items: center;
   box-shadow: 0 3px 0 var(--border-color);
 }
@@ -309,10 +308,14 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 .pagination button.active { background: var(--accent-yellow); }
 .pagination button:disabled { opacity: 0.5; cursor: not-allowed; background: #ddd; }
 
-/* Mobile điều chỉnh nhẹ để không bị vỡ */
+/* Mobile tinh chỉnh cho vừa 2 cột */
 @media (max-width: 480px) {
-  .grid { grid-template-columns: 1fr; }
   .tags { grid-template-columns: repeat(2, 1fr); }
+  .grid { gap: 8px; } /* Thu nhỏ khoảng cách cho vừa màn hình */
+  .card-body { padding: 8px; }
+  .card-title { font-size: 12px; }
+  .game-name { font-size: 10px; }
+  .btn-link { font-size: 11px; padding: 5px 0; }
 }
 </style>
 </head>
@@ -416,6 +419,7 @@ function fastCDN(url){
 }
 
 /* ============ Data ============ */
+/* Đã cập nhật thêm c:"Tất Cả Script Heavyweight Fishing" cho các script Heavyweight Fishing */
 const SCRIPTS = [
   {id: 1, hub:"Miranda Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YBKOl", subLink:"https://link4m.org/SUmNR", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4660.jpeg"},
   {id: 2, hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", subLink:"https://link4m.net/WClWj", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4141.jpeg"},
@@ -443,18 +447,21 @@ const SCRIPTS = [
   {id: 7, hub:"AirFlow Hub", game:"Attack On Titan Revolution", c:"Tất Cả", link:"https://link4m.org/meuoYA2Q", subLink:"https://link4m.org/zN918mz", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4557.jpeg"},
   {id: 27, hub:"Chnronix Hub", game:"lllegal Soccer", c:"Tất Cả", link:"https://link4m.org/PK04nNx", subLink:"https://link4m.net/bawtv1", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4263.jpeg"},
   {id: 28, hub:"Generic Hub", game:"Pixel Blade", c:"Tất Cả", link:"https://link4m.net/UF22p", subLink:"https://link4m.org/44QEFRSS", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4500.jpeg"},
-  {id: 29, hub:"StarCrow Hub", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/Fn3gD5", subLink:"https://link4m.org/6xjeTLxa", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4503.jpeg"},
+  
+  /* Các Script Heavyweight Fishing đã được đổi category */
+  {id: 29, hub:"StarCrow Hub", game:"Heavyweight Fishing", c:"Tất Cả Script Heavyweight Fishing", link:"https://link4m.net/Fn3gD5", subLink:"https://link4m.org/6xjeTLxa", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4503.jpeg"},
+  {id: 32, hub:"Nexus Panel", game:"Heavyweight Fishing", c:"Tất Cả Script Heavyweight Fishing", link:"https://link4m.org/ux692X", subLink:"https://link4m.net/FPNI27", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4313.jpeg"},
+  {id: 33, hub:"Cybrion", game:"Heavyweight Fishing", c:"Tất Cả Script Heavyweight Fishing", link:"https://link4m.net/reyQHYK", subLink:"https://link4m.org/Ok3iozab", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4527.jpeg"},
+  {id: 37, hub:"Khfresh", game:"Heavyweight Fishing", c:"Tất Cả Script Heavyweight Fishing", link:"https://link4m.net/fVZpeH", subLink:"https://link4m.net/En5iuml1", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4350.jpeg"},
+  {id: 40, hub:"Ouroboros", game:"Heavyweight Fishing", c:"Tất Cả Script Heavyweight Fishing", link:"https://link4m.net/BR2tBG", subLink:"https://link4m.org/IHrFjOb", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4244.jpeg"},
+
   {id: 30, hub:"Anime Dice", game:"", c:"Tất Cả", link:"https://link4m.org/FxtMnM", subLink:"https://link4m.net/eZnl8", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4486.jpeg"},
   {id: 31, hub:"Dueling Grounds Mới", game:"", c:"Tất Cả", link:"https://link4m.org/I0Mms7e", subLink:"https://link4m.org/T3M6haE", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4305.jpeg"},
-  {id: 32, hub:"Nexus Panel", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.org/ux692X", subLink:"https://link4m.net/FPNI27", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4313.jpeg"},
-  {id: 33, hub:"Cybrion", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/reyQHYK", subLink:"https://link4m.org/Ok3iozab", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4527.jpeg"},
   {id: 35, hub:"That Freekick Challenge", game:"", c:"Tất Cả", link:"https://link4m.org/srCUB", subLink:"https://link4m.net/YqiqPK", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4605.jpeg"},
   {id: 35, hub:"Serenity Hub", game:"Break And Steal An Egg", c:"Tất Cả", link:"https://link4m.org/inVfwsE", subLink:"https://link4m.org/1DLxkjmd", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4337.jpeg"},
   {id: 36, hub:"Vex Client", game:"Huss Valley", c:"Tất Cả", link:"https://link4m.net/4ENlH", subLink:"https://link4m.org/9kuhvGL", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4229.jpeg"},
-  {id: 37, hub:"Khfresh", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/fVZpeH", subLink:"https://link4m.net/En5iuml1", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4350.jpeg"},
   {id: 38, hub:"Kaiju Alpha", game:"", c:"Tất Cả", link:"https://link4m.net/KeJbwBEK", subLink:"https://link4m.net/dy2wY", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4386.jpeg"},
   {id: 39, hub:"No Dash Cooldown", game:"Evolve A Cell", c:"Tất Cả", link:"https://link4m.net/MfDoh", subLink:"https://link4m.org/jgNECw", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4390.jpeg"},
-  {id: 40, hub:"Ouroboros", game:"Heavyweight Fishing", c:"Tất Cả", link:"https://link4m.net/BR2tBG", subLink:"https://link4m.org/IHrFjOb", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4244.jpeg"},
   {id: 41, hub:"Solve The Cube", game:"", c:"Tất Cả", link:"https://link4m.org/5Mlcl", subLink:"https://link4m.net/IKlEd6hb", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4422.jpeg"},
   {id: 42, hub:"Survival A Million Monkey", game:"", c:"Tất Cả", link:"https://link4m.org/ErGSJC", subLink:"https://link4m.net/WkaqNI", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4468.jpeg"},
   {id: 43, hub:"Ouroboros", game:"Harpoon A Fish", c:"Tất Cả", link:"https://link4m.org/t7quIB", subLink:"https://link4m.net/1ghqV", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4465.jpeg"},
@@ -479,12 +486,13 @@ function shuffle(array) {
 }
 shuffle(SCRIPTS);
 
-const dotColors = ['#ff4fa3', '#a855f7', '#38bdf8'];
+const dotColors = ['#ff4fa3', '#a855f7', '#38bdf8', '#ffca3a'];
 const $ = id => document.getElementById(id);
 let cat = 'Tất Cả';
 let currentPage = 1;
 const ITEMS_PER_PAGE = 20;
-const cats = ['Tất Cả', 'Steal An Egg', 'Tất Cả Script Khủng Long'];
+/* Thêm tab mới vào mảng danh mục */
+const cats = ['Tất Cả', 'Steal An Egg', 'Tất Cả Script Khủng Long', 'Tất Cả Script Heavyweight Fishing'];
 
 /* ============ Fast image pipeline ============ */
 let imgObserver;
@@ -510,7 +518,6 @@ if (typeof IntersectionObserver !== 'undefined') {
     }
   }, { rootMargin: '600px 0px', threshold: 0.01 });
 } else {
-  // Fallback cho trình duyệt cũ
   imgObserver = {
     observe: (img) => {
       const url = img.dataset.src;
@@ -581,7 +588,7 @@ function render(){
       </div>
       <div class="card-body">
         <h2 class="card-title">
-          ${s.hub} ${s.game ? `<br><span class="game-name">${s.game}</span>` : ''}
+          ${s.hub} ${s.game ? `<span class="game-name">${s.game}</span>` : ''}
         </h2>
         <div class="card-footer">
           <a class="btn-link" href="${s.link}" target="_blank" rel="noopener">LINK CHÍNH</a>
@@ -608,7 +615,6 @@ function render(){
 function changeCat(c) { cat = c; currentPage = 1; render(); }
 function changePage(p) { currentPage = p; render(); window.scrollTo({ top: 300, behavior: 'smooth' }); }
 
-/* ===== TỰ ĐỘNG CHUYỂN VỀ TAB "TẤT CẢ" KHI GÕ TÌM KIẾM ===== */
 $('q').addEventListener('input', () => {
   if ($('q').value.trim() !== '') cat = 'Tất Cả';
   currentPage = 1;
@@ -620,7 +626,6 @@ $('go').addEventListener('click', () => {
   render();
 });
 
-// Gọi render() ở cuối cùng để đảm bảo mọi thứ đã load xong
 render();
 </script>
 </body>
