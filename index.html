@@ -77,7 +77,7 @@ body {
 .avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
 .profile-name {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--accent-yellow);
   text-shadow: 2px 2px 0 #333, -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333;
@@ -274,14 +274,25 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   text-align: center; padding: 0 8px; position: relative; z-index: 2;
 }
 
-.card-body { padding: 10px; display: flex; flex-direction: column; flex: 1; }
+.card-body { padding: 12px; display: flex; flex-direction: column; flex: 1; }
 
+/* TĂNG KÍCH THƯỚC TÊN HUB VÀ TÊN GAME */
 .card-title {
-  font-size: 14px; font-weight: 700; margin: 0 0 10px 0; color: var(--text-main); line-height: 1.3;
+  font-size: 20px; 
+  font-weight: 700; 
+  margin: 0 0 12px 0; 
+  color: var(--text-main); 
+  line-height: 1.3;
   text-align: center;
 }
 
-.game-name { color: #e63946; font-weight: 600; display: block; margin-top: 4px; font-size: 12px; }
+.game-name { 
+  color: #e63946; 
+  font-weight: 600; 
+  display: block; 
+  margin-top: 6px; 
+  font-size: 16px; 
+}
 
 .card-footer {
   margin-top: auto; display: flex; justify-content: space-between; align-items: center;
@@ -290,7 +301,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 
 .btn-link {
   flex: 1; text-align: center; background: #ffffff; border: 2px solid var(--border-color);
-  color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 12px; padding: 6px 0;
+  color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 13px; padding: 8px 0;
   border-radius: 8px; transition: all .1s ease; display: flex; justify-content: center; align-items: center;
   box-shadow: 0 3px 0 var(--border-color);
 }
@@ -311,11 +322,12 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 /* Mobile tinh chỉnh cho vừa 2 cột */
 @media (max-width: 480px) {
   .tags { grid-template-columns: repeat(2, 1fr); }
-  .grid { gap: 8px; } /* Thu nhỏ khoảng cách cho vừa màn hình */
-  .card-body { padding: 8px; }
-  .card-title { font-size: 12px; }
-  .game-name { font-size: 10px; }
-  .btn-link { font-size: 11px; padding: 5px 0; }
+  .grid { gap: 8px; }
+  .card-body { padding: 10px 6px; }
+  /* Vẫn giữ chữ to trên điện thoại */
+  .card-title { font-size: 16px; } 
+  .game-name { font-size: 14px; margin-top: 4px; }
+  .btn-link { font-size: 11px; padding: 6px 0; }
 }
 </style>
 </head>
@@ -419,7 +431,6 @@ function fastCDN(url){
 }
 
 /* ============ Data ============ */
-/* Đã cập nhật thêm c:"Tất Cả Script Heavyweight Fishing" cho các script Heavyweight Fishing */
 const SCRIPTS = [
   {id: 1, hub:"Miranda Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YBKOl", subLink:"https://link4m.org/SUmNR", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4660.jpeg"},
   {id: 2, hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", subLink:"https://link4m.net/WClWj", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4141.jpeg"},
@@ -447,14 +458,11 @@ const SCRIPTS = [
   {id: 7, hub:"AirFlow Hub", game:"Attack On Titan Revolution", c:"Tất Cả", link:"https://link4m.org/meuoYA2Q", subLink:"https://link4m.org/zN918mz", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4557.jpeg"},
   {id: 27, hub:"Chnronix Hub", game:"lllegal Soccer", c:"Tất Cả", link:"https://link4m.org/PK04nNx", subLink:"https://link4m.net/bawtv1", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4263.jpeg"},
   {id: 28, hub:"Generic Hub", game:"Pixel Blade", c:"Tất Cả", link:"https://link4m.net/UF22p", subLink:"https://link4m.org/44QEFRSS", img:"https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4500.jpeg"},
-  
-  /* Các Script Heavyweight Fishing đã được đổi category */
   {id: 29, hub:"StarCrow Hub", game:"Heavyweight Fishing", c:"Tất Cả Script Heavyweight Fishing", link:"https://link4m.net/Fn3gD5", subLink:"https://link4m.org/6xjeTLxa", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4503.jpeg"},
   {id: 32, hub:"Nexus Panel", game:"Heavyweight Fishing", c:"Tất Cả Script Heavyweight Fishing", link:"https://link4m.org/ux692X", subLink:"https://link4m.net/FPNI27", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4313.jpeg"},
   {id: 33, hub:"Cybrion", game:"Heavyweight Fishing", c:"Tất Cả Script Heavyweight Fishing", link:"https://link4m.net/reyQHYK", subLink:"https://link4m.org/Ok3iozab", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4527.jpeg"},
   {id: 37, hub:"Khfresh", game:"Heavyweight Fishing", c:"Tất Cả Script Heavyweight Fishing", link:"https://link4m.net/fVZpeH", subLink:"https://link4m.net/En5iuml1", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4350.jpeg"},
   {id: 40, hub:"Ouroboros", game:"Heavyweight Fishing", c:"Tất Cả Script Heavyweight Fishing", link:"https://link4m.net/BR2tBG", subLink:"https://link4m.org/IHrFjOb", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4244.jpeg"},
-
   {id: 30, hub:"Anime Dice", game:"", c:"Tất Cả", link:"https://link4m.org/FxtMnM", subLink:"https://link4m.net/eZnl8", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4486.jpeg"},
   {id: 31, hub:"Dueling Grounds Mới", game:"", c:"Tất Cả", link:"https://link4m.org/I0Mms7e", subLink:"https://link4m.org/T3M6haE", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4305.jpeg"},
   {id: 35, hub:"That Freekick Challenge", game:"", c:"Tất Cả", link:"https://link4m.org/srCUB", subLink:"https://link4m.net/YqiqPK", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4605.jpeg"},
@@ -491,7 +499,6 @@ const $ = id => document.getElementById(id);
 let cat = 'Tất Cả';
 let currentPage = 1;
 const ITEMS_PER_PAGE = 20;
-/* Thêm tab mới vào mảng danh mục */
 const cats = ['Tất Cả', 'Steal An Egg', 'Tất Cả Script Khủng Long', 'Tất Cả Script Heavyweight Fishing'];
 
 /* ============ Fast image pipeline ============ */
