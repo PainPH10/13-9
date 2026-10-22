@@ -6,7 +6,7 @@
 <title>Pain Script</title>
 <link rel="preconnect" href="https://images.weserv.nl" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-<link href="https://fonts.googleapis.com/css2?family400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg-base: #7eb0d5;
@@ -14,7 +14,6 @@
   --surface-2: #e8dfc8;
   --border-color: #3b3b3b;
   --text-main: #2b2b2b;
-  --text-sub: #555555;
   --text-dim: #888888;
   --accent-yellow: #ffca3a;
   --accent-green: #5cb85c;
@@ -196,7 +195,6 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   text-shadow: 1px 1px 0 var(--border-color);
 }
 
-/* ===== SEARCH + SUGGESTIONS ===== */
 .search-wrap { position: relative; }
 
 .search-box {
@@ -241,7 +239,6 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 .suggestion-item {
   display: flex;
   align-items: center;
-  gap: 10px;
   padding: 10px 16px;
   cursor: pointer;
   font-size: 14px;
@@ -251,7 +248,6 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 .suggestion-item:last-child { border-bottom: none; }
 .suggestion-item:hover,
 .suggestion-item.active { background: var(--accent-yellow); }
-.suggestion-item .s-icon { font-size: 15px; flex-shrink: 0; }
 .suggestion-item .s-text {
   font-weight: 600; color: var(--text-main);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1;
@@ -261,19 +257,11 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   color: #e63946;
   font-weight: 800;
 }
-.suggestion-item .s-badge {
-  margin-left: auto; flex-shrink: 0;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
-  padding: 2px 7px; border-radius: 6px;
-  background: var(--surface-2); color: var(--text-sub);
-  border: 1.5px solid var(--border-color);
-}
 .suggestion-empty {
   padding: 16px; text-align: center;
   color: var(--text-dim); font-size: 13px; font-weight: 500;
 }
 
-/* ===== TAGS / GRID / CARD ===== */
 .tags {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -740,9 +728,7 @@ function renderSuggestions(query) {
   }
   box.innerHTML = currentSuggestions.map((s, i) => `
     <div class="suggestion-item" data-index="${i}" onpointerdown="pickSuggestion(${i}, event)">
-      <span class="s-icon">${s.type === 'game' ? '🎮' : '🔧'}</span>
       <span class="s-text">${highlightMatch(s.text, query)}</span>
-      <span class="s-badge">${s.type === 'game' ? 'GAME' : 'HUB'}</span>
     </div>
   `).join('');
   box.classList.add('open');
