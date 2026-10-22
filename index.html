@@ -257,6 +257,20 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   color: #e63946;
   font-weight: 800;
 }
+.suggestion-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 8px 16px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: var(--surface-2);
+  border-bottom: 2px solid rgba(0,0,0,0.08);
+  border-radius: 10px 10px 0 0;
+}
 .suggestion-empty {
   padding: 16px; text-align: center;
   color: var(--text-dim); font-size: 13px; font-weight: 500;
@@ -710,27 +724,88 @@ function getSuggestions(query) {
     .slice(0, MAX_SUGGESTIONS);
 }
 
-function renderSuggestions(query) {
+/* ===== Gợi ý mặc định: hiện mỗi lần bấm vào ô tìm kiếm ===== */
+const POPULAR_NAMES = [
+  'Blox Fruits', 'Steal An Egg', 'Fisch', 'Heavyweight Fishing', 'Primeval Earth',
+  'Evade', 'Ride A Pet', 'Attack On Titan Revolution', 'Deep Fishing',
+  'Break And Steal An Egg', 'Creatures Of Sonaria', 'Huss Valley', 'Pixel Blade',
+  'lllegal Soccer', 'Prehistoric Farm', 'Ride A Dino', 'My Dino Life',
+  'Harpoon A Fish', 'Chop A Forest', 'Evolve A Cell'
+];
+
+const defaultPool = (() => {
+  const gamesLower = new Map(suggestionIndex.games.map(g => [g.toLowerCase(), g]));
+  const hubsLower = new Map(suggestionIndex.hubs.map(h => [h.toLowerCase(), h]));
+  const out = [];
+  const seen = new Set();
+
+  POPULAR_NAMES.forEach(name => {
+    const k = name.toLowerCase();
+    const text = gamesLower.get(k) || hubsLower.get(k);
+    if (text && !seen.has(k)) {
+      seen.add(k);
+      out.push({ type: gamesLower.has(k) ? 'game' : 'hub', text });
+    }
+  });
+
+  suggestionIndex.hubs.forEach(h => {
+    const k = h.toLowerCase();
+    if (!seen.has(k)) { seen.add(k); out.push({ type: 'hub', text: h }); }
+  });
+  suggestionIndex.games.forEach(g => {
+    const k = g.toLowerCase();
+    if (!seen.has(k)) { seen.add(k); out.push({ type: 'game', text: g }); }
+  });
+
+  return out;
+})();
+
+function getDefaultSuggestions() {
+  if (!defaultPool.length) return [];
+  const arr = defaultPool.slice();
+  shuffle(arr);
+  return arr.slice(0, MAX_SUGGESTIONS);
+}
+
+function closeSuggestions() {
   const box = $('suggestions');
-  if (!query.trim()) {
-    box.classList.remove('open');
-    box.innerHTML = '';
-    currentSuggestions = [];
-    activeIndex = -1;
-    return;
-  }
-  currentSuggestions = getSuggestions(query);
+  box.classList.remove('open');
+  box.innerHTML = '';
+  currentSuggestions = [];
   activeIndex = -1;
-  if (!currentSuggestions.length) {
-    box.innerHTML = `<div class="suggestion-empty">Không tìm thấy "${escapeHtml(query.trim())}"</div>`;
+}
+
+function renderSuggestions(query, openWhenEmpty = false) {
+  const box = $('suggestions');
+  const q = query.trim();
+  let list;
+  let isDefault = false;
+
+  if (!q) {
+    if (!openWhenEmpty) { closeSuggestions(); return; }
+    list = getDefaultSuggestions();
+    isDefault = true;
+  } else {
+    list = getSuggestions(query);
+  }
+
+  currentSuggestions = list;
+  activeIndex = -1;
+
+  if (!list.length) {
+    box.innerHTML = `<div class="suggestion-empty">Không tìm thấy "${escapeHtml(q)}"</div>`;
     box.classList.add('open');
     return;
   }
-  box.innerHTML = currentSuggestions.map((s, i) => `
+
+  const head = isDefault ? `<div class="suggestion-head">Gợi ý cho bạn</div>` : '';
+
+  box.innerHTML = head + list.map((s, i) => `
     <div class="suggestion-item" data-index="${i}" onpointerdown="pickSuggestion(${i}, event)">
-      <span class="s-text">${highlightMatch(s.text, query)}</span>
+      <span class="s-text">${isDefault ? escapeHtml(s.text) : highlightMatch(s.text, q)}</span>
     </div>
   `).join('');
+
   box.classList.add('open');
 }
 
@@ -765,7 +840,7 @@ $('q').addEventListener('keydown', (e) => {
   const isOpen = box.classList.contains('open');
 
   if (e.key === 'ArrowDown') {
-    if (!isOpen || !currentSuggestions.length) { renderSuggestions($('q').value); return; }
+    if (!isOpen || !currentSuggestions.length) { renderSuggestions($('q').value, true); return; }
     e.preventDefault();
     activeIndex = (activeIndex + 1) % currentSuggestions.length;
     updateActive();
@@ -793,13 +868,24 @@ $('q').addEventListener('keydown', (e) => {
 
 $('q').addEventListener('input', () => {
   const val = $('q').value;
-  renderSuggestions(val);
+  renderSuggestions(val, true);
   clearTimeout(debounceTimer);
   debounceTimer = setTimeout(() => {
     if (val.trim() !== '') cat = 'Tất Cả';
     currentPage = 1;
     render();
   }, 200);
+});
+
+/* Mở gợi ý ngay khi bấm / chạm vào ô tìm kiếm */
+$('q').addEventListener('focus', () => {
+  renderSuggestions($('q').value, true);
+});
+
+$('q').addEventListener('click', () => {
+  if (!$('suggestions').classList.contains('open')) {
+    renderSuggestions($('q').value, true);
+  }
 });
 
 $('go').addEventListener('click', () => {
