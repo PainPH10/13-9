@@ -12,10 +12,8 @@
   --bg-base: #7eb0d5;
   --surface: #fcf8eb;
   --surface-2: #e8dfc8;
-  --surface-hover: #ffffff;
   --border-color: #3b3b3b;
   --text-main: #2b2b2b;
-  --text-sub: #555555;
   --text-dim: #888888;
   --accent-yellow: #ffca3a;
   --accent-green: #5cb85c;
@@ -29,7 +27,7 @@ html { color-scheme: light; }
 body {
   margin: 0;
   background-color: var(--bg-base);
-  background-image: 
+  background-image:
     linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
   background-size: 40px 40px;
@@ -64,12 +62,10 @@ body {
   transition: transform 0.3s ease, border-color 0.3s ease;
   will-change: transform;
 }
-
 .avatar-wrapper.playing {
   animation: musicPulse 1.2s infinite alternate ease-in-out;
   border-color: var(--accent-yellow);
 }
-
 @keyframes musicPulse {
   0%   { transform: scale(1); }
   100% { transform: scale(1.05); }
@@ -140,7 +136,6 @@ body {
 .playing .eq-bar:nth-child(2) { animation-delay: 0.3s; }
 .playing .eq-bar:nth-child(3) { animation-delay: 0.2s; }
 .playing .eq-bar:nth-child(4) { animation-delay: 0.4s; }
-
 @keyframes wave {
   0%   { transform: scaleY(0.22); }
   100% { transform: scaleY(1); }
@@ -173,10 +168,8 @@ body {
   box-shadow: var(--shadow-btn);
   transition: transform 0.1s, box-shadow 0.1s;
 }
-
 .yt-btn { background: #ff0000; }
 .tt-btn { background: #000000; }
-
 .yt-btn:active, .tt-btn:active { transform: translateY(4px); box-shadow: none; }
 
 main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
@@ -231,7 +224,6 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   gap: 10px;
   margin-bottom: 20px;
 }
-
 .tags button {
   width: 100%; min-width: 0; background: var(--surface); border: 3px solid var(--border-color);
   padding: 8px 6px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 700;
@@ -278,7 +270,6 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   position: relative;
   border-bottom: 3px solid var(--border-color);
 }
-
 .card-img-box::before {
   content: '';
   position: absolute;
@@ -288,25 +279,17 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   opacity: 1;
   transition: opacity 0.35s ease;
 }
-.card-img-box:not(.loaded)::before {
-  animation: pulseLoad 1.5s ease-in-out infinite;
-}
+.card-img-box:not(.loaded)::before { animation: pulseLoad 1.5s ease-in-out infinite; }
 .card-img-box.loaded::before { opacity: 0; pointer-events: none; }
-
 @keyframes pulseLoad {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.65; }
 }
-
 .card-img-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 100%; height: 100%; object-fit: cover;
   object-position: top center;
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  position: relative;
-  z-index: 2;
+  opacity: 0; transition: opacity 0.35s ease;
+  position: relative; z-index: 2;
 }
 .card-img-box img.img-ready { opacity: 1; }
 
@@ -362,7 +345,6 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   transition: transform 0.1s, box-shadow 0.1s, background-color 0.1s;
 }
 .btn-link:active { transform: translateY(3px); box-shadow: none; background: #f0f0f0; }
-
 .btn-sub { background: #f4f4f4; }
 
 .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 30px; flex-wrap: wrap; }
@@ -389,9 +371,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 </head>
 <body>
 
-<audio id="bgAudio" loop playsinline preload="auto">
-  <source src="./nhac.mp4" type="audio/mpeg">
-</audio>
+<audio id="bgAudio" src="./nhac.mp4" loop preload="metadata"></audio>
 
 <div class="header-container">
   <div class="avatar-wrapper" id="avatarFrame">
@@ -441,15 +421,17 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 </main>
 
 <script>
-/* ============ Audio ============ */
+/* ============ Audio (FIXED) ============ */
 const audio = document.getElementById('bgAudio');
 const avatarFrame = document.getElementById('avatarFrame');
 const playerWidget = document.getElementById('playerWidget');
 const audioStatus = document.getElementById('audioStatus');
 const iconBadge = document.getElementById('iconBadge');
 let isPlaying = false;
+let playLock = false;
 
 function activateAudioUI() {
+  if (isPlaying) return;
   isPlaying = true;
   avatarFrame.classList.add('playing');
   playerWidget.classList.add('playing');
@@ -463,28 +445,30 @@ function removeInteractionListeners() {
   );
 }
 
-function unlockAndPlay() {
-  if (isPlaying) return;
+function safePlay() {
+  if (playLock) return;
+  if (!audio.paused && !audio.ended) { activateAudioUI(); return; }
+  playLock = true;
   audio.play().then(() => {
-    activateAudioUI();
-    removeInteractionListeners();
-  }).catch(() => {});
-}
-
-function manualPlayTrigger() {
-  if (audio.paused) {
-    audio.play().then(activateAudioUI).catch(() => {});
-  }
-}
-
-function tryAutoplay() {
-  audio.play().then(() => {
+    playLock = false;
     activateAudioUI();
     removeInteractionListeners();
   }).catch(() => {
-    audioStatus.innerText = 'Chạm bất kỳ đâu để nghe';
+    playLock = false;
+    if (!isPlaying) audioStatus.innerText = 'Chạm bất kỳ đâu để nghe';
   });
 }
+
+function unlockAndPlay() { if (!isPlaying) safePlay(); }
+function manualPlayTrigger() { if (audio.paused) safePlay(); }
+function tryAutoplay() { safePlay(); }
+
+audio.addEventListener('error', () => {
+  const code = audio.error?.code;
+  const msgs = {1:'ABORTED',2:'NETWORK',3:'DECODE',4:'SRC_NOT_SUPPORTED'};
+  console.error('Audio error:', code, msgs[code] || audio.error?.message);
+  audioStatus.innerText = 'Lỗi nhạc: ' + (msgs[code] || 'không rõ');
+});
 
 ['pointerdown','touchstart','click','scroll'].forEach(evt => {
   document.addEventListener(evt, unlockAndPlay, { passive: true });
@@ -505,12 +489,12 @@ function getImageUrls(rawUrl) {
 
 /* ============ Data ============ */
 const SCRIPTS = [
-  {id: 1, hub:"Miranda Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YBKOl", subLink:"https://link4m.org/SUmNR", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4660.jpeg"},
-  {id: 2, hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", subLink:"https://link4m.net/WClWj", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4141.jpeg"},
-  {id: 4, hub:"Clout Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/RHy2B", subLink:"https://link4m.net/24CQ30", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4143.jpeg"},
+  {id: 1, hub:"Miranda Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YBKOl", sub/Link:"https://link4m.org/SUmNR", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4660.jpeg"},
+  {id: 2, hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", subLink:"https://link4m.net/WClWj", img:"https://raw.githubusercontent.com/PainPH10/13-9/2refs/heads/main/IMGRC_4141.jpeg"},
+  {id:z 4, hub:"Clout Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/RHy2B", subLink:"https://link4m.net/24CQ30", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4143.jpeg"},
   {id: 5, hub:"Neva Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/MMk2q", subLink:"https://link4m.org/24CQ30", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4145.jpeg"},
   {id: 6, hub:"PulseHub.gg", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/OvbtgoS", subLink:"https://link4m.org/qYSX7q0", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4704.jpeg"},
-  {id: 9, hub:"Nasi Rendang", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/Tiaoh", subLink:"https://link4m.org/2RCzmiI5", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4280.jpeg"},
+  {id: 9, hub:"Nasi Rendang", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/Tiaoh", subLink:"https://link4m.orgmiI5", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4280.jpeg"},
   {id: 10, hub:"Chronnix Hub", game:"Ride A Pet", c:"Tất Cả", link:"https://link4m.net/dURCgx", subLink:"https://link4m.org/aq1SPQ9", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4150.jpeg"},
   {id: 11, hub:"R Hub", game:"Ride A Pet", c:"Tất Cả", link:"https://link4m.net/Un5BcNem", subLink:"https://link4m.org/V6yRgx", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4155.jpeg"},
   {id: 12, hub:"Afk Farm Mới", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/DTfuxYO", subLink:"https://link4m.net/xR3WS", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4239.jpeg"},
@@ -593,7 +577,6 @@ function loadImage(img) {
     img.classList.add('img-ready');
     markLoaded(img);
   };
-
   img.onerror = () => {
     if (fallback && img.getAttribute('src') !== fallback) {
       img.onerror = () => markLoaded(img);
@@ -602,7 +585,6 @@ function loadImage(img) {
       markLoaded(img);
     }
   };
-
   img.src = primary;
 }
 
@@ -617,18 +599,12 @@ if (typeof IntersectionObserver !== 'undefined') {
     }
   }, { rootMargin: '200px 0px', threshold: 0.01 });
 } else {
-  imgObserver = {
-    observe: (img) => loadImage(img),
-    unobserve: () => {}
-  };
+  imgObserver = { observe: (img) => loadImage(img), unobserve: () => {} };
 }
 
 function primeFirstImages(count) {
   const imgs = [...document.querySelectorAll('.card-img-box img[data-src]')].slice(0, count);
-  imgs.forEach(img => {
-    loadImage(img);
-    imgObserver.unobserve(img);
-  });
+  imgs.forEach(img => { loadImage(img); imgObserver.unobserve(img); });
 }
 
 /* ============ Render ============ */
@@ -701,7 +677,6 @@ $('q').addEventListener('input', () => {
     render();
   }, 200);
 });
-
 $('go').addEventListener('click', () => {
   clearTimeout(debounceTimer);
   if ($('q').value.trim() !== '') cat = 'Tất Cả';
