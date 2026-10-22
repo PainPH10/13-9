@@ -223,31 +223,23 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 }
 .suggestions.show { display: block; }
 .suggestions .sug-item {
-  padding: 9px 12px;
+  padding: 10px 14px;
   border-radius: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-main);
   transition: background .15s;
 }
 .suggestions .sug-item:hover,
 .suggestions .sug-item.active { background: var(--accent-yellow); }
-.suggestions .sug-type {
-  flex: 0 0 auto;
-  font-size: 10px;
-  padding: 3px 7px;
-  border-radius: 6px;
-  font-weight: 700;
-  text-transform: uppercase;
-  border: 2px solid var(--border-color);
-  letter-spacing: 0.5px;
-}
-.suggestions .sug-type.type-game { background: #a8e6a3; color: #1b5e20; }
-.suggestions .sug-type.type-hub  { background: #bbdefb; color: #0d47a1; }
+
+/* Ẩn nhãn GAME / HUB */
+.suggestions .sug-type { display: none !important; }
+
 .suggestions .sug-empty {
   padding: 12px;
   text-align: center;
@@ -715,7 +707,6 @@ function showSuggestions(query) {
 
   sugBox.innerHTML = sugItems.map((it, i) => `
     <div class="sug-item" data-idx="${i}">
-      <span class="sug-type ${it.type === 'Game' ? 'type-game' : 'type-hub'}">${it.type}</span>
       <span class="sug-label">${esc(it.label)}</span>
     </div>
   `).join('');
