@@ -6,7 +6,7 @@
 <title>Pain Script</title>
 <link rel="preconnect" href="https://images.weserv.nl" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg-base: #7eb0d5;
@@ -14,6 +14,7 @@
   --surface-2: #e8dfc8;
   --border-color: #3b3b3b;
   --text-main: #2b2b2b;
+  --text-sub: #555555;
   --text-dim: #888888;
   --accent-yellow: #ffca3a;
   --accent-green: #5cb85c;
@@ -195,6 +196,9 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   text-shadow: 1px 1px 0 var(--border-color);
 }
 
+/* ===== SEARCH + SUGGESTIONS ===== */
+.search-wrap { position: relative; }
+
 .search-box {
   background: var(--surface);
   border: 3px solid var(--border-color);
@@ -218,6 +222,58 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 }
 .search-box button:active { transform: translateY(3px); box-shadow: none; }
 
+.suggestions {
+  position: absolute;
+  top: calc(100% - 12px);
+  left: 0; right: 0;
+  background: var(--surface);
+  border: 3px solid var(--border-color);
+  border-radius: 14px;
+  box-shadow: var(--shadow-hard);
+  max-height: 340px;
+  overflow-y: auto;
+  z-index: 50;
+  display: none;
+  -webkit-overflow-scrolling: touch;
+}
+.suggestions.open { display: block; }
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+  transition: background-color 0.1s;
+}
+.suggestion-item:last-child { border-bottom: none; }
+.suggestion-item:hover,
+.suggestion-item.active { background: var(--accent-yellow); }
+.suggestion-item .s-icon { font-size: 15px; flex-shrink: 0; }
+.suggestion-item .s-text {
+  font-weight: 600; color: var(--text-main);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1;
+}
+.suggestion-item mark {
+  background: transparent;
+  color: #e63946;
+  font-weight: 800;
+}
+.suggestion-item .s-badge {
+  margin-left: auto; flex-shrink: 0;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  padding: 2px 7px; border-radius: 6px;
+  background: var(--surface-2); color: var(--text-sub);
+  border: 1.5px solid var(--border-color);
+}
+.suggestion-empty {
+  padding: 16px; text-align: center;
+  color: var(--text-dim); font-size: 13px; font-weight: 500;
+}
+
+/* ===== TAGS / GRID / CARD ===== */
 .tags {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -366,6 +422,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   .game-name { font-size: 14px; margin-top: 4px; }
   .btn-link { font-size: 11px; padding: 6px 0; }
   .card { contain-intrinsic-size: auto 260px; }
+  .suggestion-item { padding: 9px 12px; font-size: 13px; }
 }
 </style>
 </head>
@@ -410,9 +467,12 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   <h1 class="hero-title">Ghi Rõ Tên Game Cần Tìm</h1>
   <div class="hero-sub">Lưu Ý Tìm Kiếm Hãy Ghi Tiếng Anh</div>
 
-  <div class="search-box">
-    <input id="q" type="search" placeholder="Tìm kiếm script...">
-    <button id="go">Tìm</button>
+  <div class="search-wrap">
+    <div class="search-box">
+      <input id="q" type="search" placeholder="Tìm kiếm script..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <button id="go">Tìm</button>
+    </div>
+    <div class="suggestions" id="suggestions"></div>
   </div>
 
   <div class="tags" id="tags"></div>
@@ -489,12 +549,12 @@ function getImageUrls(rawUrl) {
 
 /* ============ Data ============ */
 const SCRIPTS = [
-  {id: 1, hub:"Miranda Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YBKOl", sub/Link:"https://link4m.org/SUmNR", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4660.jpeg"},
-  {id: 2, hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", subLink:"https://link4m.net/WClWj", img:"https://raw.githubusercontent.com/PainPH10/13-9/2refs/heads/main/IMGRC_4141.jpeg"},
-  {id:z 4, hub:"Clout Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/RHy2B", subLink:"https://link4m.net/24CQ30", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4143.jpeg"},
+  {id: 1, hub:"Miranda Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YBKOl", subLink:"https://link4m.org/SUmNR", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4660.jpeg"},
+  {id: 2, hub:"Night Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/2CCPNg", subLink:"https://link4m.net/WClWj", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4141.jpeg"},
+  {id: 4, hub:"Clout Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/RHy2B", subLink:"https://link4m.net/24CQ30", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4143.jpeg"},
   {id: 5, hub:"Neva Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/MMk2q", subLink:"https://link4m.org/24CQ30", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4145.jpeg"},
   {id: 6, hub:"PulseHub.gg", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/OvbtgoS", subLink:"https://link4m.org/qYSX7q0", img:"https://raw.githubusercontent.com/PainPH10/Cc3m/refs/heads/main/IMG_4704.jpeg"},
-  {id: 9, hub:"Nasi Rendang", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/Tiaoh", subLink:"https://link4m.orgmiI5", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4280.jpeg"},
+  {id: 9, hub:"Nasi Rendang", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/Tiaoh", subLink:"https://link4m.org/2RCzmiI5", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4280.jpeg"},
   {id: 10, hub:"Chronnix Hub", game:"Ride A Pet", c:"Tất Cả", link:"https://link4m.net/dURCgx", subLink:"https://link4m.org/aq1SPQ9", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4150.jpeg"},
   {id: 11, hub:"R Hub", game:"Ride A Pet", c:"Tất Cả", link:"https://link4m.net/Un5BcNem", subLink:"https://link4m.org/V6yRgx", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4155.jpeg"},
   {id: 12, hub:"Afk Farm Mới", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/DTfuxYO", subLink:"https://link4m.net/xR3WS", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4239.jpeg"},
@@ -607,6 +667,163 @@ function primeFirstImages(count) {
   imgs.forEach(img => { loadImage(img); imgObserver.unobserve(img); });
 }
 
+/* ============ SEARCH SUGGESTIONS ============ */
+const suggestionIndex = (() => {
+  const gameMap = new Map();
+  const hubMap = new Map();
+  SCRIPTS.forEach(s => {
+    if (s.game) {
+      const k = s.game.toLowerCase();
+      if (!gameMap.has(k)) gameMap.set(k, s.game);
+    }
+    if (s.hub) {
+      const k = s.hub.toLowerCase();
+      if (!hubMap.has(k)) hubMap.set(k, s.hub);
+    }
+  });
+  return { games: [...gameMap.values()], hubs: [...hubMap.values()] };
+})();
+
+const MAX_SUGGESTIONS = 8;
+let currentSuggestions = [];
+let activeIndex = -1;
+let debounceTimer;
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, ch => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
+  ));
+}
+
+function highlightMatch(text, query) {
+  const safe = escapeHtml(text);
+  const q = query.trim();
+  if (!q) return safe;
+  const idx = text.toLowerCase().indexOf(q.toLowerCase());
+  if (idx === -1) return safe;
+  const before = escapeHtml(text.slice(0, idx));
+  const match = escapeHtml(text.slice(idx, idx + q.length));
+  const after = escapeHtml(text.slice(idx + q.length));
+  return `${before}<mark>${match}</mark>${after}`;
+}
+
+function getSuggestions(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  const score = (text) => text.toLowerCase().startsWith(q) ? 0 : 1;
+  const games = suggestionIndex.games
+    .filter(g => g.toLowerCase().includes(q))
+    .map(g => ({ type: 'game', text: g }));
+  const hubs = suggestionIndex.hubs
+    .filter(h => h.toLowerCase().includes(q))
+    .map(h => ({ type: 'hub', text: h }));
+  return [...games, ...hubs]
+    .sort((a, b) => score(a.text) - score(b.text))
+    .slice(0, MAX_SUGGESTIONS);
+}
+
+function renderSuggestions(query) {
+  const box = $('suggestions');
+  if (!query.trim()) {
+    box.classList.remove('open');
+    box.innerHTML = '';
+    currentSuggestions = [];
+    activeIndex = -1;
+    return;
+  }
+  currentSuggestions = getSuggestions(query);
+  activeIndex = -1;
+  if (!currentSuggestions.length) {
+    box.innerHTML = `<div class="suggestion-empty">Không tìm thấy "${escapeHtml(query.trim())}"</div>`;
+    box.classList.add('open');
+    return;
+  }
+  box.innerHTML = currentSuggestions.map((s, i) => `
+    <div class="suggestion-item" data-index="${i}" onpointerdown="pickSuggestion(${i}, event)">
+      <span class="s-icon">${s.type === 'game' ? '🎮' : '🔧'}</span>
+      <span class="s-text">${highlightMatch(s.text, query)}</span>
+      <span class="s-badge">${s.type === 'game' ? 'GAME' : 'HUB'}</span>
+    </div>
+  `).join('');
+  box.classList.add('open');
+}
+
+function updateActive() {
+  document.querySelectorAll('.suggestion-item').forEach((el, i) => {
+    el.classList.toggle('active', i === activeIndex);
+  });
+  const active = document.querySelector('.suggestion-item.active');
+  if (active) active.scrollIntoView({ block: 'nearest' });
+}
+
+function pickSuggestion(i, e) {
+  if (e) e.preventDefault();
+  const s = currentSuggestions[i];
+  if (!s) return;
+  $('q').value = s.text;
+  $('suggestions').classList.remove('open');
+  clearTimeout(debounceTimer);
+  cat = 'Tất Cả';
+  currentPage = 1;
+  render();
+}
+
+document.addEventListener('pointerdown', (e) => {
+  if (!e.target.closest('.search-wrap')) {
+    $('suggestions').classList.remove('open');
+  }
+});
+
+$('q').addEventListener('keydown', (e) => {
+  const box = $('suggestions');
+  const isOpen = box.classList.contains('open');
+
+  if (e.key === 'ArrowDown') {
+    if (!isOpen || !currentSuggestions.length) { renderSuggestions($('q').value); return; }
+    e.preventDefault();
+    activeIndex = (activeIndex + 1) % currentSuggestions.length;
+    updateActive();
+  } else if (e.key === 'ArrowUp') {
+    if (!isOpen || !currentSuggestions.length) return;
+    e.preventDefault();
+    activeIndex = activeIndex <= 0 ? currentSuggestions.length - 1 : activeIndex - 1;
+    updateActive();
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (isOpen && activeIndex >= 0) {
+      pickSuggestion(activeIndex);
+    } else {
+      box.classList.remove('open');
+      clearTimeout(debounceTimer);
+      if ($('q').value.trim() !== '') cat = 'Tất Cả';
+      currentPage = 1;
+      render();
+    }
+  } else if (e.key === 'Escape') {
+    box.classList.remove('open');
+    activeIndex = -1;
+  }
+});
+
+$('q').addEventListener('input', () => {
+  const val = $('q').value;
+  renderSuggestions(val);
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    if (val.trim() !== '') cat = 'Tất Cả';
+    currentPage = 1;
+    render();
+  }, 200);
+});
+
+$('go').addEventListener('click', () => {
+  clearTimeout(debounceTimer);
+  if ($('q').value.trim() !== '') cat = 'Tất Cả';
+  currentPage = 1;
+  $('suggestions').classList.remove('open');
+  render();
+});
+
 /* ============ Render ============ */
 function render() {
   const q = $('q').value.trim().toLowerCase();
@@ -667,22 +884,6 @@ function render() {
 
 function changeCat(c) { cat = c; currentPage = 1; render(); }
 function changePage(p) { currentPage = p; render(); window.scrollTo({ top: 300, behavior: 'smooth' }); }
-
-let debounceTimer;
-$('q').addEventListener('input', () => {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => {
-    if ($('q').value.trim() !== '') cat = 'Tất Cả';
-    currentPage = 1;
-    render();
-  }, 200);
-});
-$('go').addEventListener('click', () => {
-  clearTimeout(debounceTimer);
-  if ($('q').value.trim() !== '') cat = 'Tất Cả';
-  currentPage = 1;
-  render();
-});
 
 render();
 </script>
