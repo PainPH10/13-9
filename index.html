@@ -8,6 +8,14 @@
 <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
 <link rel="preconnect" href="https://i.ibb.co" crossorigin>
 <link rel="preconnect" href="https://wsrv.nl" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://raw.githubusercontent.com">
+<link rel="dns-prefetch" href="https://i.ibb.co">
+<link rel="dns-prefetch" href="https://wsrv.nl">
+
+<!-- ✅ FIX: preload audio sớm ngay khi vào trang -->
+<link rel="preload" href="./nhac.mp4" as="audio" type="audio/mp4" crossorigin="anonymous">
+
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -32,11 +40,11 @@ body {
   margin: 0;
   background-color: var(--bg-base);
   background-image: 
-    linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
-  background-size: 40px 40px;
-  color: var(--text-main);
-  font-family: 'Fredoka', system-ui, sans-serif;
+    linear-gradient(rgba(255,255,255,0.1) 1px,: transparent 1px),
+    linear-gradient( '90deg, rgba(255,255,255Fred,0.1) 1okapx, transparent 1px);
+  background-size: 40px 40',px;
+  color: var(--text-main system);
+  font-family-ui, sans-serif;
   min-height: 100vh;
   padding-bottom: 40px;
   -webkit-font-smoothing: antialiased;
@@ -116,8 +124,8 @@ body {
   box-shadow: 0 2px 0 var(--border-color);
 }
 
-.audio-info { display: flex; flex-direction: column; flex: 1; margin: 0 12px; min-width: 0; }
-.audio-title { font-size: 13px; font-weight: 600; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.audio-info { display: flex; flex-direction: column; flex: 1; margin: 0 12px; }
+.audio-title { font-size: 13px; font-weight: 600; color: #ffffff; }
 .audio-sub { font-size: 11px; color: #aaaaaa; font-weight: 500; }
 
 .equalizer { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
@@ -160,6 +168,7 @@ body {
 
 .yt-btn { background: #ff0000; }
 .tt-btn { background: #000000; }
+
 .yt-btn:active, .tt-btn:active { transform: translateY(4px); box-shadow: none; }
 
 main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
@@ -233,7 +242,16 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 }
 .suggestions .sug-item:hover,
 .suggestions .sug-item.active { background: var(--accent-yellow); }
-.suggestions .sug-empty { padding: 12px; text-align: center; color: var(--text-dim); font-size: 13px; font-weight: 600; }
+
+.suggestions .sug-type { display: none !important; }
+
+.suggestions .sug-empty {
+  padding: 12px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 600;
+}
 
 .tags {
   display: grid;
@@ -292,7 +310,8 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
 .card-img-box img {
-  width: 100%; height: 100%; object-fit: cover; object-position: top center;
+  width: 100%; height: 100%; object-fit: cover; 
+  object-position: top center;
   opacity: 0; transition: opacity .35s ease; position: relative; z-index: 2;
 }
 .card-img-box img.img-ready { opacity: 1; }
@@ -305,10 +324,21 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 .card-body { padding: 12px; display: flex; flex-direction: column; flex: 1; }
 
 .card-title {
-  font-size: 20px; font-weight: 700; margin: 0 0 12px 0; color: var(--text-main); line-height: 1.3; text-align: center;
+  font-size: 20px; 
+  font-weight: 700; 
+  margin: 0 0 12px 0; 
+  color: var(--text-main); 
+  line-height: 1.3;
+  text-align: center;
 }
 
-.game-name { color: #e63946; font-weight: 600; display: block; margin-top: 6px; font-size: 16px; }
+.game-name { 
+  color: #e63946; 
+  font-weight: 600; 
+  display: block; 
+  margin-top: 6px; 
+  font-size: 16px; 
+}
 
 .card-footer {
   margin-top: auto; display: flex; justify-content: space-between; align-items: center;
@@ -322,6 +352,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   box-shadow: 0 3px 0 var(--border-color);
 }
 .btn-link:active { transform: translateY(3px); box-shadow: none; background: #f0f0f0; }
+
 .btn-sub { background: #f4f4f4; }
 
 .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 30px; flex-wrap: wrap; }
@@ -346,7 +377,8 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 </head>
 <body>
 
-<audio id="bgAudio" playsinline preload="metadata">
+<!-- ✅ FIX: preload="auto" để tải ngay, không chờ -->
+<audio id="bgAudio" loop playsinline preload="auto">
   <source src="./nhac.mp4" type="audio/mp4">
 </audio>
 
@@ -361,7 +393,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   <div class="audio-player-card" id="playerWidget" onclick="manualPlayTrigger()">
     <div class="play-icon-badge" id="iconBadge">▶</div>
     <div class="audio-info">
-      <span class="audio-title">Em Ơi Anh Phải Làm Sao</span>
+      <span class="audio-title"> Em Ơi Anh Phải Làm Sao</span>
       <span class="audio-sub" id="audioStatus">Chạm 1 lần để bật nhạc</span>
     </div>
     <div class="equalizer" id="equalizer">
@@ -373,9 +405,14 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   </div>
 
   <div class="social-row">
-    <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank" rel="noopener">▶ YOUTUBE</a>
+    <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank" rel="noopener">
+      ▶ YOUTUBE
+    </a>
     <a class="tt-btn" href="https://www.tiktok.com/@0painph10?_r=1&_t=ZS-9AcqbYeLDCD" target="_blank" rel="noopener">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.82a5.19 5.19 0 0 0 3.4 1.25V10a8.1 8.1 0 0 1-3.53-.86v5.48a6.15 6.15 0 1 1-6.15-6.15c.34 0 .67.03 1 .09v3.15a3.05 3.05 0 1 0 2.15 2.91V2h2.98a5.19 5.19 0 0 0 .15 3.82z"/></svg> TIKTOK
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M16.6 5.82a5.19 5.19 0 0 0 3.4 1.25V10a8.1 8.1 0 0 1-3.53-.86v5.48a6.15 6.15 0 1 1-6.15-6.15c.34 0 .67.03 1 .09v3.15a3.05 3.05 0 1 0 2.15 2.91V2h2.98a5.19 5.19 0 0 0 .15 3.82z"/>
+      </svg>
+      TIKTOK
     </a>
   </div>
 </div>
@@ -389,7 +426,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
       <input id="q" type="search" placeholder="Tìm kiếm script..." autocomplete="off" spellcheck="false">
       <button id="go" type="button">Tìm</button>
     </div>
-    <div class="suggestions" id="suggestions" role="listbox"></div>
+    <div class="suggestions" id="suggestions" role="listbox" aria-label="Gợi ý tìm kiếm"></div>
   </div>
 
   <div class="tags" id="tags"></div>
@@ -398,20 +435,13 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 </main>
 
 <script>
-// Bắt lỗi toàn cục để dễ debug nếu có
-window.onerror = function(msg, url, line) {
-  document.getElementById('list').innerHTML = `<div style="color:red; background:#fff; padding:20px; border-radius:10px; grid-column: span 2;">Lỗi JS: ${msg} tại dòng ${line}</div>`;
-  return false;
-};
-
-/* ============ Audio (Tối ưu cho iOS) ============ */
+/* ============ Audio (đã FIX) ============ */
 const audio = document.getElementById('bgAudio');
 const avatarFrame = document.getElementById('avatarFrame');
 const playerWidget = document.getElementById('playerWidget');
 const audioStatus = document.getElementById('audioStatus');
 const iconBadge = document.getElementById('iconBadge');
 let isPlaying = false;
-let userInteracted = false;
 
 function activateAudioUI() {
   isPlaying = true;
@@ -420,58 +450,57 @@ function activateAudioUI() {
   iconBadge.innerText = '♫';
   audioStatus.innerText = 'Đang phát liên tục';
 }
-
-// Loop thủ công (không dùng thuộc tính loop để tránh khoảng lặng MP4)
-audio.addEventListener('ended', () => {
-  audio.currentTime = 0;
-  const p = audio.play();
-  if (p && p.catch) p.catch(() => {});
-});
-
-function tryAutoplay() {
-  const p = audio.play();
-  if (p && p.then) {
-    p.then(() => { activateAudioUI(); removeInteractionListeners(); })
-     .catch(() => { audioStatus.innerText = 'Chạm bất kỳ đâu để nghe'; });
-  }
-}
-
-function unlockAndPlay() {
-  userInteracted = true;
-  if (!isPlaying) {
-    const p = audio.play();
-    if (p && p.then) {
-      p.then(() => { activateAudioUI(); removeInteractionListeners(); }).catch(() => {});
-    }
-  }
-}
-
-function manualPlayTrigger() {
-  userInteracted = true;
-  if (audio.paused) {
-    const p = audio.play();
-    if (p && p.then) p.then(activateAudioUI).catch(() => {});
-  }
-}
-
 function removeInteractionListeners() {
-  ['pointerdown','touchstart','click','scroll'].forEach(evt => document.removeEventListener(evt, unlockAndPlay));
+  ['pointerdown','touchstart','click','scroll','keydown'].forEach(evt => document.removeEventListener(evt, unlockAndPlay));
+}
+function unlockAndPlay() {
+  if (isPlaying) { removeInteractionListeners(); return; }
+  audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); }).catch(()=>{});
+}
+function manualPlayTrigger() {
+  if (audio.paused) {
+    audio.play().then(activateAudioUI).catch(()=>{});
+  } else {
+    // tap lần 2 = pause
+    audio.pause();
+    isPlaying = false;
+    avatarFrame.classList.remove('playing');
+    playerWidget.classList.remove('playing');
+    iconBadge.innerText = '▶';
+    audioStatus.innerText = 'Đã tạm dừng — chạm để phát';
+  }
 }
 
-['pointerdown','touchstart','click','scroll'].forEach(evt => {
+/* ✅ FIX: gọi load() + play() NGAY, bỏ setTimeout 2000ms */
+audio.load();
+
+// Autoplay thử ngay khi metadata sẵn sàng
+function tryAutoplay() {
+  audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); })
+    .catch(() => { audioStatus.innerText = 'Chạm bất kỳ đâu để nghe'; });
+}
+
+// Khi vào trang, thử play luôn
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', tryAutoplay, { once: true });
+} else {
+  tryAutoplay();
+}
+
+// Nếu autoplay bị block → chờ tương tác đầu tiên
+['pointerdown','touchstart','click','scroll','keydown'].forEach(evt => {
   document.addEventListener(evt, unlockAndPlay, { passive: true });
 });
 
-setTimeout(tryAutoplay, 800);
-
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && isPlaying && audio.paused && userInteracted) {
-    const p = audio.play();
-    if (p && p.catch) p.catch(() => {});
-  }
+// ✅ FIX: hiển thị trạng thái "đang tải nhạc" cho minh bạch
+audio.addEventListener('waiting', () => { audioStatus.innerText = 'Đang tải nhạc...'; });
+audio.addEventListener('playing', () => { if (audio.currentTime > 0) audioStatus.innerText = 'Đang phát liên tục'; });
+audio.addEventListener('canplaythrough', () => {
+  // File đã sẵn sàng → nếu chưa playing và không có tương tác thì thử autoplay lại
+  if (audio.paused && !isPlaying) tryAutoplay();
 });
 
-/* ============ CDN Ảnh ============ */
+/* ============ Fast CDN rewrite ============ */
 function fastCDN(url){
   if (!url) return url;
   const m = url.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/(.+)$/);
@@ -486,10 +515,14 @@ function fastCDN(url){
       const s = rest.indexOf('/');
       if (s !== -1) { branch = rest.slice(0, s); path = rest.slice(s + 1); }
     }
-    if (branch && path) return `https://cdn.jsdelivr.net/gh/${user}/${repo}@${branch}/${path}`;
+    if (branch && path) {
+      return `https://cdn.jsdelivr.net/gh/${user}/${repo}@${branch}/${path}`;
+    }
     return url;
   }
-  if (/^https:\/\/i\.ibb\.co\//.test(url)) return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=640&output=webp&q=75`;
+  if (/^https:\/\/i\.ibb\.co\//.test(url)) {
+    return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=640&output=webp&q=75`;
+  }
   return url;
 }
 
@@ -505,7 +538,7 @@ const SCRIPTS = [
   {id: 8, hub:"MorthUp", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/7VuBc", subLink:"https://link4m.net/NoY94", img:"https://i.ibb.co/BVyhFWQK/IMG-4735.jpg"},
   {id: 9, hub:"Pn Hub", game:"My Dino Life", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/D6Y9qpO", subLink:"https://link4m.net/YYzUmwc", img:"https://i.ibb.co/39z05HPv/IMG-4736.jpg"},
   {id: 10, hub:"Jurassic Blocky", game:"", c:"Tất Cả Script Khủng Long", link:"https://fnote.net/notes/Nn2nNB", subLink:"https://fnote.net/notes/Nn2nNB", img:"https://i.ibb.co/tP8qzhg9/IMG-4737.jpg"},
-  {id: 11, hub:"Jurassic Pixel", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/3B7FeFyC", subLink:"https://link4m.org/GKszg1", img:"https://i.ibb.co/kgk80jgM/IMG-4738.jpg"},
+  {id: 12, hub:"Jurassic Pixel", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/3B7FeFyC", subLink:"https://link4m.org/GKszg1", img:"https://i.ibb.co/kgk80jgM/IMG-4738.jpg"},
   {id: 12, hub:"Rayfield", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/vWVdnl", subLink:"https://link4m.org/QsjNSy", img:"https://i.ibb.co/tTM6ZsTT/IMG-4739.jpg"},
   {id: 13, hub:"Gold", game:"Creatures Of Sonaria", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/Brqiz", subLink:"https://link4m.net/bHjqVi", img:"https://i.ibb.co/HTCwPk3L/IMG-4743.jpg"},
   {id: 14, hub:"RBXZ", game:"Prehistoric Farm", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/18NdKed", subLink:"https://link4m.org/sLRN6Cm", img:"https://i.ibb.co/53xpNbR/IMG-4744.jpg"},
@@ -545,7 +578,7 @@ const SCRIPTS = [
   {id: 48, hub:"Slopix Hub", game:"Ball Vs Ball", c:"Tất Cả", link:"https://link4m.org/K2imMty", subLink:"https://link4m.net/2SRqD", img:"https://i.ibb.co/KjpJBZdW/IMG-4780.jpg"},
   {id: 49, hub:"Mario Hub", game:"Build An Ant Empire", c:"Tất Cả", link:"https://link4m.net/FpGcxQ", subLink:"https://link4m.net/3NLEF1", img:"https://i.ibb.co/wZGHQ0MM/IMG-4779.jpg"},
   {id: 50, hub:"Mystrix Hub", game:"Climb For Animals Egg", c:"Tất Cả", link:"https://link4m.org/c66ih", subLink:"https://link4m.net/tGX5xP", img:"https://i.ibb.co/gFvkmHPz/IMG-4786.jpg"},
-  {id: 51, hub:"Barrage", game:"+1 Pickaxe Swing For Eggs", c:"Tất Cả", link:"https://link4m.org/ICdeG", subLink:"https://link4m.net/RAqJa", img:"https://i.ibb.co/qY620wW9/IMG-4798.jpg"},
+  {id: 51, hub:"Barrage", game:"+1 Pickaxe Swing For Egg", c:"Tất Cả", link:"https://link4m.org/ICdeG", subLink:"https://link4m.net/RAqJa", img:"https://i.ibb.co/qY620wW9/IMG-4798.jpg"},
   {id: 52, hub:"Banana Hub", game:"Blox Fruits", c:"Tất Cả", link:"https://link4m.org/Sv6dfcnq", subLink:"https://link4m.org/N7Uy0Ib", img:"https://i.ibb.co/RkkQ57bV/IMG-4781.jpg"}
 ];
 
@@ -574,8 +607,15 @@ if (typeof IntersectionObserver !== 'undefined') {
       const url = img.dataset.src;
       if (url && !img.src) {
         img.src = url;
-        img.onload = () => { img.classList.add('img-ready'); const box = img.closest('.card-img-box'); if (box) box.classList.add('loaded'); };
-        img.onerror = () => { const box = img.closest('.card-img-box'); if (box) box.classList.add('loaded'); };
+        img.onload = () => {
+          img.classList.add('img-ready');
+          const box = img.closest('.card-img-box');
+          if (box) box.classList.add('loaded');
+        };
+        img.onerror = () => {
+          const box = img.closest('.card-img-box');
+          if (box) box.classList.add('loaded');
+        };
       }
       imgObserver.unobserve(img);
     }
@@ -586,8 +626,15 @@ if (typeof IntersectionObserver !== 'undefined') {
       const url = img.dataset.src;
       if (url && !img.src) {
         img.src = url;
-        img.onload = () => { img.classList.add('img-ready'); const box = img.closest('.card-img-box'); if (box) box.classList.add('loaded'); };
-        img.onerror = () => { const box = img.closest('.card-img-box'); if (box) box.classList.add('loaded'); };
+        img.onload = () => {
+          img.classList.add('img-ready');
+          const box = img.closest('.card-img-box');
+          if (box) box.classList.add('loaded');
+        };
+        img.onerror = () => {
+          const box = img.closest('.card-img-box');
+          if (box) box.classList.add('loaded');
+        };
       }
     },
     unobserve: () => {}
@@ -602,8 +649,15 @@ function primeFirstImages(count = 4) {
     img.fetchPriority = 'high';
     img.removeAttribute('loading');
     img.src = url;
-    img.onload = () => { img.classList.add('img-ready'); const box = img.closest('.card-img-box'); if (box) box.classList.add('loaded'); };
-    img.onerror = () => { const box = img.closest('.card-img-box'); if (box) box.classList.add('loaded'); };
+    img.onload = () => {
+      img.classList.add('img-ready');
+      const box = img.closest('.card-img-box');
+      if (box) box.classList.add('loaded');
+    };
+    img.onerror = () => {
+      const box = img.closest('.card-img-box');
+      if (box) box.classList.add('loaded');
+    };
     imgObserver.unobserve(img);
   });
 }
@@ -623,9 +677,8 @@ function render(){
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginated = filtered.slice(start, start + ITEMS_PER_PAGE);
 
-  // Sử dụng data-cat thay vì onclick để tránh lỗi dấu nháy
   $('tags').innerHTML = cats.map((c, i) => `
-    <button class="${c === cat ? 'on' : ''}" data-cat="${c}">
+    <button class="${c === cat ? 'on' : ''}" onclick="changeCat('${c}')">
       <span class="dot" style="background:${dotColors[i % dotColors.length]}"></span>
       <span>${c}</span>
     </button>
@@ -664,17 +717,7 @@ function render(){
   $('pagination').innerHTML = pageButtons;
 }
 
-// Gắn sự kiện click cho Tags để thay thế onclick inline
-$('tags').addEventListener('click', (e) => {
-  const btn = e.target.closest('button');
-  if (btn && btn.dataset.cat) {
-    cat = btn.dataset.cat;
-    currentPage = 1;
-    render();
-    hideSuggestions();
-  }
-});
-
+function changeCat(c) { cat = c; currentPage = 1; render(); hideSuggestions(); }
 function changePage(p) { currentPage = p; render(); window.scrollTo({ top: 300, behavior: 'smooth' }); }
 
 /* ============ Suggestions ============ */
