@@ -8,12 +8,6 @@
 <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
 <link rel="preconnect" href="https://i.ibb.co" crossorigin>
 <link rel="preconnect" href="https://wsrv.nl" crossorigin>
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-<link rel="dns-prefetch" href="https://raw.githubusercontent.com">
-<link rel="dns-prefetch" href="https://i.ibb.co">
-<link rel="dns-prefetch" href="https://wsrv.nl">
-<!-- Preload file nhạc NGAY từ đầu — ưu tiên cao, tải song song với ảnh -->
-<link rel="preload" href="./nhac.mp4" as="fetch" crossorigin="anonymous" fetchpriority="high">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -166,7 +160,6 @@ body {
 
 .yt-btn { background: #ff0000; }
 .tt-btn { background: #000000; }
-
 .yt-btn:active, .tt-btn:active { transform: translateY(4px); box-shadow: none; }
 
 main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
@@ -240,16 +233,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 }
 .suggestions .sug-item:hover,
 .suggestions .sug-item.active { background: var(--accent-yellow); }
-
-.suggestions .sug-type { display: none !important; }
-
-.suggestions .sug-empty {
-  padding: 12px;
-  text-align: center;
-  color: var(--text-dim);
-  font-size: 13px;
-  font-weight: 600;
-}
+.suggestions .sug-empty { padding: 12px; text-align: center; color: var(--text-dim); font-size: 13px; font-weight: 600; }
 
 .tags {
   display: grid;
@@ -308,8 +292,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
 .card-img-box img {
-  width: 100%; height: 100%; object-fit: cover; 
-  object-position: top center;
+  width: 100%; height: 100%; object-fit: cover; object-position: top center;
   opacity: 0; transition: opacity .35s ease; position: relative; z-index: 2;
 }
 .card-img-box img.img-ready { opacity: 1; }
@@ -322,21 +305,10 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 .card-body { padding: 12px; display: flex; flex-direction: column; flex: 1; }
 
 .card-title {
-  font-size: 20px; 
-  font-weight: 700; 
-  margin: 0 0 12px 0; 
-  color: var(--text-main); 
-  line-height: 1.3;
-  text-align: center;
+  font-size: 20px; font-weight: 700; margin: 0 0 12px 0; color: var(--text-main); line-height: 1.3; text-align: center;
 }
 
-.game-name { 
-  color: #e63946; 
-  font-weight: 600; 
-  display: block; 
-  margin-top: 6px; 
-  font-size: 16px; 
-}
+.game-name { color: #e63946; font-weight: 600; display: block; margin-top: 6px; font-size: 16px; }
 
 .card-footer {
   margin-top: auto; display: flex; justify-content: space-between; align-items: center;
@@ -350,7 +322,6 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   box-shadow: 0 3px 0 var(--border-color);
 }
 .btn-link:active { transform: translateY(3px); box-shadow: none; background: #f0f0f0; }
-
 .btn-sub { background: #f4f4f4; }
 
 .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 30px; flex-wrap: wrap; }
@@ -375,14 +346,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 </head>
 <body>
 
-<!-- 
-  TỐI ƯU MP4:
-  - preload="auto"  : tải ngầm ngay từ đầu (không chờ user click)
-  - KHÔNG dùng loop  : loop của MP4 streaming hay bị gap → dùng ended handler thủ công
-  - File MP4 PHẢI được tạo với -movflags +faststart để phát ngay khi tải vài KB đầu
-    ffmpeg -i nhac.mp4 -vn -c:a aac -b:a 96k -movflags +faststart nhac_opt.mp4
--->
-<audio id="bgAudio" playsinline preload="auto">
+<audio id="bgAudio" playsinline preload="metadata">
   <source src="./nhac.mp4" type="audio/mp4">
 </audio>
 
@@ -397,8 +361,8 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   <div class="audio-player-card" id="playerWidget" onclick="manualPlayTrigger()">
     <div class="play-icon-badge" id="iconBadge">▶</div>
     <div class="audio-info">
-      <span class="audio-title"> Em Ơi Anh Phải Làm Sao</span>
-      <span class="audio-sub" id="audioStatus">Đang tải nhạc...</span>
+      <span class="audio-title">Em Ơi Anh Phải Làm Sao</span>
+      <span class="audio-sub" id="audioStatus">Chạm 1 lần để bật nhạc</span>
     </div>
     <div class="equalizer" id="equalizer">
       <div class="eq-bar"></div>
@@ -409,14 +373,9 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   </div>
 
   <div class="social-row">
-    <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank" rel="noopener">
-      ▶ YOUTUBE
-    </a>
+    <a class="yt-btn" href="https://youtube.com/@painph09?si=s4Q14SsJCMgld2NT" target="_blank" rel="noopener">▶ YOUTUBE</a>
     <a class="tt-btn" href="https://www.tiktok.com/@0painph10?_r=1&_t=ZS-9AcqbYeLDCD" target="_blank" rel="noopener">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M16.6 5.82a5.19 5.19 0 0 0 3.4 1.25V10a8.1 8.1 0 0 1-3.53-.86v5.48a6.15 6.15 0 1 1-6.15-6.15c.34 0 .67.03 1 .09v3.15a3.05 3.05 0 1 0 2.15 2.91V2h2.98a5.19 5.19 0 0 0 .15 3.82z"/>
-      </svg>
-      TIKTOK
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.82a5.19 5.19 0 0 0 3.4 1.25V10a8.1 8.1 0 0 1-3.53-.86v5.48a6.15 6.15 0 1 1-6.15-6.15c.34 0 .67.03 1 .09v3.15a3.05 3.05 0 1 0 2.15 2.91V2h2.98a5.19 5.19 0 0 0 .15 3.82z"/></svg> TIKTOK
     </a>
   </div>
 </div>
@@ -430,7 +389,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
       <input id="q" type="search" placeholder="Tìm kiếm script..." autocomplete="off" spellcheck="false">
       <button id="go" type="button">Tìm</button>
     </div>
-    <div class="suggestions" id="suggestions" role="listbox" aria-label="Gợi ý tìm kiếm"></div>
+    <div class="suggestions" id="suggestions" role="listbox"></div>
   </div>
 
   <div class="tags" id="tags"></div>
@@ -439,7 +398,13 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 </main>
 
 <script>
-/* ============ Audio (MP4 tối ưu) ============ */
+// Bắt lỗi toàn cục để dễ debug nếu có
+window.onerror = function(msg, url, line) {
+  document.getElementById('list').innerHTML = `<div style="color:red; background:#fff; padding:20px; border-radius:10px; grid-column: span 2;">Lỗi JS: ${msg} tại dòng ${line}</div>`;
+  return false;
+};
+
+/* ============ Audio (Tối ưu cho iOS) ============ */
 const audio = document.getElementById('bgAudio');
 const avatarFrame = document.getElementById('avatarFrame');
 const playerWidget = document.getElementById('playerWidget');
@@ -456,22 +421,11 @@ function activateAudioUI() {
   audioStatus.innerText = 'Đang phát liên tục';
 }
 
-// Loop thủ công — seek currentTime = 0 ngay khi ended → gần như tức thì nếu file đã buffer
+// Loop thủ công (không dùng thuộc tính loop để tránh khoảng lặng MP4)
 audio.addEventListener('ended', () => {
   audio.currentTime = 0;
   const p = audio.play();
   if (p && p.catch) p.catch(() => {});
-});
-
-// UI phản hồi trạng thái buffer
-audio.addEventListener('waiting', () => {
-  if (isPlaying) audioStatus.innerText = 'Đang tải...';
-});
-audio.addEventListener('playing', () => {
-  if (isPlaying) audioStatus.innerText = 'Đang phát liên tục';
-});
-audio.addEventListener('canplaythrough', () => {
-  if (!isPlaying) audioStatus.innerText = 'Chạm 1 lần để bật nhạc';
 });
 
 function tryAutoplay() {
@@ -487,8 +441,7 @@ function unlockAndPlay() {
   if (!isPlaying) {
     const p = audio.play();
     if (p && p.then) {
-      p.then(() => { activateAudioUI(); removeInteractionListeners(); })
-       .catch(() => {});
+      p.then(() => { activateAudioUI(); removeInteractionListeners(); }).catch(() => {});
     }
   }
 }
@@ -502,21 +455,15 @@ function manualPlayTrigger() {
 }
 
 function removeInteractionListeners() {
-  ['pointerdown','touchstart','click','scroll'].forEach(evt =>
-    document.removeEventListener(evt, unlockAndPlay)
-  );
+  ['pointerdown','touchstart','click','scroll'].forEach(evt => document.removeEventListener(evt, unlockAndPlay));
 }
 
 ['pointerdown','touchstart','click','scroll'].forEach(evt => {
   document.addEventListener(evt, unlockAndPlay, { passive: true });
 });
 
-// Delay ngắn — preload="auto" đã tải ngầm từ lúc parse HTML
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(tryAutoplay, 800);
-});
+setTimeout(tryAutoplay, 800);
 
-// Khi tab quay lại foreground: nếu đang "phát" mà audio bị pause (do tiết kiệm pin) → resume
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden && isPlaying && audio.paused && userInteracted) {
     const p = audio.play();
@@ -524,39 +471,32 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-/* ============ Fast CDN rewrite + image resize ============ */
+/* ============ CDN Ảnh ============ */
 function fastCDN(url){
   if (!url) return url;
-
   const m = url.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/(.+)$/);
   if (m) {
     const [, user, repo, rest] = m;
     let branch, path;
-    if (rest.startsWithSte('refs/heads/')) {
-al      const after = rest.slice(11 An);
+    if (rest.startsWith('refs/heads/')) {
+      const after = rest.slice(11);
       const s = after.indexOf('/');
-      if (s Egg !== -1) { branch = after.slice",(0, s); path = after link.slice(s + 1); }
+      if (s !== -1) { branch = after.slice(0, s); path = after.slice(s + 1); }
     } else {
       const s = rest.indexOf('/');
       if (s !== -1) { branch = rest.slice(0, s); path = rest.slice(s + 1); }
     }
-    if (branch && path) {
-      return `https://cdn.jsdelivr.net/gh/${user}/${repo}@${branch}/${path}`;
-    }
+    if (branch && path) return `https://cdn.jsdelivr.net/gh/${user}/${repo}@${branch}/${path}`;
     return url;
   }
-
-  if (/^https:\/\/i\.ibb\.co\//.test(url)) {
-    return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=640&output=webp&q=75`;
-  }
-
+  if (/^https:\/\/i\.ibb\.co\//.test(url)) return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=640&output=webp&q=75`;
   return url;
 }
 
 /* ============ Data ============ */
 const SCRIPTS = [
   {id: 1, hub:"Miranda Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YBKOl", subLink:"https://link4m.org/SUmNR", img:"https://i.ibb.co/jZVNHhLB/IMG-4726.jpg"},
-  {id: 2, hub:"Nasi Rendang", game:"Steal An Egg", c:":"https://link4m.net/Tiaoh", subLink:"https://link4m.org/2RCzmiI5", img:"https://i.ibb.co/8D6Kscfr/IMG-4742.jpg"},
+  {id: 2, hub:"Nasi Rendang", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/Tiaoh", subLink:"https://link4m.org/2RCzmiI5", img:"https://i.ibb.co/8D6Kscfr/IMG-4742.jpg"},
   {id: 3, hub:"Chronnix Hub", game:"Ride A Pet", c:"Tất Cả", link:"https://link4m.net/dURCgx", subLink:"https://link4m.org/aq1SPQ9", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4150.jpeg"},
   {id: 4, hub:"R Hub", game:"Ride A Pet", c:"Tất Cả", link:"https://link4m.net/Un5BcNem", subLink:"https://link4m.org/V6yRgx", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4155.jpeg"},
   {id: 5, hub:"Afk Farm Mới", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/DTfuxYO", subLink:"https://link4m.net/xR3WS", img:"https://i.ibb.co/99s3S67b/IMG-4732.jpg"},
@@ -565,7 +505,7 @@ const SCRIPTS = [
   {id: 8, hub:"MorthUp", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/7VuBc", subLink:"https://link4m.net/NoY94", img:"https://i.ibb.co/BVyhFWQK/IMG-4735.jpg"},
   {id: 9, hub:"Pn Hub", game:"My Dino Life", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/D6Y9qpO", subLink:"https://link4m.net/YYzUmwc", img:"https://i.ibb.co/39z05HPv/IMG-4736.jpg"},
   {id: 10, hub:"Jurassic Blocky", game:"", c:"Tất Cả Script Khủng Long", link:"https://fnote.net/notes/Nn2nNB", subLink:"https://fnote.net/notes/Nn2nNB", img:"https://i.ibb.co/tP8qzhg9/IMG-4737.jpg"},
-  {id: 12, hub:"Jurassic Pixel", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/3B7FeFyC", subLink:"https://link4m.org/GKszg1", img:"https://i.ibb.co/kgk80jgM/IMG-4738.jpg"},
+  {id: 11, hub:"Jurassic Pixel", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/3B7FeFyC", subLink:"https://link4m.org/GKszg1", img:"https://i.ibb.co/kgk80jgM/IMG-4738.jpg"},
   {id: 12, hub:"Rayfield", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/vWVdnl", subLink:"https://link4m.org/QsjNSy", img:"https://i.ibb.co/tTM6ZsTT/IMG-4739.jpg"},
   {id: 13, hub:"Gold", game:"Creatures Of Sonaria", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/Brqiz", subLink:"https://link4m.net/bHjqVi", img:"https://i.ibb.co/HTCwPk3L/IMG-4743.jpg"},
   {id: 14, hub:"RBXZ", game:"Prehistoric Farm", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/18NdKed", subLink:"https://link4m.org/sLRN6Cm", img:"https://i.ibb.co/53xpNbR/IMG-4744.jpg"},
@@ -634,15 +574,8 @@ if (typeof IntersectionObserver !== 'undefined') {
       const url = img.dataset.src;
       if (url && !img.src) {
         img.src = url;
-        img.onload = () => {
-          img.classList.add('img-ready');
-          const box = img.closest('.card-img-box');
-          if (box) box.classList.add('loaded');
-        };
-        img.onerror = () => {
-          const box = img.closest('.card-img-box');
-          if (box) box.classList.add('loaded');
-        };
+        img.onload = () => { img.classList.add('img-ready'); const box = img.closest('.card-img-box'); if (box) box.classList.add('loaded'); };
+        img.onerror = () => { const box = img.closest('.card-img-box'); if (box) box.classList.add('loaded'); };
       }
       imgObserver.unobserve(img);
     }
@@ -653,15 +586,8 @@ if (typeof IntersectionObserver !== 'undefined') {
       const url = img.dataset.src;
       if (url && !img.src) {
         img.src = url;
-        img.onload = () => {
-          img.classList.add('img-ready');
-          const box = img.closest('.card-img-box');
-          if (box) box.classList.add('loaded');
-        };
-        img.onerror = () => {
-          const box = img.closest('.card-img-box');
-          if (box) box.classList.add('loaded');
-        };
+        img.onload = () => { img.classList.add('img-ready'); const box = img.closest('.card-img-box'); if (box) box.classList.add('loaded'); };
+        img.onerror = () => { const box = img.closest('.card-img-box'); if (box) box.classList.add('loaded'); };
       }
     },
     unobserve: () => {}
@@ -676,15 +602,8 @@ function primeFirstImages(count = 4) {
     img.fetchPriority = 'high';
     img.removeAttribute('loading');
     img.src = url;
-    img.onload = () => {
-      img.classList.add('img-ready');
-      const box = img.closest('.card-img-box');
-      if (box) box.classList.add('loaded');
-    };
-    img.onerror = () => {
-      const box = img.closest('.card-img-box');
-      if (box) box.classList.add('loaded');
-    };
+    img.onload = () => { img.classList.add('img-ready'); const box = img.closest('.card-img-box'); if (box) box.classList.add('loaded'); };
+    img.onerror = () => { const box = img.closest('.card-img-box'); if (box) box.classList.add('loaded'); };
     imgObserver.unobserve(img);
   });
 }
@@ -704,8 +623,9 @@ function render(){
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginated = filtered.slice(start, start + ITEMS_PER_PAGE);
 
+  // Sử dụng data-cat thay vì onclick để tránh lỗi dấu nháy
   $('tags').innerHTML = cats.map((c, i) => `
-    <button class="${c === cat ? 'on' : ''}" onclick="changeCat('${c}')">
+    <button class="${c === cat ? 'on' : ''}" data-cat="${c}">
       <span class="dot" style="background:${dotColors[i % dotColors.length]}"></span>
       <span>${c}</span>
     </button>
@@ -744,10 +664,20 @@ function render(){
   $('pagination').innerHTML = pageButtons;
 }
 
-function changeCat(c) { cat = c; currentPage = 1; render(); hideSuggestions(); }
+// Gắn sự kiện click cho Tags để thay thế onclick inline
+$('tags').addEventListener('click', (e) => {
+  const btn = e.target.closest('button');
+  if (btn && btn.dataset.cat) {
+    cat = btn.dataset.cat;
+    currentPage = 1;
+    render();
+    hideSuggestions();
+  }
+});
+
 function changePage(p) { currentPage = p; render(); window.scrollTo({ top: 300, behavior: 'smooth' }); }
 
-/* ============ Suggestions (autocomplete) ============ */
+/* ============ Suggestions ============ */
 const inputEl = $('q');
 const sugBox  = $('suggestions');
 let sugItems = [];
