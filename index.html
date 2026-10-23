@@ -6,8 +6,12 @@
 <title>Pain Script</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
+<link rel="preconnect" href="https://i.ibb.co" crossorigin>
+<link rel="preconnect" href="https://wsrv.nl" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
+<link rel="dns-prefetch" href="https://i.ibb.co">
+<link rel="dns-prefetch" href="https://wsrv.nl">
 <!-- Font Fredoka giống phong cách hoạt hình -->
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -372,13 +376,16 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 </head>
 <body>
 
-<audio id="bgAudio" loop playsinline preload="auto">
-  <source src="./nhac.mp4" type="audio/mpeg">
+<!-- Audio: preload none để không tải nhạc khi vào trang -->
+<audio id="bgAudio" loop playsinline preload="none">
+  <source src="./nhac.mp4" type="audio/mp4">
 </audio>
 
 <div class="header-container">
   <div class="avatar-wrapper" id="avatarFrame">
-    <img class="avatar-img" src="https://raw.githubusercontent.com/PainPH10/1/refs/heads/main/IMG_4609.jpeg" alt="Pain Script Avatar" decoding="async">
+    <img class="avatar-img"
+         src="https://wsrv.nl/?url=https%3A%2F%2Fraw.githubusercontent.com%2FPainPH10%2F1%2Frefs%2Fheads%2Fmain%2FIMG_4609.jpeg&w=200&output=webp&q=80"
+         alt="Pain Script Avatar" decoding="async" fetchpriority="high">
   </div>
   <div class="profile-name">Pain Script</div>
 
@@ -461,15 +468,40 @@ function removeInteractionListeners() {
 ['pointerdown','touchstart','click','scroll'].forEach(evt => {
   document.addEventListener(evt, unlockAndPlay, { passive: true });
 });
-window.addEventListener('DOMContentLoaded', tryAutoplay);
+// Delay autoplay 2s để nhường băng thông cho ảnh + avatar
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(tryAutoplay, 2000);
+});
 
-/* ============ Fast CDN rewrite ============ */
+/* ============ Fast CDN rewrite + image resize ============ */
 function fastCDN(url){
   if (!url) return url;
-  const m = url.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/);
-  if (!m) return url;
-  const [, user, repo, branch, path] = m;
-  return `https://cdn.jsdelivr.net/gh/${user}/${repo}@${branch}/${path}`;
+
+  // GitHub raw → jsDelivr (hỗ trợ cả refs/heads/branch và branch)
+  const m = url.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/(.+)$/);
+  if (m) {
+    const [, user, repo, rest] = m;
+    let branch, path;
+    if (rest.startsWith('refs/heads/')) {
+      const after = rest.slice(11);
+      const s = after.indexOf('/');
+      if (s !== -1) { branch = after.slice(0, s); path = after.slice(s + 1); }
+    } else {
+      const s = rest.indexOf('/');
+      if (s !== -1) { branch = rest.slice(0, s); path = rest.slice(s + 1); }
+    }
+    if (branch && path) {
+      return `https://cdn.jsdelivr.net/gh/${user}/${repo}@${branch}/${path}`;
+    }
+    return url;
+  }
+
+  // ImgBB → resize + WebP qua wsrv.nl (cache global, nhanh ở VN)
+  if (/^https:\/\/i\.ibb\.co\//.test(url)) {
+    return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=640&output=webp&q=75`;
+  }
+
+  return url;
 }
 
 /* ============ Data ============ */
@@ -515,9 +547,9 @@ const SCRIPTS = [
   {id: 39, hub:"Sell Fries", game:"", c:"Tất Cả", link:"https://link4m.net/dKI2bRv", subLink:"https://link4m.org/5OBeQ5Nu", img:"https://i.ibb.co/d46dj81Q/IMG-4771.jpg"},
   {id: 40, hub:"Valinc Syndicate", game:"Evade", c:"Tất Cả", link:"https://link4m.net/1na23", subLink:"https://link4m.org/yPVOs", img:"https://i.ibb.co/HTVgwzzb/IMG-4772.jpg"},
   {id: 41, hub:"Ride A Dino", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/y2TPbX", subLink:"https://link4m.org/lIPok", img:"https://i.ibb.co/PZM3zmWL/IMG-4773.jpg"},
-  {id: 42, hub:"Arceus X", game:"", c:"Tất Cả", link:"https://link4m.net/UhfYT", subLink:"https://link4m.org/UhfYT", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4633.jpeg"},
+  {id: 42, hub:"Arceus X", game:"", c:"Tất Cả", link:"https://link4m.net/UhfYT", subLink:"https://link4m.org/UhfYT", img:"https://i.ibb.co/8pGVsyh/IMG-4782.jpg"},
   {id: 43, hub:"Rochess", game:"", c:"Tất Cả", link:"https://link4m.org/Hc5m8CF", subLink:"https://link4m.org/P6tHXQ", img:"https://i.ibb.co/twYkmyj1/IMG-4774.jpg"},
-  {id: 44, hub:"Shield Edition", game:"Fisch", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.org/gaHnvqWF", subLink:"https://link4m.org/yDkcu", img:"https://i.ibb.co/DHVGfXLJ/IMG-4778.jpg"},
+  {id: 44, hub:"Shield Edition", game:"Fisch", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.org/gaHnvqWF", subLink:"https://link4m.org/yDkcu", img:"https://i.ibb.co/PG2w3rp1/IMG-4775.jpg"},
   {id: 45, hub:"Auto Farm Bounty", game:"Blox Fruits", c:"Tất Cả", link:"https://link4m.org/E7COZ", subLink:"https://link4m.org/x2kVgtt", img:"https://i.ibb.co/DfSGr48H/IMG-4776.jpg"},
   {id: 46, hub:"RBXZ", game:"Deep Fishing", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.org/Qz027jc", subLink:"https://link4m.org/K7oH4", img:"https://i.ibb.co/zTm9H64d/IMG-4777.jpg"},
   {id: 47, hub:"Farm Sự Kiện", game:"Evade", c:"Tất Cả", link:"https://link4m.org/H9vIE71V", subLink:"https://link4m.net/H9vIE71V", img:"https://i.ibb.co/DHVGfXLJ/IMG-4778.jpg"},
@@ -585,11 +617,13 @@ if (typeof IntersectionObserver !== 'undefined') {
   };
 }
 
-function primeFirstImages(count = 6) {
+function primeFirstImages(count = 4) {
   const imgs = [...document.querySelectorAll('.card-img-box img[data-src]')].slice(0, count);
   imgs.forEach(img => {
     const url = img.dataset.src;
     if (!url) return;
+    img.fetchPriority = 'high';
+    img.removeAttribute('loading');
     img.src = url;
     img.onload = () => {
       img.classList.add('img-ready');
@@ -630,7 +664,7 @@ function render(){
     <div class="card">
       <div class="card-img-box">
         ${s.img
-          ? `<img data-src="${fastCDN(s.img)}" alt="${s.hub}" decoding="async" width="640" height="360">`
+          ? `<img data-src="${fastCDN(s.img)}" alt="${s.hub}" decoding="async" loading="lazy" fetchpriority="low" width="640" height="360">`
           : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
       </div>
       <div class="card-body">
@@ -646,7 +680,7 @@ function render(){
   `).join('');
 
   document.querySelectorAll('.card-img-box img[data-src]').forEach(img => imgObserver.observe(img));
-  primeFirstImages(6);
+  primeFirstImages(4);
 
   let pageButtons = '';
   if (totalPages > 1) {
@@ -732,11 +766,13 @@ function highlightSuggestion(newIdx) {
   nodes[sugActiveIdx].scrollIntoView({ block: 'nearest' });
 }
 
-/* Gõ chữ mới gợi ý */
+/* Gõ chữ mới gợi ý — render debounce 150ms để tránh reload ảnh liên tục */
+let renderTimeout;
 inputEl.addEventListener('input', () => {
   if (inputEl.value.trim() !== '') cat = 'Tất Cả';
   currentPage = 1;
-  render();
+  clearTimeout(renderTimeout);
+  renderTimeout = setTimeout(render, 150);
   showSuggestions(inputEl.value);
 });
 
