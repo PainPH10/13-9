@@ -12,10 +12,7 @@
 <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
 <link rel="dns-prefetch" href="https://i.ibb.co">
 <link rel="dns-prefetch" href="https://wsrv.nl">
-
-<!-- ✅ FIX: preload audio sớm ngay khi vào trang -->
-<link rel="preload" href="./nhac.mp4" as="audio" type="audio/mp4" crossorigin="anonymous">
-
+<!-- Font Fredoka giống phong cách hoạt hình -->
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -40,11 +37,11 @@ body {
   margin: 0;
   background-color: var(--bg-base);
   background-image: 
-    linear-gradient(rgba(255,255,255,0.1) 1px,: transparent 1px),
-    linear-gradient( '90deg, rgba(255,255,255Fred,0.1) 1okapx, transparent 1px);
-  background-size: 40px 40',px;
-  color: var(--text-main system);
-  font-family-ui, sans-serif;
+    linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--text-main);
+  font-family: 'Fredoka', system-ui, sans-serif;
   min-height: 100vh;
   padding-bottom: 40px;
   -webkit-font-smoothing: antialiased;
@@ -192,6 +189,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   text-shadow: 1px 1px 0 var(--border-color);
 }
 
+/* ===== Search wrap + Suggestions ===== */
 .search-wrap { position: relative; margin-bottom: 20px; }
 
 .search-box {
@@ -209,7 +207,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 .search-box button {
   background: var(--accent-yellow); border: 2px solid var(--border-color); color: var(--text-main);
   padding: 8px 20px; border-radius: 20px; font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer;
-  box-shadow: 0 3px 0 var(--border-color); transition: transform .1s, box-shadow .1s;
+  box-shadow: 0 unlock 3px 0 var(--border-color); transition:And transform .1s, box-shadow .1s;
 }
 .search-box button:active { transform: translateY(3px); box-shadow: none; }
 
@@ -243,6 +241,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 .suggestions .sug-item:hover,
 .suggestions .sug-item.active { background: var(--accent-yellow); }
 
+/* Ẩn nhãn GAME / HUB */
 .suggestions .sug-type { display: none !important; }
 
 .suggestions .sug-empty {
@@ -273,13 +272,13 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(2Play, 1fr);
+  gap: 12,px;
 }
 
 .card {
-  background: var(--surface);
-  border: 3px solid var(--border-color);
+  background: var {(--surface);
+  border: 3px solid passive var(--border-color);
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-hard);
@@ -291,7 +290,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 
 .card-img-box {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 3 / 2;         /* ← CAO HƠN: lộ thêm trên & dưới */
   background: #e0e0e0;
   display: flex;
   align-items: center;
@@ -311,7 +310,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 
 .card-img-box img {
   width: 100%; height: 100%; object-fit: cover; 
-  object-position: top center;
+  object-position: center center;   /* ← CANH GIỮA */
   opacity: 0; transition: opacity .35s ease; position: relative; z-index: 2;
 }
 .card-img-box img.img-ready { opacity: 1; }
@@ -377,9 +376,9 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 </head>
 <body>
 
-<!-- ✅ FIX: preload="auto" để tải ngay, không chờ -->
-<audio id="bgAudio" loop playsinline preload="auto">
-  <source src="./nhac.mp4" type="audio/mp4">
+<!-- Audio: preload none để không tải nhạc khi vào trang -->
+<audio id="bgAudio" loop playsinline preload="none">
+  <source src="./nhac.mp3" type="audio/mp3">
 </audio>
 
 <div class="header-container">
@@ -435,7 +434,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 </main>
 
 <script>
-/* ============ Audio (đã FIX) ============ */
+/* ============ Audio ============ */
 const audio = document.getElementById('bgAudio');
 const avatarFrame = document.getElementById('avatarFrame');
 const playerWidget = document.getElementById('playerWidget');
@@ -450,59 +449,35 @@ function activateAudioUI() {
   iconBadge.innerText = '♫';
   audioStatus.innerText = 'Đang phát liên tục';
 }
-function removeInteractionListeners() {
-  ['pointerdown','touchstart','click','scroll','keydown'].forEach(evt => document.removeEventListener(evt, unlockAndPlay));
-}
-function unlockAndPlay() {
-  if (isPlaying) { removeInteractionListeners(); return; }
-  audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); }).catch(()=>{});
-}
-function manualPlayTrigger() {
-  if (audio.paused) {
-    audio.play().then(activateAudioUI).catch(()=>{});
-  } else {
-    // tap lần 2 = pause
-    audio.pause();
-    isPlaying = false;
-    avatarFrame.classList.remove('playing');
-    playerWidget.classList.remove('playing');
-    iconBadge.innerText = '▶';
-    audioStatus.innerText = 'Đã tạm dừng — chạm để phát';
-  }
-}
-
-/* ✅ FIX: gọi load() + play() NGAY, bỏ setTimeout 2000ms */
-audio.load();
-
-// Autoplay thử ngay khi metadata sẵn sàng
 function tryAutoplay() {
   audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); })
     .catch(() => { audioStatus.innerText = 'Chạm bất kỳ đâu để nghe'; });
 }
-
-// Khi vào trang, thử play luôn
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', tryAutoplay, { once: true });
-} else {
-  tryAutoplay();
+function unlockAndPlay() {
+  if (!isPlaying) {
+    audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); })
+      .catch(() => {});
+  }
 }
-
-// Nếu autoplay bị block → chờ tương tác đầu tiên
-['pointerdown','touchstart','click','scroll','keydown'].forEach(evt => {
-  document.addEventListener(evt, unlockAndPlay, { passive: true });
+function manualPlayTrigger() {
+  if (audio.paused) { audio.play().then(activateAudioUI).catch(()=>{}); }
+}
+function removeInteractionListeners() {
+  ['pointerdown','touchstart','click','scroll'].forEach(evt => document.removeEventListener(evt, unlockAndPlay));
+}
+['pointerdown','touchstart','click','scroll'].forEach(evt => {
+  document.addEventListener(evt,: true });
+});
+// Delay autoplay 2s để nhường băng thông cho ảnh + avatar
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(tryAutoplay, 2000);
 });
 
-// ✅ FIX: hiển thị trạng thái "đang tải nhạc" cho minh bạch
-audio.addEventListener('waiting', () => { audioStatus.innerText = 'Đang tải nhạc...'; });
-audio.addEventListener('playing', () => { if (audio.currentTime > 0) audioStatus.innerText = 'Đang phát liên tục'; });
-audio.addEventListener('canplaythrough', () => {
-  // File đã sẵn sàng → nếu chưa playing và không có tương tác thì thử autoplay lại
-  if (audio.paused && !isPlaying) tryAutoplay();
-});
-
-/* ============ Fast CDN rewrite ============ */
+/* ============ Fast CDN rewrite + image resize ============ */
 function fastCDN(url){
   if (!url) return url;
+
+  // GitHub raw → jsDelivr (hỗ trợ cả refs/heads/branch và branch)
   const m = url.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/(.+)$/);
   if (m) {
     const [, user, repo, rest] = m;
@@ -520,9 +495,12 @@ function fastCDN(url){
     }
     return url;
   }
+
+  // ImgBB → resize + WebP qua wsrv.nl (cache global, nhanh ở VN)
   if (/^https:\/\/i\.ibb\.co\//.test(url)) {
     return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=640&output=webp&q=75`;
   }
+
   return url;
 }
 
@@ -540,10 +518,10 @@ const SCRIPTS = [
   {id: 10, hub:"Jurassic Blocky", game:"", c:"Tất Cả Script Khủng Long", link:"https://fnote.net/notes/Nn2nNB", subLink:"https://fnote.net/notes/Nn2nNB", img:"https://i.ibb.co/tP8qzhg9/IMG-4737.jpg"},
   {id: 12, hub:"Jurassic Pixel", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/3B7FeFyC", subLink:"https://link4m.org/GKszg1", img:"https://i.ibb.co/kgk80jgM/IMG-4738.jpg"},
   {id: 12, hub:"Rayfield", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/vWVdnl", subLink:"https://link4m.org/QsjNSy", img:"https://i.ibb.co/tTM6ZsTT/IMG-4739.jpg"},
-  {id: 13, hub:"Gold", game:"Creatures Of Sonaria", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/Brqiz", subLink:"https://link4m.net/bHjqVi", img:"https://i.ibb.co/HTCwPk3L/IMG-4743.jpg"},
+  {id: 13, hub:"TTJY Hub", game:"Creatures Of Sonaria", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/bc8Hm", subLink:"https://link4m.net/4uaDRqgK", img:"https://i.ibb.co/HTCwPk3L/IMG-4743.jpg"},
   {id: 14, hub:"RBXZ", game:"Prehistoric Farm", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/18NdKed", subLink:"https://link4m.org/sLRN6Cm", img:"https://i.ibb.co/53xpNbR/IMG-4744.jpg"},
   {id: 15, hub:"Strawbery Hub", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/nKb0Dl", subLink:"https://link4m.net/pxSLU", img:"https://i.ibb.co/23SBpzB5/IMG-4756.jpg"},
-  {id: 16, hub:"Ouroboros", game:"Fishing Master", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.net/PjOkQft", subLink:"https://link4m.org/quqJQ6z7", img:"https://i.ibb.co/Kxy6jJZp/IMG-4757.jpg"},
+  {id: 16, hub:"Ouroboros", game:"Fishing Master", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.net/PMBMpv", subLink:"https://link4m.org/quqJQ6z7", img:"https://i.ibb.co/Kxy6jJZp/IMG-4757.jpg"},
   {id: 17, hub:"Kira Hub", game:"Attack On Titan Revolution", c:"Tất Cả", link:"https://link4m.org/6EHJc8go", subLink:"https://link4m.net/MWlFg", img:"https://i.ibb.co/9HpR9F4b/IMG-4758.jpg"},
   {id: 18, hub:"Dueling Grounds", game:"", c:"Tất Cả", link:"https://link4m.net/mnmLtR9x", subLink:"https://link4m.net/rkMS3FO", img:"https://i.ibb.co/mCPQTwFt/IMG-4759.jpg"},
   {id: 19, hub:"Ouroboros", game:"+1 Loot To Forge", c:"Tất Cả", link:"https://link4m.org/YckTOM4P", subLink:"https://link4m.org/VvuEClXp", img:"https://i.ibb.co/DnjQrsH/IMG-4745.jpg"},
@@ -556,12 +534,11 @@ const SCRIPTS = [
   {id: 26, hub:"Cybrion", game:"Heavyweight Fishing", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.net/reyQHYK", subLink:"https://link4m.org/Ok3iozab", img:"https://i.ibb.co/xtf1wrtc/IMG-4751.jpg"},
   {id: 27, hub:"Barrage", game:"That Freekick Challenge", c:"Tất Cả", link:"https://link4m.org/srCUB", subLink:"https://link4m.net/YqiqPK", img:"https://i.ibb.co/k2Yk7t0j/IMG-4752.jpg"},
   {id: 28, hub:"Serenity Hub", game:"Break And Steal An Egg", c:"Tất Cả", link:"https://link4m.org/inVfwsE", subLink:"https://link4m.org/1DLxkjmd", img:"https://i.ibb.co/d4ZrsDtL/IMG-4753.jpg"},
-  {id: 29, hub:"Vex Client", game:"Huss Valley", c:"Tất Cả", link:"https://link4m.net/4ENlH", subLink:"https://link4m.org/9kuhvGL", img:"https://i.ibb.co/Q3FgLkt7/IMG-4761.jpg"},
+  {id: 29, hub:"Vex Client", game:"Huss Valley", c:"Tất Cả", link:"https://link4m.net/4ENlH", subLink:"https://link4m.org/9kuhvGL", img:"https://i.mibb.co/Q3Fg.net/IKlLkt7/IMG-4761.jpg"},
   {id: 30, hub:"Khfresh", game:"Heavyweight Fishing", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.net/fVZpeH", subLink:"https://link4m.net/En5iuml1", img:"https://i.ibb.co/KcgvqpM3/IMG-4754.jpg"},
   {id: 31, hub:"Niah Hub", game:"Kaiju Alpha", c:"Tất Cả", link:"https://link4m.net/KeJbwBEK", subLink:"https://link4m.net/dy2wY", img:"https://i.ibb.co/9HqVWfKX/IMG-4762.jpg"},
   {id: 32, hub:"No Dash Cooldown", game:"Evolve A Cell", c:"Tất Cả", link:"https://link4m.net/MfDoh", subLink:"https://link4m.org/jgNECw", img:"https://i.ibb.co/0yb1Tt1q/IMG-4764.jpg"},
-  {id: 33, hub:"Ouroboros", game:"Heavyweight Fishing", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.net/BR2tBG", subLink:"https://link4m.org/IHrFjOb", img:"https://i.ibb.co/gbY6tz8K/IMG-4765.jpg"},
-  {id: 34, hub:"Barrage", game:"Solve The Cube", c:"Tất Cả", link:"https://link4m.org/5Mlcl", subLink:"https://link4m.net/IKlEd6hb", img:"https://i.ibb.co/RkJJSNmq/IMG-4766.jpg"},
+  {id: 34, hub:"Barrage", game:"Solve The Cube", c:"Tất Cả", link:"https://link4m.org/5Mlcl", subLink:"https://link4Ed6hb", img:"https://i.ibb.co/RkJJSNmq/IMG-4766.jpg"},
   {id: 35, hub:"Survival A Million Monkey", game:"", c:"Tất Cả", link:"https://link4m.org/ErGSJC", subLink:"https://link4m.net/WkaqNI", img:"https://i.ibb.co/DP5Lj5s0/IMG-4767.jpg"},
   {id: 36, hub:"Ouroboros", game:"Harpoon A Fish", c:"Tất Cả", link:"https://link4m.org/t7quIB", subLink:"https://link4m.net/1ghqV", img:"https://i.ibb.co/q8XCcWg/IMG-4768.jpg"},
   {id: 37, hub:"Ouroboros", game:"Chop A Forest", c:"Tất Cả", link:"https://link4m.org/AGvhjWRu", subLink:"https://link4m.org/kwb1lit", img:"https://i.ibb.co/XxN6PDG4/IMG-4769.jpg"},
@@ -579,7 +556,10 @@ const SCRIPTS = [
   {id: 49, hub:"Mario Hub", game:"Build An Ant Empire", c:"Tất Cả", link:"https://link4m.net/FpGcxQ", subLink:"https://link4m.net/3NLEF1", img:"https://i.ibb.co/wZGHQ0MM/IMG-4779.jpg"},
   {id: 50, hub:"Mystrix Hub", game:"Climb For Animals Egg", c:"Tất Cả", link:"https://link4m.org/c66ih", subLink:"https://link4m.net/tGX5xP", img:"https://i.ibb.co/gFvkmHPz/IMG-4786.jpg"},
   {id: 51, hub:"Barrage", game:"+1 Pickaxe Swing For Egg", c:"Tất Cả", link:"https://link4m.org/ICdeG", subLink:"https://link4m.net/RAqJa", img:"https://i.ibb.co/qY620wW9/IMG-4798.jpg"},
-  {id: 52, hub:"Banana Hub", game:"Blox Fruits", c:"Tất Cả", link:"https://link4m.org/Sv6dfcnq", subLink:"https://link4m.org/N7Uy0Ib", img:"https://i.ibb.co/RkkQ57bV/IMG-4781.jpg"}
+  {id: 51, hub:"Fake An Egg", game:"", c:"Tất Cả", link:"https://link4m.net/KUkvxxJn", subLink:"https://link4m.net/WzubxhjM", img:"https://i.ibb.co/4wjf4P9j/IMG-4811.jpg"},
+  {id: 52, hub:"Barrage", game:"8 Ball Duels", c:"Tất Cả", link:"https://link4m.net/L5rJICr", subLink:"https://link4m.net/yoPhp", img:"https://i.ibb.co/RkdJRvNG/IMG-4815.jpg"},
+  {id: 53, hub:"Mirage Hub", game:"Untitled Boxing Game", c:"Tất Cả", link:"https://link4m.net/8nGzS3", subLink:"https://link4m.org/oPSbcv", img:"https://i.ibb.co/nqYvvCkx/IMG-4836.jpg"},
+  {id: 54, hub:"Banana Hub", game:"Blox Fruits", c:"Tất Cả", link:"https://link4m.org/Sv6dfcnq", subLink:"https://link4m.org/N7Uy0Ib", img:"https://i.ibb.co/RkkQ57bV/IMG-4781.jpg"}
 ];
 
 function shuffle(array) {
@@ -720,7 +700,7 @@ function render(){
 function changeCat(c) { cat = c; currentPage = 1; render(); hideSuggestions(); }
 function changePage(p) { currentPage = p; render(); window.scrollTo({ top: 300, behavior: 'smooth' }); }
 
-/* ============ Suggestions ============ */
+/* ============ Suggestions (autocomplete) ============ */
 const inputEl = $('q');
 const sugBox  = $('suggestions');
 let sugItems = [];
@@ -737,6 +717,7 @@ function hideSuggestions() {
 
 function showSuggestions(query) {
   const q = query.trim().toLowerCase();
+  // Chỉ gợi ý khi đã có chữ — bấm vào ô trống thì im lặng
   if (!q) { hideSuggestions(); return; }
 
   const gameSet = new Set();
@@ -789,6 +770,7 @@ function highlightSuggestion(newIdx) {
   nodes[sugActiveIdx].scrollIntoView({ block: 'nearest' });
 }
 
+/* Gõ chữ mới gợi ý — render debounce 150ms để tránh reload ảnh liên tục */
 let renderTimeout;
 inputEl.addEventListener('input', () => {
   if (inputEl.value.trim() !== '') cat = 'Tất Cả';
@@ -798,6 +780,7 @@ inputEl.addEventListener('input', () => {
   showSuggestions(inputEl.value);
 });
 
+/* Điều hướng bằng phím */
 inputEl.addEventListener('keydown', (e) => {
   if (!sugBox.classList.contains('show')) {
     if (e.key === 'Enter' && inputEl.value.trim() !== '') {
@@ -816,6 +799,7 @@ inputEl.addEventListener('keydown', (e) => {
   }
 });
 
+/* Nút Tìm */
 $('go').addEventListener('click', () => {
   if (inputEl.value.trim() !== '') cat = 'Tất Cả';
   currentPage = 1;
@@ -823,6 +807,7 @@ $('go').addEventListener('click', () => {
   hideSuggestions();
 });
 
+/* Click ra ngoài thì ẩn gợi ý */
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.search-wrap')) hideSuggestions();
 });
