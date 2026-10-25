@@ -207,7 +207,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 .search-box button {
   background: var(--accent-yellow); border: 2px solid var(--border-color); color: var(--text-main);
   padding: 8px 20px; border-radius: 20px; font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer;
-  box-shadow: 0 unlock 3px 0 var(--border-color); transition:And transform .1s, box-shadow .1s;
+  box-shadow: 0 3px 0 var(--border-color); transition: transform .1s, box-shadow .1s;
 }
 .search-box button:active { transform: translateY(3px); box-shadow: none; }
 
@@ -272,13 +272,13 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2Play, 1fr);
-  gap: 12,px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
 .card {
-  background: var {(--surface);
-  border: 3px solid passive var(--border-color);
+  background: var(--surface);
+  border: 3px solid var(--border-color);
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-hard);
@@ -290,7 +290,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 
 .card-img-box {
   width: 100%;
-  aspect-ratio: 3 / 2;         /* ← CAO HƠN: lộ thêm trên & dưới */
+  aspect-ratio: 16 / 9;
   background: #e0e0e0;
   display: flex;
   align-items: center;
@@ -310,7 +310,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 
 .card-img-box img {
   width: 100%; height: 100%; object-fit: cover; 
-  object-position: center center;   /* ← CANH GIỮA */
+  object-position: top center;
   opacity: 0; transition: opacity .35s ease; position: relative; z-index: 2;
 }
 .card-img-box img.img-ready { opacity: 1; }
@@ -404,7 +404,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   </div>
 
   <div class="social-row">
-    <a class="yt-btn" href="https://youtube.com/@painphnew?si=0smfxWLRppMfhxu5" target="_blank" rel="noopener">
+    <a class="yt-btn" href="https://youtube.com/@painphnew?si=foIToecsOBNYqq55" target="_blank" rel="noopener">
       ▶ YOUTUBE
     </a>
     <a class="tt-btn" href="https://www.tiktok.com/@0painph10?_r=1&_t=ZS-9AcqbYeLDCD" target="_blank" rel="noopener">
@@ -466,7 +466,7 @@ function removeInteractionListeners() {
   ['pointerdown','touchstart','click','scroll'].forEach(evt => document.removeEventListener(evt, unlockAndPlay));
 }
 ['pointerdown','touchstart','click','scroll'].forEach(evt => {
-  document.addEventListener(evt,: true });
+  document.addEventListener(evt, unlockAndPlay, { passive: true });
 });
 // Delay autoplay 2s để nhường băng thông cho ảnh + avatar
 window.addEventListener('DOMContentLoaded', () => {
@@ -534,11 +534,11 @@ const SCRIPTS = [
   {id: 26, hub:"Cybrion", game:"Heavyweight Fishing", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.net/reyQHYK", subLink:"https://link4m.org/Ok3iozab", img:"https://i.ibb.co/xtf1wrtc/IMG-4751.jpg"},
   {id: 27, hub:"Barrage", game:"That Freekick Challenge", c:"Tất Cả", link:"https://link4m.org/srCUB", subLink:"https://link4m.net/YqiqPK", img:"https://i.ibb.co/k2Yk7t0j/IMG-4752.jpg"},
   {id: 28, hub:"Serenity Hub", game:"Break And Steal An Egg", c:"Tất Cả", link:"https://link4m.org/inVfwsE", subLink:"https://link4m.org/1DLxkjmd", img:"https://i.ibb.co/d4ZrsDtL/IMG-4753.jpg"},
-  {id: 29, hub:"Vex Client", game:"Huss Valley", c:"Tất Cả", link:"https://link4m.net/4ENlH", subLink:"https://link4m.org/9kuhvGL", img:"https://i.mibb.co/Q3Fg.net/IKlLkt7/IMG-4761.jpg"},
+  {id: 29, hub:"Vex Client", game:"Huss Valley", c:"Tất Cả", link:"https://link4m.net/4ENlH", subLink:"https://link4m.org/9kuhvGL", img:"https://i.ibb.co/Q3FgLkt7/IMG-4761.jpg"},
   {id: 30, hub:"Khfresh", game:"Heavyweight Fishing", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.net/fVZpeH", subLink:"https://link4m.net/En5iuml1", img:"https://i.ibb.co/KcgvqpM3/IMG-4754.jpg"},
   {id: 31, hub:"Niah Hub", game:"Kaiju Alpha", c:"Tất Cả", link:"https://link4m.net/KeJbwBEK", subLink:"https://link4m.net/dy2wY", img:"https://i.ibb.co/9HqVWfKX/IMG-4762.jpg"},
   {id: 32, hub:"No Dash Cooldown", game:"Evolve A Cell", c:"Tất Cả", link:"https://link4m.net/MfDoh", subLink:"https://link4m.org/jgNECw", img:"https://i.ibb.co/0yb1Tt1q/IMG-4764.jpg"},
-  {id: 34, hub:"Barrage", game:"Solve The Cube", c:"Tất Cả", link:"https://link4m.org/5Mlcl", subLink:"https://link4Ed6hb", img:"https://i.ibb.co/RkJJSNmq/IMG-4766.jpg"},
+  {id: 34, hub:"Barrage", game:"Solve The Cube", c:"Tất Cả", link:"https://link4m.org/5Mlcl", subLink:"https://link4m.net/IKlEd6hb", img:"https://i.ibb.co/RkJJSNmq/IMG-4766.jpg"},
   {id: 35, hub:"Survival A Million Monkey", game:"", c:"Tất Cả", link:"https://link4m.org/ErGSJC", subLink:"https://link4m.net/WkaqNI", img:"https://i.ibb.co/DP5Lj5s0/IMG-4767.jpg"},
   {id: 36, hub:"Ouroboros", game:"Harpoon A Fish", c:"Tất Cả", link:"https://link4m.org/t7quIB", subLink:"https://link4m.net/1ghqV", img:"https://i.ibb.co/q8XCcWg/IMG-4768.jpg"},
   {id: 37, hub:"Ouroboros", game:"Chop A Forest", c:"Tất Cả", link:"https://link4m.org/AGvhjWRu", subLink:"https://link4m.org/kwb1lit", img:"https://i.ibb.co/XxN6PDG4/IMG-4769.jpg"},
