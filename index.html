@@ -2,818 +2,539 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pain Script</title>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
-<link rel="preconnect" href="https://i.ibb.co" crossorigin>
-<link rel="preconnect" href="https://wsrv.nl" crossorigin>
-<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-<link rel="dns-prefetch" href="https://raw.githubusercontent.com">
-<link rel="dns-prefetch" href="https://i.ibb.co">
-<link rel="dns-prefetch" href="https://wsrv.nl">
-<!-- Font Fredoka giống phong cách hoạt hình -->
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W Roblox — Script Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg-base: #7eb0d5;
-  --surface: #fcf8eb;
-  --surface-2: #e8dfc8;
-  --surface-hover: #ffffff;
-  --border-color: #3b3b3b;
-  --text-main: #2b2b2b;
-  --text-sub: #555555;
-  --text-dim: #888888;
-  --accent-yellow: #ffca3a;
-  --accent-green: #5cb85c;
-  --radius: 12px;
-  --shadow-hard: 4px 4px 0px rgba(0,0,0,0.15);
-  --shadow-btn: 0 4px 0px var(--border-color);
-}
+  :root {
+    --bg: #f8fafc; 
+    --bg-2: #ffffff; 
+    --surface-2: #f1f5f9;
+    --border: #e2e8f0; 
+    --border-hover: #8b5cf6;
+    
+    --text: #0f172a; 
+    --text-dim: #475569;
+    --text-mute: #94a3b8;
+    
+    --primary: #8b5cf6;
+    --primary-2: #6366f1;
+    --success: #10b981;
+    
+    --gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #22d3ee 100%);
+    --gradient-dark: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  }
 
-* { box-sizing: border-box; }
-html { color-scheme: light; }
-body {
-  margin: 0;
-  background-color: var(--bg-base);
-  background-image: 
-    linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
-  background-size: 40px 40px;
-  color: var(--text-main);
-  font-family: 'Fredoka', system-ui, sans-serif;
-  min-height: 100vh;
-  padding-bottom: 40px;
-  -webkit-font-smoothing: antialiased;
-}
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
 
-.header-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 30px 20px 10px 20px;
-}
+  html { scroll-behavior: smooth; }
 
-.avatar-wrapper {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  border: 4px solid var(--border-color);
-  box-shadow: var(--shadow-hard);
-  padding: 2px;
-  margin-bottom: 12px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+  /* NỀN TỐI GIẢN */
+  body {
+    background-color: var(--bg);
+    background-image: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(255,255,255,0) 50%), 
+                      linear-gradient(225deg, rgba(34, 211, 238, 0.05) 0%, rgba(255,255,255,0) 50%);
+    background-attachment: fixed;
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
 
-.avatar-wrapper.playing { animation: musicPulse 1.2s infinite alternate ease-in-out; }
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255, 255, 255, 0.98);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
 
-@keyframes musicPulse {
-  0% { transform: scale(1); box-shadow: var(--shadow-hard); }
-  100% { transform: scale(1.05); box-shadow: 0 6px 0px rgba(0,0,0,0.2); border-color: var(--accent-yellow); }
-}
+  .logo {
+    display: flex; align-items: center; gap: 14px;
+    font-weight: 900; font-size: 22px; letter-spacing: -0.5px;
+    text-decoration: none; color: var(--text);
+  }
 
-.avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+  .nav-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%; padding: 2px;
+    background: var(--gradient);
+    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.2);
+    position: relative;
+  }
+  .nav-avatar img {
+    width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+    border: 2px solid #ffffff; display: block;
+  }
+  .nav-avatar::after {
+    content: ''; position: absolute; bottom: 0; right: 0;
+    width: 12px; height: 12px; background: var(--success);
+    border: 2px solid #fff; border-radius: 50%;
+  }
 
-.profile-name {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--accent-yellow);
-  text-shadow: 2px 2px 0 #333, -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333;
-  margin-bottom: 16px;
-  letter-spacing: 1px;
-}
+  .logo-text .accent {
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 
-.audio-player-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #333;
-  border: 3px solid var(--border-color);
-  border-radius: 30px;
-  padding: 8px 18px;
-  width: 100%;
-  max-width: 320px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow-hard);
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.1s;
-}
-.audio-player-card:active { transform: translateY(4px); box-shadow: none; }
+  /* HUB BANNER */
+  .hub-wrapper {
+    max-width: 1300px; margin: 30px auto 0; padding: 0 40px;
+  }
+  
+  .hub-banner {
+    background: var(--gradient-dark);
+    border-radius: 24px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.15);
+    display: flex; align-items: center; gap: 30px;
+  }
 
-.play-icon-badge {
-  background: var(--accent-green);
-  border: 2px solid var(--border-color);
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  color: white;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 0 var(--border-color);
-}
+  .hub-banner::before {
+    content: ''; position: absolute; top: -50%; left: -10%; width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
 
-.audio-info { display: flex; flex-direction: column; flex: 1; margin: 0 12px; }
-.audio-title { font-size: 13px; font-weight: 600; color: #ffffff; }
-.audio-sub { font-size: 11px; color: #aaaaaa; font-weight: 500; }
+  .hub-avatar {
+    width: 110px; height: 110px;
+    border-radius: 50%; padding: 4px;
+    background: linear-gradient(135deg, #22d3ee, #8b5cf6, #ec4899);
+    box-shadow: 0 0 25px rgba(139, 92, 246, 0.4);
+    flex-shrink: 0; z-index: 2;
+  }
+  .hub-avatar img {
+    width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+    border: 3px solid #1e1b4b;
+  }
 
-.equalizer { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
-.eq-bar { width: 4px; background: var(--accent-green); border-radius: 2px; height: 4px; }
-.playing .eq-bar { animation: wave 0.8s infinite ease-in-out alternate; }
-.playing .eq-bar:nth-child(1) { animation-delay: 0.1s; }
-.playing .eq-bar:nth-child(2) { animation-delay: 0.3s; }
-.playing .eq-bar:nth-child(3) { animation-delay: 0.2s; }
-.playing .eq-bar:nth-child(4) { animation-delay: 0.4s; }
+  .hub-info {
+    z-index: 2; color: #ffffff;
+  }
+  
+  .hub-title-row {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+  }
+  
+  .hub-title-row h1 {
+    font-size: 32px; font-weight: 900; letter-spacing: -0.5px;
+  }
+  
+  .verified-badge {
+    background: rgba(16, 185, 129, 0.2); color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; gap: 4px;
+  }
 
-@keyframes wave { 0% { height: 4px; } 100% { height: 18px; } }
+  .hub-info p {
+    font-size: 15px; color: #cbd5e1; line-height: 1.6; max-width: 600px; 
+  }
 
-.social-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  width: 100%;
-  max-width: 320px;
-  margin-bottom: 25px;
-}
+  /* SEARCH */
+  .search-section {
+    max-width: 1300px; margin: 30px auto 30px; padding: 0 40px; position: relative;
+    z-index: 90; 
+  }
+  .search-wrapper {
+    position: relative; background: var(--bg-2);
+    border: 2px solid var(--border); border-radius: 16px;
+    padding: 4px; transition: all 0.3s ease; 
+    box-shadow: 0 4px 10px -4px rgba(0, 0, 0, 0.05);
+    max-width: 600px;
+  }
+  .search-wrapper:focus-within {
+    border-color: var(--primary); box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+  }
+  .search-wrapper input {
+    width: 100%; padding: 16px 50px 16px 20px;
+    background: transparent; border: none; outline: none;
+    color: var(--text); font-size: 16px; font-weight: 500; font-family: inherit;
+  }
+  .search-wrapper input::placeholder { color: var(--text-mute); font-weight: 400; }
+  .search-icon {
+    position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+    color: var(--primary); font-size: 20px; pointer-events: none;
+  }
 
-.yt-btn, .tt-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 13px;
-  padding: 10px 12px;
-  border-radius: var(--radius);
-  width: 100%;
-  min-width: 0;
-  letter-spacing: 0.5px;
-  border: 3px solid var(--border-color);
-  box-shadow: var(--shadow-btn);
-  transition: transform 0.1s, box-shadow 0.1s;
-}
+  /* DROPDOWN GỢI Ý */
+  .suggestions {
+    position: absolute; top: 100%; left: 40px; width: 600px; max-width: calc(100% - 80px);
+    background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 16px; margin-top: 10px;
+    max-height: 280px; overflow-y: auto; z-index: 90;
+    box-shadow: 0 15px 30px -10px rgba(0,0,0,0.15);
+    opacity: 0; visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+  }
+  .suggestions.show { opacity: 1; visibility: visible; transform: translateY(0); }
+  .suggestion-item {
+    padding: 16px 20px; cursor: pointer; display: flex; align-items: center; gap: 16px;
+    border-bottom: 1px solid var(--border); transition: background 0.2s;
+  }
+  .suggestion-item:last-child { border-bottom: none; }
+  .suggestion-item:hover { background: var(--surface-2); }
+  .suggestion-item img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; }
+  .suggestion-item span { font-size: 15px; font-weight: 700; color: var(--text); }
+  .suggestion-item small { color: var(--text-mute); font-size: 12px; margin-left: auto; background: var(--surface-2); padding: 4px 8px; border-radius: 6px; }
 
-.yt-btn { background: #ff0000; }
-.tt-btn { background: #000000; }
+  /* GRID (2 CỘT) */
+  .scripts-grid {
+    max-width: 1300px; margin: 0 auto; padding: 0 40px 80px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
 
-.yt-btn:active, .tt-btn:active { transform: translateY(4px); box-shadow: none; }
+  /* CARD */
+  .card {
+    background: var(--bg-2); 
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 0; position: relative;
+    display: flex; flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    will-change: transform;
+  }
+  
+  .card:hover {
+    transform: translateY(-4px); 
+    box-shadow: 0 15px 30px -10px rgba(139, 92, 246, 0.15);
+    border-color: var(--primary);
+  }
 
-main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
+  /* ẢNH SCRIPT */
+  .card-image {
+    width: 100%; height: 160px; background: #f1f5f9; overflow: hidden; position: relative;
+    border-bottom: 1px solid var(--border);
+    border-radius: 19px 19px 0 0;
+  }
+  .card-image img {
+    width: 100%; height: 100%; object-fit: cover; 
+    transition: transform 0.4s ease;
+  }
+  .card:hover .card-image img { transform: scale(1.05); }
 
-.hero-title {
-  text-align: center;
-  font-size: clamp(24px, 6vw, 36px);
-  font-weight: 700;
-  margin: 4px 0;
-  color: #ffffff;
-  text-shadow: 2px 2px 0 var(--border-color), -1px -1px 0 var(--border-color), 1px -1px 0 var(--border-color), -1px 1px 0 var(--border-color), 1px 1px 0 var(--border-color);
-}
+  /* NỘI DUNG CARD */
+  .card-content {
+    padding: 20px; display: flex; flex-direction: column; gap: 16px; flex: 1;
+  }
+  .card-header {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+  }
+  .card-title-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .card-title { font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.2; }
+  .card-category {
+    font-size: 11px; font-weight: 800; color: var(--primary);
+    text-transform: uppercase; letter-spacing: 1px;
+    background: rgba(139, 92, 246, 0.1); padding: 4px 8px; border-radius: 6px; display: inline-block;
+    width: max-content;
+  }
+  
+  /* NÚT LINK */
+  .card-actions { display: flex; gap: 12px; margin-top: auto; }
+  .btn {
+    flex: 1; padding: 14px; border-radius: 12px; border: 1px solid transparent;
+    font-size: 14px; font-weight: 700; font-family: inherit;
+    cursor: pointer; text-decoration: none;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: all 0.2s ease;
+  }
+  .btn-main {
+    background: var(--gradient); color: white;
+    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.2);
+  }
+  .btn-main:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(139, 92, 246, 0.3); }
+  
+  .btn-sub {
+    background: var(--surface-2); border: 1px solid var(--border); color: var(--text);
+  }
+  .btn-sub:hover { border-color: var(--primary); background: #ffffff; color: var(--primary); }
 
-.hero-sub {
-  text-align: center;
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  margin-bottom: 24px;
-  text-shadow: 1px 1px 0 var(--border-color);
-}
+  /* EMPTY */
+  .empty {
+    grid-column: 1 / -1; text-align: center; padding: 80px 20px; color: var(--text-mute);
+  }
+  .empty-icon { font-size: 60px; margin-bottom: 15px; opacity: 0.5; }
 
-/* ===== Search wrap + Suggestions ===== */
-.search-wrap { position: relative; margin-bottom: 20px; }
+  /* NÚT NHẠC */
+  .music-btn {
+    position: fixed; bottom: 30px; right: 30px;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--bg-2); border: 2px solid var(--border);
+    color: var(--text); font-size: 24px; cursor: pointer;
+    display: grid; place-items: center; z-index: 1000;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+  }
+  .music-btn:hover { transform: scale(1.1); border-color: var(--primary); color: var(--primary); }
+  .music-btn.playing {
+    border-color: var(--primary); color: var(--primary);
+    animation: pulseRing 2s infinite;
+  }
+  
+  @keyframes pulseRing {
+    0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(139, 92, 246, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+  }
 
-.search-box {
-  background: var(--surface);
-  border: 3px solid var(--border-color);
-  border-radius: 30px;
-  padding: 6px 6px 6px 18px;
-  display: flex;
-  align-items: center;
-  box-shadow: var(--shadow-hard);
-  margin-bottom: 0;
-}
-.search-box input { border: none; outline: none; width: 100%; font-family: inherit; font-size: 15px; color: var(--text-main); background: transparent; font-weight: 500; }
-.search-box input::placeholder { color: var(--text-dim); }
-.search-box button {
-  background: var(--accent-yellow); border: 2px solid var(--border-color); color: var(--text-main);
-  padding: 8px 20px; border-radius: 20px; font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer;
-  box-shadow: 0 3px 0 var(--border-color); transition: transform .1s, box-shadow .1s;
-}
-.search-box button:active { transform: translateY(3px); box-shadow: none; }
-
-.suggestions {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0; right: 0;
-  background: var(--surface);
-  border: 3px solid var(--border-color);
-  border-radius: 16px;
-  box-shadow: var(--shadow-hard);
-  max-height: 300px;
-  overflow-y: auto;
-  z-index: 100;
-  display: none;
-  padding: 6px;
-}
-.suggestions.show { display: block; }
-.suggestions .sug-item {
-  padding: 10px 14px;
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text-main);
-  transition: background .15s;
-}
-.suggestions .sug-item:hover,
-.suggestions .sug-item.active { background: var(--accent-yellow); }
-
-/* Ẩn nhãn GAME / HUB */
-.suggestions .sug-type { display: none !important; }
-
-.suggestions .sug-empty {
-  padding: 12px;
-  text-align: center;
-  color: var(--text-dim);
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.tags {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.tags button {
-  width: 100%; min-width: 0; background: var(--surface); border: 3px solid var(--border-color);
-  padding: 8px 6px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 700;
-  color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center;
-  gap: 6px; line-height: 1.2; text-align: center; white-space: normal; word-break: break-word; overflow: hidden;
-  box-shadow: 0 3px 0 var(--border-color); transition: transform .1s, box-shadow .1s, background .2s;
-}
-.tags button:active { transform: translateY(3px); box-shadow: none; }
-.tags button.on { background: var(--accent-yellow); color: var(--text-main); }
-.tags button span.dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; display: inline-block; border: 2px solid var(--border-color); }
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-
-.card {
-  background: var(--surface);
-  border: 3px solid var(--border-color);
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: var(--shadow-hard);
-  display: flex;
-  flex-direction: column;
-  transition: transform .1s, box-shadow .1s;
-}
-.card:active { transform: translateY(4px); box-shadow: none; }
-
-.card-img-box {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #e0e0e0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  position: relative;
-  border-bottom: 3px solid var(--border-color);
-}
-
-.card-img-box::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, #d0d0d0 25%, #e8e8e8 50%, #d0d0d0 75%);
-  background-size: 200% 100%; animation: shimmer 1.4s infinite; z-index: 1; transition: opacity .35s ease;
-}
-.card-img-box.loaded::before { opacity: 0; pointer-events: none; }
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-.card-img-box img {
-  width: 100%; height: 100%; object-fit: cover; 
-  object-position: top center;
-  opacity: 0; transition: opacity .35s ease; position: relative; z-index: 2;
-}
-.card-img-box img.img-ready { opacity: 1; }
-
-.card-img-placeholder {
-  color: var(--text-main); font-weight: 700; font-size: 14px; letter-spacing: 0.5px;
-  text-align: center; padding: 0 8px; position: relative; z-index: 2;
-}
-
-.card-body { padding: 12px; display: flex; flex-direction: column; flex: 1; }
-
-.card-title {
-  font-size: 20px; 
-  font-weight: 700; 
-  margin: 0 0 12px 0; 
-  color: var(--text-main); 
-  line-height: 1.3;
-  text-align: center;
-}
-
-.game-name { 
-  color: #e63946; 
-  font-weight: 600; 
-  display: block; 
-  margin-top: 6px; 
-  font-size: 16px; 
-}
-
-.card-footer {
-  margin-top: auto; display: flex; justify-content: space-between; align-items: center;
-  gap: 6px; padding-top: 10px; border-top: 2px dashed rgba(0,0,0,0.1);
-}
-
-.btn-link {
-  flex: 1; text-align: center; background: #ffffff; border: 2px solid var(--border-color);
-  color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 13px; padding: 8px 0;
-  border-radius: 8px; transition: all .1s ease; display: flex; justify-content: center; align-items: center;
-  box-shadow: 0 3px 0 var(--border-color);
-}
-.btn-link:active { transform: translateY(3px); box-shadow: none; background: #f0f0f0; }
-
-.btn-sub { background: #f4f4f4; }
-
-.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 30px; flex-wrap: wrap; }
-.pagination button {
-  background: #ffffff; border: 2px solid var(--border-color); padding: 8px 16px; border-radius: 10px;
-  font-family: inherit; font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer;
-  box-shadow: 0 3px 0 var(--border-color); transition: all 0.1s ease;
-}
-.pagination button:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
-.pagination button.active { background: var(--accent-yellow); }
-.pagination button:disabled { opacity: 0.5; cursor: not-allowed; background: #ddd; }
-
-@media (max-width: 480px) {
-  .tags { grid-template-columns: repeat(2, 1fr); }
-  .grid { gap: 8px; }
-  .card-body { padding: 10px 6px; }
-  .card-title { font-size: 16px; } 
-  .game-name { font-size: 14px; margin-top: 4px; }
-  .btn-link { font-size: 11px; padding: 6px 0; }
-}
+  /* ================= RESPONSIVE ================= */
+  @media (max-width: 768px) {
+    nav { padding: 14px 20px; }
+    .nav-avatar { width: 38px; height: 38px; }
+    .logo { font-size: 18px; }
+    
+    .hub-wrapper { padding: 0 20px; margin-top: 20px; }
+    .hub-banner {
+      padding: 24px;
+      flex-direction: column; text-align: center; gap: 16px;
+    }
+    .hub-avatar { width: 90px; height: 90px; }
+    .hub-title-row { justify-content: center; flex-wrap: wrap; }
+    .hub-title-row h1 { font-size: 24px; }
+    .hub-info p { font-size: 14px; }
+    
+    .search-section { padding: 0 20px; margin: 20px auto; }
+    .search-wrapper input { padding: 12px 45px 12px 16px; font-size: 14px; }
+    .suggestions { left: 20px; right: 20px; width: auto; }
+    
+    .scripts-grid { padding: 0 15px 60px; gap: 12px; }
+    
+    .card { border-radius: 14px; }
+    .card-image { height: 110px; border-radius: 13px 13px 0 0; }
+    
+    .card-content { padding: 12px; gap: 10px; }
+    .card-title { font-size: 15px; }
+    .card-category { font-size: 9px; padding: 3px 6px; }
+    
+    .card-actions { flex-direction: column; gap: 8px; }
+    .btn { padding: 10px; font-size: 12px; border-radius: 8px; }
+    
+    .music-btn { bottom: 20px; right: 20px; width: 45px; height: 45px; font-size: 20px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- Audio: preload none để không tải nhạc khi vào trang -->
-<audio id="bgAudio" loop playsinline preload="none">
-  <source src="./nhac.mp3" type="audio/mp3">
+<!-- NHẠC NỀN -->
+<audio id="bgMusic" loop playsinline preload="auto">
+  <source src="nhac.mp3" type="audio/mpeg">
 </audio>
 
-<div class="header-container">
-  <div class="avatar-wrapper" id="avatarFrame">
-    <img class="avatar-img"
-         src="https://wsrv.nl/?url=https%3A%2F%2Fraw.githubusercontent.com%2FPainPH10%2F1%2Frefs%2Fheads%2Fmain%2FIMG_4609.jpeg&w=200&output=webp&q=80"
-         alt="Pain Script Avatar" decoding="async" fetchpriority="high">
-  </div>
-  <div class="profile-name">Pain Script</div>
+<button class="music-btn" id="musicToggle" title="Bật/Tắt nhạc">
+  <span id="musicIcon">🔇</span>
+</button>
 
-  <div class="audio-player-card" id="playerWidget" onclick="manualPlayTrigger()">
-    <div class="play-icon-badge" id="iconBadge">▶</div>
-    <div class="audio-info">
-      <span class="audio-title"> Em Ơi Anh Phải Làm Sao</span>
-      <span class="audio-sub" id="audioStatus">Chạm 1 lần để bật nhạc</span>
+<nav>
+  <a href="#" class="logo">
+    <div class="nav-avatar">
+      <img src="https://i.ibb.co/8DYn3j1L/2-F9-D1447-5-BB1-4-D2-D-AF83-1990628-FA41-C.png" alt="Avatar">
     </div>
-    <div class="equalizer" id="equalizer">
-      <div class="eq-bar"></div>
-      <div class="eq-bar"></div>
-      <div class="eq-bar"></div>
-      <div class="eq-bar"></div>
-    </div>
-  </div>
+    <div class="logo-text">W <span class="accent">Roblox</span></div>
+  </a>
+</nav>
 
-  <div class="social-row">
-    <a class="yt-btn" href="https://youtube.com/@painph109?si=u8-3fbotUre0loXJ" target="_blank" rel="noopener">
-      ▶ YOUTUBE
-    </a>
-    <a class="tt-btn" href="https://www.tiktok.com/@0painph10?_r=1&_t=ZS-9AcqbYeLDCD" target="_blank" rel="noopener">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M16.6 5.82a5.19 5.19 0 0 0 3.4 1.25V10a8.1 8.1 0 0 1-3.53-.86v5.48a6.15 6.15 0 1 1-6.15-6.15c.34 0 .67.03 1 .09v3.15a3.05 3.05 0 1 0 2.15 2.91V2h2.98a5.19 5.19 0 0 0 .15 3.82z"/>
-      </svg>
-      TIKTOK
-    </a>
+<section class="hub-wrapper">
+  <div class="hub-banner">
+    <div class="hub-avatar">
+      <img src="https://i.ibb.co/8DYn3j1L/2-F9-D1447-5-BB1-4-D2-D-AF83-1990628-FA41-C.png" alt="W Roblox Hub">
+    </div>
+    <div class="hub-info">
+      <div class="hub-title-row">
+        <h1>W Roblox Hub</h1>
+        <span class="verified-badge">✓ Verified</span>
+      </div>
+      <p>Nền tảng chia sẻ Script Roblox chất lượng cao, an toàn và cập nhật liên tục. Khám phá hàng trăm script hữu ích cho mọi tựa game hot nhất hiện nay.</p>
+    </div>
   </div>
+</section>
+
+<div class="search-section">
+  <div class="search-wrapper">
+    <input type="text" id="searchInput" placeholder="Tìm tên Script..." autocomplete="off">
+    <span class="search-icon">🔍</span>
+  </div>
+  <div class="suggestions" id="suggestions"></div>
 </div>
 
-<main>
-  <h1 class="hero-title">Ghi Rõ Tên Game Cần Tìm</h1>
-  <div class="hero-sub">Lưu Ý Tìm Kiếm Hãy Ghi Tiếng Anh</div>
-
-  <div class="search-wrap">
-    <div class="search-box">
-      <input id="q" type="search" placeholder="Tìm kiếm script..." autocomplete="off" spellcheck="false">
-      <button id="go" type="button">Tìm</button>
-    </div>
-    <div class="suggestions" id="suggestions" role="listbox" aria-label="Gợi ý tìm kiếm"></div>
-  </div>
-
-  <div class="tags" id="tags"></div>
-  <div class="grid" id="list"></div>
-  <div class="pagination" id="pagination"></div>
-</main>
+<main class="scripts-grid" id="grid"></main>
 
 <script>
-/* ============ Audio ============ */
-const audio = document.getElementById('bgAudio');
-const avatarFrame = document.getElementById('avatarFrame');
-const playerWidget = document.getElementById('playerWidget');
-const audioStatus = document.getElementById('audioStatus');
-const iconBadge = document.getElementById('iconBadge');
-let isPlaying = false;
-
-function activateAudioUI() {
-  isPlaying = true;
-  avatarFrame.classList.add('playing');
-  playerWidget.classList.add('playing');
-  iconBadge.innerText = '♫';
-  audioStatus.innerText = 'Đang phát liên tục';
-}
-function tryAutoplay() {
-  audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); })
-    .catch(() => { audioStatus.innerText = 'Chạm bất kỳ đâu để nghe'; });
-}
-function unlockAndPlay() {
-  if (!isPlaying) {
-    audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); })
-      .catch(() => {});
-  }
-}
-function manualPlayTrigger() {
-  if (audio.paused) { audio.play().then(activateAudioUI).catch(()=>{}); }
-}
-function removeInteractionListeners() {
-  ['pointerdown','touchstart','click','scroll'].forEach(evt => document.removeEventListener(evt, unlockAndPlay));
-}
-['pointerdown','touchstart','click','scroll'].forEach(evt => {
-  document.addEventListener(evt, unlockAndPlay, { passive: true });
-});
-// Delay autoplay 2s để nhường băng thông cho ảnh + avatar
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(tryAutoplay, 2000);
-});
-
-/* ============ Fast CDN rewrite + image resize ============ */
-function fastCDN(url){
-  if (!url) return url;
-
-  // GitHub raw → jsDelivr (hỗ trợ cả refs/heads/branch và branch)
-  const m = url.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/(.+)$/);
-  if (m) {
-    const [, user, repo, rest] = m;
-    let branch, path;
-    if (rest.startsWith('refs/heads/')) {
-      const after = rest.slice(11);
-      const s = after.indexOf('/');
-      if (s !== -1) { branch = after.slice(0, s); path = after.slice(s + 1); }
-    } else {
-      const s = rest.indexOf('/');
-      if (s !== -1) { branch = rest.slice(0, s); path = rest.slice(s + 1); }
-    }
-    if (branch && path) {
-      return `https://cdn.jsdelivr.net/gh/${user}/${repo}@${branch}/${path}`;
-    }
-    return url;
-  }
-
-  // ImgBB → resize + WebP qua wsrv.nl (cache global, nhanh ở VN)
-  if (/^https:\/\/i\.ibb\.co\//.test(url)) {
-    return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=640&output=webp&q=75`;
-  }
-
-  return url;
-}
-
-/* ============ Data ============ */
-const SCRIPTS = [
-  {id: 1, hub:"Miranda Hub", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.org/YBKOl", subLink:"https://link4m.org/SUmNR", img:"https://i.ibb.co/jZVNHhLB/IMG-4726.jpg"},
-  {id: 2, hub:"Nasi Rendang", game:"Steal An Egg", c:"Steal An Egg", link:"https://link4m.net/Tiaoh", subLink:"https://link4m.org/2RCzmiI5", img:"https://i.ibb.co/8D6Kscfr/IMG-4742.jpg"},
-  {id: 3, hub:"Chronnix Hub", game:"Ride A Pet", c:"Tất Cả", link:"https://link4m.net/dURCgx", subLink:"https://link4m.org/aq1SPQ9", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4150.jpeg"},
-  {id: 4, hub:"R Hub", game:"Ride A Pet", c:"Tất Cả", link:"https://link4m.net/Un5BcNem", subLink:"https://link4m.org/V6yRgx", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4155.jpeg"},
-  {id: 5, hub:"Afk Farm Mới", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/DTfuxYO", subLink:"https://link4m.net/xR3WS", img:"https://i.ibb.co/99s3S67b/IMG-4732.jpg"},
-  {id: 6, hub:"Pn Hub", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/7baHImY", subLink:"https://link4m.net/dg9o1FIg", img:"https://i.ibb.co/Q3JnjNYG/IMG-4733.jpg"},
-  {id: 7, hub:"Farm Pvp Cũ", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/guPN2", subLink:"https://link4m.org/oZFvFn", img:"https://i.ibb.co/0jLy4dHF/IMG-4734.jpg"},
-  {id: 8, hub:"MorthUp", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/7VuBc", subLink:"https://link4m.net/NoY94", img:"https://i.ibb.co/BVyhFWQK/IMG-4735.jpg"},
-  {id: 9, hub:"Pn Hub", game:"My Dino Life", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/D6Y9qpO", subLink:"https://link4m.net/YYzUmwc", img:"https://i.ibb.co/39z05HPv/IMG-4736.jpg"},
-  {id: 10, hub:"Jurassic Blocky", game:"", c:"Tất Cả Script Khủng Long", link:"https://fnote.net/notes/Nn2nNB", subLink:"https://fnote.net/notes/Nn2nNB", img:"https://i.ibb.co/tP8qzhg9/IMG-4737.jpg"},
-  {id: 12, hub:"Jurassic Pixel", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/3B7FeFyC", subLink:"https://link4m.org/GKszg1", img:"https://i.ibb.co/kgk80jgM/IMG-4738.jpg"},
-  {id: 12, hub:"Rayfield", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/vWVdnl", subLink:"https://link4m.org/QsjNSy", img:"https://i.ibb.co/tTM6ZsTT/IMG-4739.jpg"},
-  {id: 13, hub:"TTJY Hub", game:"Creatures Of Sonaria", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/bc8Hm", subLink:"https://link4m.net/4uaDRqgK", img:"https://i.ibb.co/HTCwPk3L/IMG-4743.jpg"},
-  {id: 14, hub:"RBXZ", game:"Prehistoric Farm", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/18NdKed", subLink:"https://link4m.org/sLRN6Cm", img:"https://i.ibb.co/53xpNbR/IMG-4744.jpg"},
-  {id: 15, hub:"Strawbery Hub", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/nKb0Dl", subLink:"https://link4m.net/pxSLU", img:"https://i.ibb.co/23SBpzB5/IMG-4756.jpg"},
-  {id: 16, hub:"Ouroboros", game:"Fishing Master", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.net/PMBMpv", subLink:"https://link4m.org/quqJQ6z7", img:"https://i.ibb.co/Kxy6jJZp/IMG-4757.jpg"},
-  {id: 17, hub:"Kira Hub", game:"Attack On Titan Revolution", c:"Tất Cả", link:"https://link4m.org/6EHJc8go", subLink:"https://link4m.net/MWlFg", img:"https://i.ibb.co/9HpR9F4b/IMG-4758.jpg"},
-  {id: 18, hub:"Dueling Grounds", game:"", c:"Tất Cả", link:"https://link4m.net/mnmLtR9x", subLink:"https://link4m.net/rkMS3FO", img:"https://i.ibb.co/mCPQTwFt/IMG-4759.jpg"},
-  {id: 19, hub:"Ouroboros", game:"+1 Loot To Forge", c:"Tất Cả", link:"https://link4m.org/YckTOM4P", subLink:"https://link4m.org/VvuEClXp", img:"https://i.ibb.co/DnjQrsH/IMG-4745.jpg"},
-  {id: 20, hub:"AirFlow Hub", game:"Attack On Titan Revolution", c:"Tất Cả", link:"https://link4m.org/meuoYA2Q", subLink:"https://link4m.org/zN918mz", img:"https://i.ibb.co/mrCRL7jm/IMG-4760.jpg"},
-  {id: 21, hub:"Chnronix Hub", game:"lllegal Soccer", c:"Tất Cả", link:"https://link4m.org/PK04nNx", subLink:"https://link4m.net/bawtv1", img:"https://i.ibb.co/QFcT41tD/IMG-4746.jpg"},
-  {id: 22, hub:"Generic Hub", game:"Pixel Blade", c:"Tất Cả", link:"https://link4m.net/UF22p", subLink:"https://link4m.org/44QEFRSS", img:"https://i.ibb.co/B5BfkzkR/IMG-4747.jpg"},
-  {id: 23, hub:"StarCrow Hub", game:"Heavyweight Fishing", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.net/m90WUhbK", subLink:"https://link4m.net/T6Gcw", img:"https://i.ibb.co/Ps4J25BZ/IMG-4748.jpg"},
-  {id: 24, hub:"Anime Dice", game:"", c:"Tất Cả", link:"https://link4m.org/FxtMnM", subLink:"https://link4m.net/eZnl8", img:"https://i.ibb.co/YFvrbp5Y/IMG-4749.jpg"},
-  {id: 25, hub:"Dueling Grounds Mới", game:"", c:"Tất Cả", link:"https://link4m.org/I0Mms7e", subLink:"https://link4m.org/T3M6haE", img:"https://i.ibb.co/Jj8JWTGG/IMG-4750.jpg"},
-  {id: 26, hub:"Cybrion", game:"Heavyweight Fishing", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.net/reyQHYK", subLink:"https://link4m.org/Ok3iozab", img:"https://i.ibb.co/xtf1wrtc/IMG-4751.jpg"},
-  {id: 27, hub:"Barrage", game:"That Freekick Challenge", c:"Tất Cả", link:"https://link4m.org/srCUB", subLink:"https://link4m.net/YqiqPK", img:"https://i.ibb.co/k2Yk7t0j/IMG-4752.jpg"},
-  {id: 28, hub:"Serenity Hub", game:"Break And Steal An Egg", c:"Tất Cả", link:"https://link4m.org/inVfwsE", subLink:"https://link4m.org/1DLxkjmd", img:"https://i.ibb.co/d4ZrsDtL/IMG-4753.jpg"},
-  {id: 29, hub:"Vex Client", game:"Huss Valley", c:"Tất Cả", link:"https://link4m.net/4ENlH", subLink:"https://link4m.org/9kuhvGL", img:"https://i.ibb.co/Q3FgLkt7/IMG-4761.jpg"},
-  {id: 30, hub:"Khfresh", game:"Heavyweight Fishing", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.net/fVZpeH", subLink:"https://link4m.net/En5iuml1", img:"https://i.ibb.co/KcgvqpM3/IMG-4754.jpg"},
-  {id: 31, hub:"Niah Hub", game:"Kaiju Alpha", c:"Tất Cả", link:"https://link4m.net/KeJbwBEK", subLink:"https://link4m.net/dy2wY", img:"https://i.ibb.co/9HqVWfKX/IMG-4762.jpg"},
-  {id: 32, hub:"No Dash Cooldown", game:"Evolve A Cell", c:"Tất Cả", link:"https://link4m.net/MfDoh", subLink:"https://link4m.org/jgNECw", img:"https://i.ibb.co/0yb1Tt1q/IMG-4764.jpg"},
-  {id: 34, hub:"Barrage", game:"Solve The Cube", c:"Tất Cả", link:"https://link4m.org/5Mlcl", subLink:"https://link4m.net/IKlEd6hb", img:"https://i.ibb.co/RkJJSNmq/IMG-4766.jpg"},
-  {id: 35, hub:"Survival A Million Monkey", game:"", c:"Tất Cả", link:"https://link4m.org/ErGSJC", subLink:"https://link4m.net/WkaqNI", img:"https://i.ibb.co/DP5Lj5s0/IMG-4767.jpg"},
-  {id: 36, hub:"Ouroboros", game:"Harpoon A Fish", c:"Tất Cả", link:"https://link4m.org/t7quIB", subLink:"https://link4m.net/1ghqV", img:"https://i.ibb.co/q8XCcWg/IMG-4768.jpg"},
-  {id: 37, hub:"Ouroboros", game:"Chop A Forest", c:"Tất Cả", link:"https://link4m.org/AGvhjWRu", subLink:"https://link4m.org/kwb1lit", img:"https://i.ibb.co/XxN6PDG4/IMG-4769.jpg"},
-  {id: 38, hub:"My Anime Mine", game:"", c:"Tất Cả", link:"https://link4m.org/FKak8So", subLink:"https://link4m.org/xSJm58", img:"https://i.ibb.co/5g4DGwp4/IMG-4770.jpg"},
-  {id: 39, hub:"AirFlow Hub", game:"Sell Fries", c:"Tất Cả", link:"https://link4m.net/dKI2bRv", subLink:"https://link4m.org/5OBeQ5Nu", img:"https://i.ibb.co/d46dj81Q/IMG-4771.jpg"},
-  {id: 40, hub:"Valinc Syndicate", game:"Evade", c:"Tất Cả", link:"https://link4m.net/1na23", subLink:"https://link4m.org/yPVOs", img:"https://i.ibb.co/HTVgwzzb/IMG-4772.jpg"},
-  {id: 41, hub:"Ride A Dino", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/y2TPbX", subLink:"https://link4m.org/lIPok", img:"https://i.ibb.co/PZM3zmWL/IMG-4773.jpg"},
-  {id: 42, hub:"Arceus X", game:"", c:"Tất Cả", link:"https://link4m.net/UhfYT", subLink:"https://link4m.org/UhfYT", img:"https://i.ibb.co/8pGVsyh/IMG-4782.jpg"},
-  {id: 43, hub:"Barrage", game:"Rochess", c:"Tất Cả", link:"https://link4m.org/Hc5m8CF", subLink:"https://link4m.org/P6tHXQ", img:"https://i.ibb.co/twYkmyj1/IMG-4774.jpg"},
-  {id: 44, hub:"Shield Edition", game:"Fisch", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.org/gaHnvqWF", subLink:"https://link4m.org/yDkcu", img:"https://i.ibb.co/PG2w3rp1/IMG-4775.jpg"},
-  {id: 45, hub:"Auto Farm Bounty", game:"Blox Fruits", c:"Tất Cả", link:"https://link4m.org/E7COZ", subLink:"https://link4m.org/x2kVgtt", img:"https://i.ibb.co/DfSGr48H/IMG-4776.jpg"},
-  {id: 46, hub:"RBXZ", game:"Deep Fishing", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.org/Qz027jc", subLink:"https://link4m.org/K7oH4", img:"https://i.ibb.co/zTm9H64d/IMG-4777.jpg"},
-  {id: 47, hub:"Farm Sự Kiện", game:"Evade", c:"Tất Cả", link:"https://link4m.org/H9vIE71V", subLink:"https://link4m.net/H9vIE71V", img:"https://i.ibb.co/DHVGfXLJ/IMG-4778.jpg"},
-  {id: 48, hub:"Slopix Hub", game:"Ball Vs Ball", c:"Tất Cả", link:"https://link4m.org/K2imMty", subLink:"https://link4m.net/2SRqD", img:"https://i.ibb.co/KjpJBZdW/IMG-4780.jpg"},
-  {id: 49, hub:"Mario Hub", game:"Build An Ant Empire", c:"Tất Cả", link:"https://link4m.net/FpGcxQ", subLink:"https://link4m.net/3NLEF1", img:"https://i.ibb.co/wZGHQ0MM/IMG-4779.jpg"},
-  {id: 50, hub:"Mystrix Hub", game:"Climb For Animals Egg", c:"Tất Cả", link:"https://link4m.org/c66ih", subLink:"https://link4m.net/tGX5xP", img:"https://i.ibb.co/gFvkmHPz/IMG-4786.jpg"},
-  {id: 51, hub:"Barrage", game:"+1 Pickaxe Swing For Egg", c:"Tất Cả", link:"https://link4m.org/ICdeG", subLink:"https://link4m.net/RAqJa", img:"https://i.ibb.co/qY620wW9/IMG-4798.jpg"},
-  {id: 51, hub:"Fake An Egg", game:"", c:"Tất Cả", link:"https://link4m.net/KUkvxxJn", subLink:"https://link4m.net/WzubxhjM", img:"https://i.ibb.co/4wjf4P9j/IMG-4811.jpg"},
-  {id: 52, hub:"Barrage", game:"8 Ball Duels", c:"Tất Cả", link:"https://link4m.net/L5rJICr", subLink:"https://link4m.net/yoPhp", img:"https://i.ibb.co/RkdJRvNG/IMG-4815.jpg"},
-  {id: 53, hub:"Mirage Hub", game:"Untitled Boxing Game", c:"Tất Cả", link:"https://link4m.net/8nGzS3", subLink:"https://link4m.org/oPSbcv", img:"https://i.ibb.co/nqYvvCkx/IMG-4836.jpg"},
-  {id: 54, hub:"Ouroboros", game:"Steal Fighter", c:"Tất Cả", link:"https://link4m.org/Zh5PJhY", subLink:"https://link4m.net/Ydos5iqW", img:"https://i.ibb.co/GvZFyKJb/IMG-4891.jpg"},
-  {id: 55, hub:"Banana Hub", game:"Blox Fruits", c:"Tất Cả", link:"https://link4m.org/Sv6dfcnq", subLink:"https://link4m.org/N7Uy0Ib", img:"https://i.ibb.co/RkkQ57bV/IMG-4781.jpg"}
-];
-
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
-shuffle(SCRIPTS);
-
-const dotColors = ['#ff4fa3', '#a855f7', '#38bdf8', '#ffca3a'];
-const $ = id => document.getElementById(id);
-let cat = 'Tất Cả';
-let currentPage = 1;
-const ITEMS_PER_PAGE = 20;
-const cats = ['Tất Cả', 'Steal An Egg', 'Tất Cả Script Khủng Long', 'Tất Cả Script Game Câu Cá'];
-
-/* ============ Fast image pipeline ============ */
-let imgObserver;
-if (typeof IntersectionObserver !== 'undefined') {
-  imgObserver = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
-      const img = entry.target;
-      const url = img.dataset.src;
-      if (url && !img.src) {
-        img.src = url;
-        img.onload = () => {
-          img.classList.add('img-ready');
-          const box = img.closest('.card-img-box');
-          if (box) box.classList.add('loaded');
-        };
-        img.onerror = () => {
-          const box = img.closest('.card-img-box');
-          if (box) box.classList.add('loaded');
-        };
-      }
-      imgObserver.unobserve(img);
-    }
-  }, { rootMargin: '600px 0px', threshold: 0.01 });
-} else {
-  imgObserver = {
-    observe: (img) => {
-      const url = img.dataset.src;
-      if (url && !img.src) {
-        img.src = url;
-        img.onload = () => {
-          img.classList.add('img-ready');
-          const box = img.closest('.card-img-box');
-          if (box) box.classList.add('loaded');
-        };
-        img.onerror = () => {
-          const box = img.closest('.card-img-box');
-          if (box) box.classList.add('loaded');
-        };
-      }
-    },
-    unobserve: () => {}
-  };
-}
-
-function primeFirstImages(count = 4) {
-  const imgs = [...document.querySelectorAll('.card-img-box img[data-src]')].slice(0, count);
-  imgs.forEach(img => {
-    const url = img.dataset.src;
-    if (!url) return;
-    img.fetchPriority = 'high';
-    img.removeAttribute('loading');
-    img.src = url;
-    img.onload = () => {
-      img.classList.add('img-ready');
-      const box = img.closest('.card-img-box');
-      if (box) box.classList.add('loaded');
-    };
-    img.onerror = () => {
-      const box = img.closest('.card-img-box');
-      if (box) box.classList.add('loaded');
-    };
-    imgObserver.unobserve(img);
-  });
-}
-
-/* ============ Render ============ */
-function render(){
-  const q = $('q').value.trim().toLowerCase();
-
-  const filtered = SCRIPTS.filter(s =>
-    (cat === 'Tất Cả' || s.c === cat) &&
-    (!q || s.hub.toLowerCase().includes(q) || s.game.toLowerCase().includes(q))
-  );
-
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
-  if (currentPage > totalPages) currentPage = totalPages;
-
-  const start = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginated = filtered.slice(start, start + ITEMS_PER_PAGE);
-
-  $('tags').innerHTML = cats.map((c, i) => `
-    <button class="${c === cat ? 'on' : ''}" onclick="changeCat('${c}')">
-      <span class="dot" style="background:${dotColors[i % dotColors.length]}"></span>
-      <span>${c}</span>
-    </button>
-  `).join('');
-
-  $('list').innerHTML = paginated.map(s => `
-    <div class="card">
-      <div class="card-img-box">
-        ${s.img
-          ? `<img data-src="${fastCDN(s.img)}" alt="${s.hub}" decoding="async" loading="lazy" fetchpriority="low" width="640" height="360">`
-          : `<div class="card-img-placeholder">SCRIPT ${s.c.toUpperCase()}</div>`}
-      </div>
-      <div class="card-body">
-        <h2 class="card-title">
-          ${s.hub} ${s.game ? `<span class="game-name">${s.game}</span>` : ''}
-        </h2>
-        <div class="card-footer">
-          <a class="btn-link" href="${s.link}" target="_blank" rel="noopener">LINK CHÍNH</a>
-          <a class="btn-link btn-sub" href="${s.subLink}" target="_blank" rel="noopener">LINK PHỤ</a>
-        </div>
-      </div>
-    </div>
-  `).join('');
-
-  document.querySelectorAll('.card-img-box img[data-src]').forEach(img => imgObserver.observe(img));
-  primeFirstImages(4);
-
-  let pageButtons = '';
-  if (totalPages > 1) {
-    pageButtons += `<button ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">&larr; Trước</button>`;
-    for (let p = 1; p <= totalPages; p++) {
-      pageButtons += `<button class="${p === currentPage ? 'active' : ''}" onclick="changePage(${p})">${p}</button>`;
-    }
-    pageButtons += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Sau &rarr;</button>`;
-  }
-  $('pagination').innerHTML = pageButtons;
-}
-
-function changeCat(c) { cat = c; currentPage = 1; render(); hideSuggestions(); }
-function changePage(p) { currentPage = p; render(); window.scrollTo({ top: 300, behavior: 'smooth' }); }
-
-/* ============ Suggestions (autocomplete) ============ */
-const inputEl = $('q');
-const sugBox  = $('suggestions');
-let sugItems = [];
-let sugActiveIdx = -1;
-
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-function hideSuggestions() {
-  sugBox.classList.remove('show');
-  sugBox.innerHTML = '';
-  sugItems = [];
-  sugActiveIdx = -1;
-}
-
-function showSuggestions(query) {
-  const q = query.trim().toLowerCase();
-  // Chỉ gợi ý khi đã có chữ — bấm vào ô trống thì im lặng
-  if (!q) { hideSuggestions(); return; }
-
-  const gameSet = new Set();
-  const hubSet  = new Set();
-  SCRIPTS.forEach(s => {
-    if (s.game && s.game.toLowerCase().includes(q)) gameSet.add(s.game);
-    if (s.hub  && s.hub.toLowerCase().includes(q))  hubSet.add(s.hub);
-  });
-
-  sugItems = [
-    ...[...gameSet].slice(0, 6).map(v => ({ type: 'Game', label: v })),
-    ...[...hubSet ].slice(0, 6).map(v => ({ type: 'Hub',  label: v })),
+  // =====================================================================
+  // KHU VỰC CHỈNH SỬA SCRIPT (LÀM GỌN NHƯ TRONG ẢNH)
+  // =====================================================================
+  // Cú pháp: { id: số, name: "Tên", category: "Thể loại", image: "Link Ảnh", linkMain: "Link Chính", linkSub: "Link Phụ" },
+  const scripts = [
+     { id: 1, name: "Climb For Animals Eggs", category: "Rifr", image: "https://i.ibb.co/Xxjt6Yv8/IMG-5032.jpg", linkMain: "https://link4m.net/esiNRzQm", linkSub: "https://link4m.org/aM3vs5" }
+     { id: 2, name: "Sell Lemons", category: "Cyraa Hub", image: "https://i.ibb.co/8n5VyH0X/IMG-4989.jpg", linkMain: "https://link4m.org/z3UoA", linkSub: "https://link4m.org/ig7XmH" }
   ];
-  sugActiveIdx = -1;
+  // =====================================================================
+  // KẾT THÚC KHU VỰC CHỈNH SỬA
+  // =====================================================================
 
-  if (!sugItems.length) {
-    sugBox.innerHTML = `<div class="sug-empty">Không có gợi ý — thử từ khóa khác</div>`;
-    sugBox.classList.add('show');
-    return;
+  const grid = document.getElementById('grid');
+  const searchInput = document.getElementById('searchInput');
+  const suggestionsBox = document.getElementById('suggestions');
+  let currentSearch = '';
+
+  // ================= XỬ LÝ NHẠC NỀN =================
+  const bgMusic = document.getElementById('bgMusic');
+  const musicToggle = document.getElementById('musicToggle');
+  const musicIcon = document.getElementById('musicIcon');
+  
+  let isMutedByUser = false; 
+
+  bgMusic.volume = 0.4; 
+
+  function attemptPlay() {
+    if (isMutedByUser) return; 
+
+    bgMusic.play().then(() => {
+      musicIcon.textContent = '🎵';
+      musicToggle.classList.add('playing');
+      document.removeEventListener('click', initAudio);
+      document.removeEventListener('touchstart', initAudio);
+    }).catch(() => {});
   }
 
-  sugBox.innerHTML = sugItems.map((it, i) => `
-    <div class="sug-item" data-idx="${i}">
-      <span class="sug-label">${esc(it.label)}</span>
-    </div>
-  `).join('');
-  sugBox.classList.add('show');
+  function initAudio(e) {
+    if (musicToggle.contains(e.target)) return;
+    attemptPlay();
+  }
 
-  sugBox.querySelectorAll('.sug-item').forEach(el => {
-    el.addEventListener('click', () => pickSuggestion(Number(el.dataset.idx)));
-  });
-}
+  document.addEventListener('click', initAudio);
+  document.addEventListener('touchstart', initAudio);
 
-function pickSuggestion(idx) {
-  const it = sugItems[idx];
-  if (!it) return;
-  inputEl.value = it.label;
-  cat = 'Tất Cả';
-  currentPage = 1;
-  render();
-  hideSuggestions();
-  inputEl.blur();
-}
-
-function highlightSuggestion(newIdx) {
-  const nodes = sugBox.querySelectorAll('.sug-item');
-  if (!nodes.length) return;
-  sugActiveIdx = (newIdx + nodes.length) % nodes.length;
-  nodes.forEach((n, i) => n.classList.toggle('active', i === sugActiveIdx));
-  nodes[sugActiveIdx].scrollIntoView({ block: 'nearest' });
-}
-
-/* Gõ chữ mới gợi ý — render debounce 150ms để tránh reload ảnh liên tục */
-let renderTimeout;
-inputEl.addEventListener('input', () => {
-  if (inputEl.value.trim() !== '') cat = 'Tất Cả';
-  currentPage = 1;
-  clearTimeout(renderTimeout);
-  renderTimeout = setTimeout(render, 150);
-  showSuggestions(inputEl.value);
-});
-
-/* Điều hướng bằng phím */
-inputEl.addEventListener('keydown', (e) => {
-  if (!sugBox.classList.contains('show')) {
-    if (e.key === 'Enter' && inputEl.value.trim() !== '') {
-      cat = 'Tất Cả'; currentPage = 1; render();
+  musicToggle.addEventListener('click', (e) => {
+    e.stopPropagation(); 
+    if (bgMusic.paused) {
+      isMutedByUser = false;
+      bgMusic.play().then(() => {
+        musicIcon.textContent = '🎵';
+        musicToggle.classList.add('playing');
+      });
+    } else {
+      isMutedByUser = true;
+      bgMusic.pause();
+      musicIcon.textContent = '🔇';
+      musicToggle.classList.remove('playing');
     }
-    return;
+  });
+
+  // ================= RENDER SCRIPT =================
+  function renderScripts() {
+    const filtered = scripts.filter(s => {
+      return s.name.toLowerCase().includes(currentSearch);
+    });
+
+    grid.innerHTML = '';
+
+    if (!filtered.length) {
+      grid.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">🔍</div>
+          <h3>Không tìm thấy script</h3>
+          <p>Thử tìm với từ khóa khác</p>
+        </div>`;
+      return;
+    }
+
+    filtered.forEach((s, idx) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.animation = `fadeIn 0.4s ease-out ${idx * 0.05}s backwards`;
+      
+      card.innerHTML = `
+        <div class="card-image">
+          <img src="${s.image}" alt="${s.name}" loading="lazy">
+        </div>
+        <div class="card-content">
+          <div class="card-header">
+            <div class="card-title-wrap">
+              <div class="card-title">${s.name}</div>
+              <div class="card-category">${s.category.toUpperCase()}</div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <a href="${s.linkMain}" target="_blank" class="btn btn-main">🔗 Link Chính</a>
+            <a href="${s.linkSub}" target="_blank" class="btn btn-sub">📁 Link Phụ</a>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
   }
-  if (e.key === 'ArrowDown') { e.preventDefault(); highlightSuggestion(sugActiveIdx + 1); }
-  else if (e.key === 'ArrowUp') { e.preventDefault(); highlightSuggestion(sugActiveIdx - 1); }
-  else if (e.key === 'Enter') {
-    e.preventDefault();
-    if (sugActiveIdx >= 0) pickSuggestion(sugActiveIdx);
-    else { if (inputEl.value.trim() !== '') { cat = 'Tất Cả'; currentPage = 1; render(); } hideSuggestions(); }
-  } else if (e.key === 'Escape') {
-    hideSuggestions();
-  }
-});
 
-/* Nút Tìm */
-$('go').addEventListener('click', () => {
-  if (inputEl.value.trim() !== '') cat = 'Tất Cả';
-  currentPage = 1;
-  render();
-  hideSuggestions();
-});
+  // ================= GỢI Ý TÌM KIẾM =================
+  searchInput.addEventListener('input', (e) => {
+    const val = e.target.value.toLowerCase().trim();
+    currentSearch = val;
+    renderScripts();
 
-/* Click ra ngoài thì ẩn gợi ý */
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.search-wrap')) hideSuggestions();
-});
+    suggestionsBox.innerHTML = '';
+    if (val.length > 0) {
+      const matches = scripts.filter(s => s.name.toLowerCase().includes(val));
+      
+      if (matches.length > 0) {
+        matches.forEach(m => {
+          const item = document.createElement('div');
+          item.className = 'suggestion-item';
+          item.innerHTML = `
+            <img src="${m.image}" alt="${m.name}" loading="lazy">
+            <span>${m.name}</span>
+            <small>${m.category}</small>
+          `;
+          item.addEventListener('click', () => {
+            searchInput.value = m.name;
+            currentSearch = m.name.toLowerCase();
+            renderScripts();
+            suggestionsBox.classList.remove('show');
+          });
+          suggestionsBox.appendChild(item);
+        });
+        suggestionsBox.classList.add('show');
+      } else {
+        suggestionsBox.classList.remove('show');
+      }
+    } else {
+      suggestionsBox.classList.remove('show');
+    }
+  });
 
-render();
+  document.addEventListener('click', (e) => {
+    if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+      suggestionsBox.classList.remove('show');
+    }
+  });
+
+  searchInput.addEventListener('focus', () => {
+    if (searchInput.value.trim().length > 0) {
+      suggestionsBox.classList.add('show');
+    }
+  });
+
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate3d(0, 15px, 0); }
+      to { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  renderScripts();
 </script>
+
 </body>
 </html>
