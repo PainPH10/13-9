@@ -439,7 +439,7 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   <div class="support-badge">
     <img src="https://wsrv.nl/?url=https%3A%2F%2Fi.ibb.co%2FWNy4m01H%2FIMG-5965.jpg&w=240&h=240&fit=cover&output=webp&q=80"
          alt="Ủng hộ ad" decoding="async" fetchpriority="high">
-    <span class="support-text">Ae Ủng Hộ Ad 1-2k Với 😭</span>
+    <span class="support-text">Phật Nào Tốt Bụng Donate Ad 1-2k Iu Lắm<3</span>
   </div>
 
   <div class="avatar-wrapper" id="avatarFrame">
@@ -494,41 +494,65 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 </main>
 
 <script>
-/* ============ Audio ============ */
+/* ============ Audio (có TẮT / MỞ) ============ */
 const audio = document.getElementById('bgAudio');
 const avatarFrame = document.getElementById('avatarFrame');
 const playerWidget = document.getElementById('playerWidget');
 const audioStatus = document.getElementById('audioStatus');
 const iconBadge = document.getElementById('iconBadge');
 let isPlaying = false;
+let userPaused = false; // Cờ đánh dấu người dùng đã chủ động tắt nhạc
 
+/* UI khi nhạc đang phát */
 function activateAudioUI() {
   isPlaying = true;
+  userPaused = false;
   avatarFrame.classList.add('playing');
   playerWidget.classList.add('playing');
   iconBadge.innerText = '♫';
-  audioStatus.innerText = 'Đang phát liên tục';
+  audioStatus.innerText = 'Đang phát • Chạm để tắt';
 }
+
+/* UI khi nhạc bị tắt */
+function deactivateAudioUI() {
+  isPlaying = false;
+  userPaused = true;
+  avatarFrame.classList.remove('playing');
+  playerWidget.classList.remove('playing');
+  iconBadge.innerText = '▶';
+  audioStatus.innerText = 'Nhạc đã tắt • Chạm để bật';
+}
+
 function tryAutoplay() {
+  if (userPaused) return; // Không auto bật lại nếu user đã chủ động tắt
   audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); })
-    .catch(() => { audioStatus.innerText = 'Chạm bất kỳ đâu để nghe'; });
+    .catch(() => { audioStatus.innerText = 'Chạm để bật nhạc'; });
 }
+
 function unlockAndPlay() {
+  if (userPaused) return; // Tôn trọng lựa chọn của user
   if (!isPlaying) {
     audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); })
       .catch(() => {});
   }
 }
+
+/* 🔁 Click vào player = BẬT / TẮT (toggle) */
 function manualPlayTrigger() {
-  if (audio.paused) { audio.play().then(activateAudioUI).catch(()=>{}); }
+  if (audio.paused) {
+    audio.play().then(activateAudioUI).catch(() => {});
+  } else {
+    audio.pause();
+    deactivateAudioUI();
+  }
 }
+
 function removeInteractionListeners() {
   ['pointerdown','touchstart','click','scroll'].forEach(evt => document.removeEventListener(evt, unlockAndPlay));
 }
 ['pointerdown','touchstart','click','scroll'].forEach(evt => {
   document.addEventListener(evt, unlockAndPlay, { passive: true });
 });
-// Delay autoplay 2s để nhường băng thông cho ảnh + avatar
 window.addEventListener('DOMContentLoaded', () => {
   setTimeout(tryAutoplay, 2000);
 });
@@ -537,7 +561,6 @@ window.addEventListener('DOMContentLoaded', () => {
 function fastCDN(url){
   if (!url) return url;
 
-  // GitHub raw → jsDelivr (hỗ trợ cả refs/heads/branch và branch)
   const m = url.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/(.+)$/);
   if (m) {
     const [, user, repo, rest] = m;
@@ -556,7 +579,6 @@ function fastCDN(url){
     return url;
   }
 
-  // ImgBB → resize + WebP qua wsrv.nl (cache global, nhanh ở VN)
   if (/^https:\/\/i\.ibb\.co\//.test(url)) {
     return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=640&output=webp&q=75`;
   }
@@ -573,16 +595,16 @@ const SCRIPTS = [
   {id: 5, hub:"Sell Lemons", game:"", c:"Tất Cả", link:"https://link4m.org/z3UoA", subLink:"https://link4m.org/ig7XmH", img:"https://i.ibb.co/23gMZnfC/IMG-5049.jpg"},
   {id: 6, hub:"Furmix Hub", game:"Bike For Egg", c:"Tất Cả", link:"https://link4m.net/uVa6MWY6", subLink:"https://link4m.org/5Ovxh", img:"https://i.ibb.co/wN6hS8hn/8-D6-ED3-EA-E99-B-405-F-BFC9-0-EC1-EF5-AA4-D2.jpg"},
   {id: 7, hub:"Dek Dev Hub", game:"Break And Steal An Egg", c:"Tất Cả", link:"https://link4m.net/xgzeS", subLink:"https://link4m.org/oHTRXhim", img:"https://i.ibb.co/vCSbzGnf/IMG-5518.jpg"},
-  {id: 8, hub:"MorthUp", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/7VuBc", subLink:"https://link4m.net/NoY94", img:"https://i.ibb.co/BVyhFWQK/IMG-4735.jpg"},
-  {id: 9, hub:"Pn Hub", game:"My Dino Life", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/D6Y9qpO", subLink:"https://link4m.net/tarppnu", img:"https://i.ibb.co/tMYG0Xf7/IMG-5818.jpg"},
-  {id: 10, hub:"Jurassic Blocky", game:"", c:"Tất Cả Script Khủng Long", link:"https://fnote.net/notes/Nn2nNB", subLink:"https://fnote.net/notes/Nn2nNB", img:"https://i.ibb.co/tP8qzhg9/IMG-4737.jpg"},
+  {id: 8, hub:"MorthUp", game:"", c:"Tất Cả", link:"https://link4m.org/7VuBc", subLink:"https://link4m.net/NoY94", img:"https://i.ibb.co/BVyhFWQK/IMG-4735.jpg"},
+  {id: 9, hub:"Pn Hub", game:"My Dino Life", c:"Tất Cả", link:"https://link4m.org/D6Y9qpO", subLink:"https://link4m.net/tarppnu", img:"https://i.ibb.co/tMYG0Xf7/IMG-5818.jpg"},
+  {id: 10, hub:"Jurassic Blocky", game:"", c:"Tất Cả", link:"https://fnote.net/notes/Nn2nNB", subLink:"https://fnote.net/notes/Nn2nNB", img:"https://i.ibb.co/tP8qzhg9/IMG-4737.jpg"},
   {id: 11, hub:"KLZE Hub", game:"Attack On Titan Revolution", c:"Attack On Titan Revolution", link:"https://link4m.org/caYi66ts", subLink:"https://link4m.org/AfnPM", img:"https://i.ibb.co/X1wbBFk/IMG-5718.jpg"},
-  {id: 12, hub:"Jurassic Pixel", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/3B7FeFyC", subLink:"https://link4m.org/GKszg1", img:"https://i.ibb.co/kgk80jgM/IMG-4738.jpg"},
-  {id: 13, hub:"TTJY Hub", game:"Creatures Of Sonaria", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/bc8Hm", subLink:"https://link4m.net/4uaDRqgK", img:"https://i.ibb.co/HTCwPk3L/IMG-4743.jpg"},
-  {id: 14, hub:"RBXZ", game:"Prehistoric Farm", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/18NdKed", subLink:"https://link4m.org/sLRN6Cm", img:"https://i.ibb.co/53xpNbR/IMG-4744.jpg"},
-  {id: 15, hub:"Strawbery Hub", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/nKb0Dl", subLink:"https://link4m.net/pxSLU", img:"https://i.ibb.co/23SBpzB5/IMG-4756.jpg"},
+  {id: 12, hub:"Jurassic Pixel", game:"", c:"Tất Cả", link:"https://link4m.net/3B7FeFyC", subLink:"https://link4m.org/GKszg1", img:"https://i.ibb.co/kgk80jgM/IMG-4738.jpg"},
+  {id: 13, hub:"TTJY Hub", game:"Creatures Of Sonaria", c:"Tất Cả", link:"https://link4m.net/bc8Hm", subLink:"https://link4m.net/4uaDRqgK", img:"https://i.ibb.co/HTCwPk3L/IMG-4743.jpg"},
+  {id: 14, hub:"RBXZ", game:"Prehistoric Farm", c:"Tất Cả", link:"https://link4m.org/18NdKed", subLink:"https://link4m.org/sLRN6Cm", img:"https://i.ibb.co/53xpNbR/IMG-4744.jpg"},
+  {id: 15, hub:"Strawbery Hub", game:"Primeval Earth", c:"Tất Cả", link:"https://link4m.org/OxbbiWX9", subLink:"https://link4m.net/pxSLU", img:"https://i.ibb.co/23SBpzB5/IMG-4756.jpg"},
   {id: 16, hub:"Cybrion", game:"Deep Fishing", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.org/ckXNta", subLink:"https://link4m.org/y2JwMd", img:"https://i.ibb.co/pc6kh9R/IMG-5080.jpg"},
-  {id: 17, hub:"Cybrion", game:"Throw Food For Animals", c:"Tất Cả", link:"https://link4m.org/zgwnleV", subLink:"https://link4m.org/Nvn2vI7j", img:"https://i.ibb.co/zhgv9TbS/IMG-5459.jpg"},
+  {id: 17, hub:"Adonis Hub", game:"Throw Food For Animals", c:"Tất Cả", link:"https://link4m.net/Yrk52uf", subLink:"https://link4m.net/eIAd4hQZ", img:"https://i.ibb.co/zWjyNnhp/IMG-5993.jpg"},
   {id: 18, hub:"Dueling Grounds", game:"", c:"Tất Cả", link:"https://link4m.net/mnmLtR9x", subLink:"https://link4m.net/rkMS3FO", img:"https://i.ibb.co/mCPQTwFt/IMG-4759.jpg"},
   {id: 19, hub:"Ouroboros", game:"+1 Loot To Forge", c:"Tất Cả", link:"https://link4m.org/YckTOM4P", subLink:"https://link4m.org/VvuEClXp", img:"https://i.ibb.co/DnjQrsH/IMG-4745.jpg"},
   {id: 20, hub:"AirFlow Hub", game:"Attack On Titan Revolution", c:"Attack On Titan Revolution", link:"https://link4m.org/meuoYA2Q", subLink:"https://link4m.org/zN918mz", img:"https://i.ibb.co/Ps0kCFGx/IMG-5804.jpg"},
@@ -606,7 +628,7 @@ const SCRIPTS = [
   {id: 39, hub:"AirFlow Hub", game:"Sell Fries", c:"Tất Cả", link:"https://link4m.net/dKI2bRv", subLink:"https://link4m.org/5OBeQ5Nu", img:"https://i.ibb.co/d46dj81Q/IMG-4771.jpg"},
   {id: 40, hub:"Valinc Syndicate", game:"Evade", c:"Tất Cả", link:"https://link4m.net/1na23", subLink:"https://link4m.org/yPVOs", img:"https://i.ibb.co/HTVgwzzb/IMG-4772.jpg"},
   {id: 41, hub:"Ride A Dino", game:"", c:"Tất Cả Script Khủng Long", link:"https://link4m.org/y2TPbX", subLink:"https://link4m.org/lIPok", img:"https://i.ibb.co/PZM3zmWL/IMG-4773.jpg"},
-  {id: 42, hub:"TTFA", game:"Throw Food For Animals", c:"Tất Cả", link:"https://link4m.org/DBp3SxG", subLink:"https://link4m.net/75KsTCIT", img:"https://i.ibb.co/XrNxkhnZ/IMG-5323.jpg"},
+  {id: 42, hub:"Foxname", game:"99 Nights in the Forest", c:"Tất Cả", link:"https://link4m.net/r6hLPeK", subLink:"https://link4m.org/VXmf8rGC", img:"https://i.ibb.co/svG0dQKy/IMG-5978.jpg"},
   {id: 43, hub:"Stockfish", game:"Rochess", c:"Tất Cả", link:"https://link4m.org/hZPjOeU", subLink:"https://link4m.net/nFD46", img:"https://i.ibb.co/JWB55t04/IMG-5931.jpg"},
   {id: 44, hub:"Tora Isme", game:"+1 Venom Evolution", c:"Tất Cả", link:"https://link4m.net/gaUog6ia", subLink:"https://link4m.net/xLwhJs8Z", img:"https://i.ibb.co/B2Q9BDhN/IMG-5549.jpg"},
   {id: 45, hub:"Ringta", game:"99 Nights in the Forest", c:"Tất Cả", link:"https://link4m.org/VDzuM", subLink:"https://link4m.org/ejfWy", img:"https://i.ibb.co/HT7TdDVq/IMG-5849.jpg"},
@@ -644,16 +666,21 @@ const SCRIPTS = [
   {id: 76, hub:"Tora Isme", game:"+1 Anime Eyes", c:"Tất Cả", link:"https://link4m.org/IERXjGZA", subLink:"https://link4m.net/2huOvlDP", img:"https://i.ibb.co/F48s7D5F/IMG-5633.jpg"},
   {id: 77, hub:"Solo Hub", game:"Attack On Titan Revolution", c:"Attack On Titan Revolution", link:"https://link4m.net/8w35Pq7Y", subLink:"https://link4m.net/9aoUi", img:"https://i.ibb.co/vxnpD4vK/IMG-5645.jpg"},
   {id: 78, hub:"Rs Hub", game:"RoWorld", c:"Tất Cả", link:"https://link4m.org/izCSJxdb", subLink:"https://link4m.net/fKb5EU7", img:"https://i.ibb.co/nqHLhxXh/IMG-5683.jpg"},
-  {id: 79, hub:"Tora Isme", game:"Bug Evolution", c:"Tất Cả", link:"https://link4m.net/xNC6u", subLink:"https://link4m.org/fF149", img:"https://i.ibb.co/dw40W4nj/IMG-5701.jpg"},
-  {id: 80, hub:"Rayfield", game:"Primeval Earth", c:"Tất Cả Script Khủng Long", link:"https://link4m.net/vWVdnl", subLink:"https://link4m.org/QsjNSy", img:"https://i.ibb.co/tTM6ZsTT/IMG-4739.jpg"},
+  {id: 79, hub:"MultiHub Pro", game:"Bug Evolution", c:"Tất Cả", link:"https://link4m.net/f5EHtDVa", subLink:"https://link4m.net/rRZee5t", img:"https://i.ibb.co/dw40W4nj/IMG-5701.jpg"},
+  {id: 80, hub:"Rayfield", game:"Primeval Earth", c:"Tất Cả", link:"https://link4m.net/vWVdnl", subLink:"https://link4m.org/QsjNSy", img:"https://i.ibb.co/tTM6ZsTT/IMG-4739.jpg"},
   {id: 81, hub:"Nobulem.wtf", game:"Attack On Titan Revolution", c:"Attack On Titan Revolution", link:"https://link4m.org/89SC9Hg", subLink:"https://link4m.net/Ceiug", img:"https://i.ibb.co/XrgrJWmK/IMG-5584.jpg"},
   {id: 82, hub:"Akkiwi", game:"Throw Food For Animals", c:"Tất Cả", link:"https://link4m.org/LFCrC1", subLink:"https://link4m.net/L4rUZws", img:"https://i.ibb.co/VnsdkB3/IMG-5740.jpg"},
   {id: 83, hub:"Tora Isme", game:"Survive Your Ideas", c:"Tất Cả", link:"https://link4m.org/v5Nln", subLink:"https://link4m.net/k2u0heop", img:"https://i.ibb.co/LzMphxvf/IMG-5777.jpg"},
-  {id: 84, hub:"Axon Hub", game:"King Legacy", c:"Tất Cả", link:"https://link4m.net/O5QrVUeW", subLink:"https://link4m.org/hFoaz", img:"https://i.ibb.co/h1XQc9tc/IMG-5885.jpg"},
-  {id: 85, hub:"Zee Hub", game:"King Legacy", c:"Tất Cả", link:"https://link4m.org/ETovap", subLink:"https://link4m.net/QJhci", img:"https://i.ibb.co/prZcj2Hj/IMG-5884.jpg"},
-  {id: 86, hub:"Wukong Hub", game:"King Legacy", c:"Tất Cả", link:"https://link4m.net/8njS5", subLink:"https://link4m.org/aeZoVyK", img:"https://i.ibb.co/21JhG6x5/IMG-5944.jpg"},
+  {id: 84, hub:"Axon Hub", game:"King Legacy", c:"King Legacy", link:"https://link4m.net/O5QrVUeW", subLink:"https://link4m.org/hFoaz", img:"https://i.ibb.co/h1XQc9tc/IMG-5885.jpg"},
+  {id: 85, hub:"Zee Hub", game:"King Legacy", c:"King Legacy", link:"https://link4m.org/ETovap", subLink:"https://link4m.net/QJhci", img:"https://i.ibb.co/prZcj2Hj/IMG-5884.jpg"},
+  {id: 86, hub:"Wukong Hub", game:"King Legacy", c:"King Legacy", link:"https://link4m.net/8njS5", subLink:"https://link4m.org/aeZoVyK", img:"https://i.ibb.co/21JhG6x5/IMG-5944.jpg"},
   {id: 87, hub:"Xeioa", game:"Throw Food For Animals", c:"Tất Cả", link:"https://link4m.net/UIupWBl", subLink:"https://link4m.net/yUArx", img:"https://i.ibb.co/r2ysfvMC/IMG-5954.jpg"},
-  {id: 88, hub:"Cryonix", game:"Attack On Titan Revolution", c:"Attack On Titan Revolution", link:"https://link4m.net/p9xBgX", subLink:"https://link4m.net/oWjnqFO9", img:"https://i.ibb.co/TqnCj1c7/IMG-5899.jpg"}
+  {id: 88, hub:"Yuri", game:"Throw A Seed", c:"Tất Cả", link:"https://link4m.org/mQHNf", subLink:"https://link4m.net/BDOo3R", img:"https://i.ibb.co/rf27T6gp/IMG-6010.jpg"},
+  {id: 89, hub:"LNR Hub", game:"Fisch", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.org/mjE9a", subLink:"https://link4m.org/GTqn2z", img:"https://i.ibb.co/mVdsb7Y0/IMG-6024.jpg"},
+  {id: 90, hub:"Adonis Hub", game:"Throw A Seed", c:"Tất Cả", link:"https://link4m.net/wci8W", subLink:"https://link4m.org/WFpBgDt", img:"https://i.ibb.co/1tZd1Bwf/IMG-6045.jpg"},
+  {id: 91, hub:"RBXZ", game:"Driving Empire", c:"Tất Cả", link:"https://link4m.org/pkZUH", subLink:"https://link4m.net/tpsHCK", img:"https://i.ibb.co/4ZdZN8R8/IMG-6082.jpg"},
+  {id: 92, hub:"Spectrum", game:"King Legacy", c:"King Legacy", link:"https://link4m.org/JY0aofuB", subLink:"https://link4m.net/IKHCwc", img:"https://i.ibb.co/fYwhGFht/IMG-6114.jpg"},
+  {id: 93, hub:"Cryonix", game:"Attack On Titan Revolution", c:"Attack On Titan Revolution", link:"https://link4m.net/p9xBgX", subLink:"https://link4m.net/oWjnqFO9", img:"https://i.ibb.co/TqnCj1c7/IMG-5899.jpg"}
 ];
 
 function shuffle(array) {
@@ -669,7 +696,7 @@ const $ = id => document.getElementById(id);
 let cat = 'Tất Cả';
 let currentPage = 1;
 const ITEMS_PER_PAGE = 20;
-const cats = ['Tất Cả', 'Attack On Titan Revolution', 'Tất Cả Script Khủng Long', 'Tất Cả Script Game Câu Cá'];
+const cats = ['Tất Cả', 'Attack On Titan Revolution', 'King Legacy', 'Tất Cả Script Game Câu Cá'];
 
 /* ============ Fast image pipeline ============ */
 let imgObserver;
@@ -811,7 +838,6 @@ function hideSuggestions() {
 
 function showSuggestions(query) {
   const q = query.trim().toLowerCase();
-  // Chỉ gợi ý khi đã có chữ — bấm vào ô trống thì im lặng
   if (!q) { hideSuggestions(); return; }
 
   const gameSet = new Set();
@@ -864,7 +890,6 @@ function highlightSuggestion(newIdx) {
   nodes[sugActiveIdx].scrollIntoView({ block: 'nearest' });
 }
 
-/* Gõ chữ mới gợi ý — render debounce 150ms để tránh reload ảnh liên tục */
 let renderTimeout;
 inputEl.addEventListener('input', () => {
   if (inputEl.value.trim() !== '') cat = 'Tất Cả';
@@ -874,7 +899,6 @@ inputEl.addEventListener('input', () => {
   showSuggestions(inputEl.value);
 });
 
-/* Điều hướng bằng phím */
 inputEl.addEventListener('keydown', (e) => {
   if (!sugBox.classList.contains('show')) {
     if (e.key === 'Enter' && inputEl.value.trim() !== '') {
@@ -893,7 +917,6 @@ inputEl.addEventListener('keydown', (e) => {
   }
 });
 
-/* Nút Tìm */
 $('go').addEventListener('click', () => {
   if (inputEl.value.trim() !== '') cat = 'Tất Cả';
   currentPage = 1;
@@ -901,7 +924,6 @@ $('go').addEventListener('click', () => {
   hideSuggestions();
 });
 
-/* Click ra ngoài thì ẩn gợi ý */
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.search-wrap')) hideSuggestions();
 });
