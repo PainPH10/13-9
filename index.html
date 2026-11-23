@@ -12,53 +12,62 @@
 <link rel="dns-prefetch" href="https://raw.githubusercontent.com">
 <link rel="dns-prefetch" href="https://i.ibb.co">
 <link rel="dns-prefetch" href="https://wsrv.nl">
-<!-- Font Fredoka giống phong cách hoạt hình -->
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-base: #7eb0d5;
-  --surface: #fcf8eb;
-  --surface-2: #e8dfc8;
+  --bg-top: #7eb0d5;
+  --bg-bottom: #a5c4e8;
+  --surface: #fffbf0;
   --surface-hover: #ffffff;
-  --border-color: #3b3b3b;
-  --text-main: #2b2b2b;
-  --text-sub: #555555;
-  --text-dim: #888888;
+  --border-color: #2a2a2a;
+  --text-main: #1a1a1a;
+  --text-sub: #4a4a4a;
+  --text-dim: #8a8a8a;
   --accent-yellow: #ffca3a;
-  --accent-green: #5cb85c;
-  --radius: 12px;
-  --shadow-hard: 4px 4px 0px rgba(0,0,0,0.15);
-  --shadow-btn: 0 4px 0px var(--border-color);
+  --accent-yellow-2: #ffd95a;
+  --accent-green: #4caf50;
+  --accent-green-2: #5cdb6b;
+  --accent-red: #ff4757;
+  --accent-pink: #ff6b9d;
+  --radius: 14px;
+  --shadow-hard: 4px 4px 0 rgba(0,0,0,0.18);
+  --shadow-btn: 0 4px 0 var(--border-color);
 }
 
 * { box-sizing: border-box; }
-html { color-scheme: light; }
+html { color-scheme: light; scroll-behavior: smooth; }
+
 body {
   margin: 0;
-  background-color: var(--bg-base);
+  background-color: var(--bg-top);
   background-image: 
-    linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
-  background-size: 40px 40px;
+    radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.5), transparent 45%),
+    radial-gradient(ellipse at 80% 100%, rgba(168,85,247,0.15), transparent 50%),
+    linear-gradient(rgba(255,255,255,0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.09) 1px, transparent 1px),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  background-size: auto, auto, 40px 40px, 40px 40px, auto;
+  background-attachment: fixed;
   color: var(--text-main);
-  font-family: 'Fredoka', system-ui, sans-serif;
+  font-family: 'Fredoka', system-ui, -apple-system, sans-serif;
   min-height: 100vh;
   padding-bottom: 40px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* ============ HEADER ============ */
 .header-container {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 30px 20px 10px 20px;
+  padding: 30px 20px 10px;
   max-width: 460px;
   margin: 0 auto;
 }
 
-/* ===== Ảnh ủng hộ ad (góc trên bên phải, kế avatar) ===== */
 .support-badge {
   position: absolute;
   top: 12px;
@@ -82,10 +91,15 @@ body {
   aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 3px solid var(--border-color);
-  box-shadow: var(--shadow-hard);
+  box-shadow: 0 4px 0 var(--border-color), 0 8px 20px rgba(0,0,0,0.2);
   background: #fff;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.support-badge:hover img {
+  transform: scale(1.08) rotate(-3deg);
 }
 
 .support-badge .support-text {
@@ -95,94 +109,189 @@ body {
   line-height: 1.25;
   text-align: center;
   color: #ffffff;
-  background: #e63946;
+  background: linear-gradient(135deg, #ff4757 0%, #ff6b9d 100%);
   border: 2px solid var(--border-color);
-  border-radius: 8px;
-  padding: 3px 6px;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
-  text-shadow: 1px 1px 0 rgba(0,0,0,0.35);
+  border-radius: 10px;
+  padding: 4px 8px;
+  box-shadow: 0 2px 0 var(--border-color);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
 .avatar-wrapper {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 108px;
+  height: 108px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #fff;
   border: 4px solid var(--border-color);
-  box-shadow: var(--shadow-hard);
-  padding: 2px;
-  margin-bottom: 12px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 0 var(--border-color), 0 8px 24px rgba(0,0,0,0.2);
+  padding: 3px;
+  margin-bottom: 14px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
 }
 
-.avatar-wrapper.playing { animation: musicPulse 1.2s infinite alternate ease-in-out; }
+.avatar-wrapper:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.avatar-wrapper.playing {
+  animation: musicPulse 1.4s infinite alternate ease-in-out;
+  border-color: var(--accent-yellow);
+}
 
 @keyframes musicPulse {
-  0% { transform: scale(1); box-shadow: var(--shadow-hard); }
-  100% { transform: scale(1.05); box-shadow: 0 6px 0px rgba(0,0,0,0.2); border-color: var(--accent-yellow); }
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 0 var(--border-color), 0 0 0 0 rgba(255,202,58,0.7), 0 8px 24px rgba(0,0,0,0.2);
+  }
+  100% {
+    transform: scale(1.04);
+    box-shadow: 0 4px 0 var(--border-color), 0 0 0 14px rgba(255,202,58,0), 0 8px 24px rgba(0,0,0,0.25);
+  }
 }
 
-.avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
 .profile-name {
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 700;
   color: var(--accent-yellow);
-  text-shadow: 2px 2px 0 #333, -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333;
+  text-shadow: 
+    2px 2px 0 #333,
+    -1px -1px 0 #333,
+    1px -1px 0 #333,
+    -1px 1px 0 #333,
+    1px 1px 0 #333,
+    0 6px 16px rgba(0,0,0,0.25);
   margin-bottom: 16px;
   letter-spacing: 1px;
+  transition: transform 0.2s;
 }
 
+.profile-name:hover {
+  transform: scale(1.05) rotate(-1deg);
+}
+
+/* ============ AUDIO PLAYER ============ */
 .audio-player-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #333;
+  gap: 10px;
+  background: linear-gradient(135deg, #333333 0%, #1a1a1a 100%);
   border: 3px solid var(--border-color);
   border-radius: 30px;
-  padding: 8px 18px;
+  padding: 8px 18px 8px 8px;
   width: 100%;
   max-width: 320px;
   margin-bottom: 20px;
-  box-shadow: var(--shadow-hard);
+  box-shadow: 0 4px 0 var(--border-color), 0 8px 20px rgba(0,0,0,0.25);
   cursor: pointer;
   user-select: none;
-  transition: transform 0.1s;
+  transition: transform 0.1s, box-shadow 0.15s, border-color 0.2s;
 }
-.audio-player-card:active { transform: translateY(4px); box-shadow: none; }
+
+.audio-player-card:hover {
+  border-color: var(--accent-green);
+}
+
+.audio-player-card.playing {
+  border-color: var(--accent-green);
+  box-shadow: 0 4px 0 var(--border-color), 0 0 0 3px rgba(76,175,80,0.3), 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.audio-player-card:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
 
 .play-icon-badge {
-  background: var(--accent-green);
+  background: linear-gradient(135deg, #5cdb6b 0%, #3ca84f 100%);
   border: 2px solid var(--border-color);
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   color: white;
-  font-size: 14px;
+  font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 0 var(--border-color);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  flex: 0 0 auto;
+  transition: transform 0.2s;
 }
 
-.audio-info { display: flex; flex-direction: column; flex: 1; margin: 0 12px; }
-.audio-title { font-size: 13px; font-weight: 600; color: #ffffff; }
-.audio-sub { font-size: 11px; color: #aaaaaa; font-weight: 500; }
+.audio-player-card:hover .play-icon-badge {
+  transform: scale(1.1) rotate(5deg);
+}
 
-.equalizer { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
-.eq-bar { width: 4px; background: var(--accent-green); border-radius: 2px; height: 4px; }
-.playing .eq-bar { animation: wave 0.8s infinite ease-in-out alternate; }
+.audio-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin: 0 8px;
+  min-width: 0;
+}
+
+.audio-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.audio-sub {
+  font-size: 11px;
+  color: #aaaaaa;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.equalizer {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+.eq-bar {
+  width: 4px;
+  background: linear-gradient(180deg, #5cdb6b, #3ca84f);
+  border-radius: 2px;
+  height: 4px;
+  transition: height 0.2s;
+}
+
+.playing .eq-bar {
+  animation: wave 0.8s infinite ease-in-out alternate;
+}
 .playing .eq-bar:nth-child(1) { animation-delay: 0.1s; }
 .playing .eq-bar:nth-child(2) { animation-delay: 0.3s; }
 .playing .eq-bar:nth-child(3) { animation-delay: 0.2s; }
 .playing .eq-bar:nth-child(4) { animation-delay: 0.4s; }
 
-@keyframes wave { 0% { height: 4px; } 100% { height: 18px; } }
+@keyframes wave {
+  0% { height: 4px; }
+  100% { height: 18px; }
+}
 
+/* ============ SOCIAL ============ */
 .social-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -201,43 +310,58 @@ body {
   text-decoration: none;
   font-weight: 600;
   font-size: 13px;
-  padding: 10px 12px;
+  padding: 11px 12px;
   border-radius: var(--radius);
   width: 100%;
   min-width: 0;
   letter-spacing: 0.5px;
   border: 3px solid var(--border-color);
   box-shadow: var(--shadow-btn);
-  transition: transform 0.1s, box-shadow 0.1s;
+  transition: transform 0.1s, box-shadow 0.1s, filter 0.15s;
 }
 
-.yt-btn { background: #ff0000; }
-.tt-btn { background: #000000; }
+.yt-btn { background: linear-gradient(135deg, #ff3b3b 0%, #cc0000 100%); }
+.tt-btn { background: linear-gradient(135deg, #333333 0%, #000000 100%); }
 
-.yt-btn:active, .tt-btn:active { transform: translateY(4px); box-shadow: none; }
+.yt-btn:hover, .tt-btn:hover { filter: brightness(1.1); }
+.yt-btn:active, .tt-btn:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
 
+/* ============ MAIN ============ */
 main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 
 .hero-title {
   text-align: center;
-  font-size: clamp(24px, 6vw, 36px);
+  font-size: clamp(20px, 5.5vw, 30px);
   font-weight: 700;
-  margin: 4px 0;
+  margin: 4px 0 10px;
   color: #ffffff;
-  text-shadow: 2px 2px 0 var(--border-color), -1px -1px 0 var(--border-color), 1px -1px 0 var(--border-color), -1px 1px 0 var(--border-color), 1px 1px 0 var(--border-color);
+  line-height: 1.35;
+  letter-spacing: 0.2px;
+  text-shadow: 
+    2px 2px 0 var(--border-color),
+    -1px -1px 0 var(--border-color),
+    1px -1px 0 var(--border-color),
+    -1px 1px 0 var(--border-color),
+    1px 1px 0 var(--border-color),
+    0 4px 14px rgba(0,0,0,0.3);
 }
 
 .hero-sub {
   text-align: center;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   margin-bottom: 24px;
-  text-shadow: 1px 1px 0 var(--border-color);
+  line-height: 1.5;
+  text-shadow: 1px 1px 0 var(--border-color), 0 2px 8px rgba(0,0,0,0.2);
+  opacity: 0.95;
 }
 
-/* ===== Search wrap + Suggestions ===== */
+/* ============ SEARCH ============ */
 .search-wrap { position: relative; margin-bottom: 20px; }
 
 .search-box {
@@ -247,59 +371,115 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   padding: 6px 6px 6px 18px;
   display: flex;
   align-items: center;
-  box-shadow: var(--shadow-hard);
-  margin-bottom: 0;
+  gap: 6px;
+  box-shadow: 0 4px 0 var(--border-color), 0 8px 20px rgba(0,0,0,0.12);
+  transition: box-shadow 0.2s, border-color 0.2s;
 }
-.search-box input { border: none; outline: none; width: 100%; font-family: inherit; font-size: 15px; color: var(--text-main); background: transparent; font-weight: 500; }
-.search-box input::placeholder { color: var(--text-dim); }
-.search-box button {
-  background: var(--accent-yellow); border: 2px solid var(--border-color); color: var(--text-main);
-  padding: 8px 20px; border-radius: 20px; font-family: inherit; font-weight: 700; font-size: 14px; cursor: pointer;
-  box-shadow: 0 3px 0 var(--border-color); transition: transform .1s, box-shadow .1s;
-}
-.search-box button:active { transform: translateY(3px); box-shadow: none; }
 
+.search-box:focus-within {
+  border-color: var(--accent-yellow);
+  box-shadow: 0 4px 0 var(--border-color), 0 0 0 4px rgba(255,202,58,0.4), 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--text-main);
+  background: transparent;
+  font-weight: 500;
+  padding: 6px 0;
+}
+
+.search-box input::placeholder { color: var(--text-dim); }
+
+.search-box button {
+  background: linear-gradient(180deg, var(--accent-yellow-2) 0%, var(--accent-yellow) 100%);
+  border: 2px solid var(--border-color);
+  color: var(--text-main);
+  padding: 9px 20px;
+  border-radius: 20px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--border-color);
+  transition: transform 0.1s, box-shadow 0.1s, filter 0.15s;
+  flex: 0 0 auto;
+}
+
+.search-box button:hover { filter: brightness(1.05); }
+.search-box button:active {
+  transform: translateY(3px);
+  box-shadow: none;
+}
+
+/* ============ SUGGESTIONS ============ */
 .suggestions {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 8px);
   left: 0; right: 0;
   background: var(--surface);
   border: 3px solid var(--border-color);
   border-radius: 16px;
-  box-shadow: var(--shadow-hard);
-  max-height: 300px;
+  box-shadow: 0 6px 0 var(--border-color), 0 16px 32px rgba(0,0,0,0.2);
+  max-height: 320px;
   overflow-y: auto;
   z-index: 100;
   display: none;
   padding: 6px;
 }
-.suggestions.show { display: block; }
+
+.suggestions.show {
+  display: block;
+  animation: suggSlide 0.18s ease;
+}
+
+@keyframes suggSlide {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.suggestions::-webkit-scrollbar { width: 8px; }
+.suggestions::-webkit-scrollbar-track { background: transparent; }
+.suggestions::-webkit-scrollbar-thumb {
+  background: var(--text-dim);
+  border-radius: 4px;
+  border: 2px solid var(--surface);
+}
+
 .suggestions .sug-item {
-  padding: 10px 14px;
+  padding: 11px 14px;
   border-radius: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--text-main);
-  transition: background .15s;
+  transition: background 0.15s, transform 0.1s;
 }
-.suggestions .sug-item:hover,
-.suggestions .sug-item.active { background: var(--accent-yellow); }
 
-/* Ẩn nhãn GAME / HUB */
+.suggestions .sug-item:hover,
+.suggestions .sug-item.active {
+  background: var(--accent-yellow);
+  transform: translateX(2px);
+}
+
 .suggestions .sug-type { display: none !important; }
 
 .suggestions .sug-empty {
-  padding: 12px;
+  padding: 14px;
   text-align: center;
   color: var(--text-dim);
   font-size: 13px;
   font-weight: 600;
 }
 
+/* ============ TAGS ============ */
 .tags {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -308,16 +488,57 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 }
 
 .tags button {
-  width: 100%; min-width: 0; background: var(--surface); border: 3px solid var(--border-color);
-  padding: 8px 6px; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 700;
-  color: var(--text-main); cursor: pointer; display: flex; align-items: center; justify-content: center;
-  gap: 6px; line-height: 1.2; text-align: center; white-space: normal; word-break: break-word; overflow: hidden;
-  box-shadow: 0 3px 0 var(--border-color); transition: transform .1s, box-shadow .1s, background .2s;
+  width: 100%;
+  min-width: 0;
+  background: var(--surface);
+  border: 3px solid var(--border-color);
+  padding: 10px 8px;
+  border-radius: 20px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1.3;
+  text-align: center;
+  white-space: normal;
+  word-break: break-word;
+  overflow: hidden;
+  box-shadow: 0 3px 0 var(--border-color);
+  transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
 }
-.tags button:active { transform: translateY(3px); box-shadow: none; }
-.tags button.on { background: var(--accent-yellow); color: var(--text-main); }
-.tags button span.dot { flex: 0 0 auto; width: 10px; height: 10px; border-radius: 50%; display: inline-block; border: 2px solid var(--border-color); }
 
+.tags button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 var(--border-color);
+  background: var(--surface-hover);
+}
+
+.tags button:active {
+  transform: translateY(3px);
+  box-shadow: none;
+}
+
+.tags button.on {
+  background: linear-gradient(180deg, var(--accent-yellow-2) 0%, var(--accent-yellow) 100%);
+  color: var(--text-main);
+  box-shadow: 0 3px 0 var(--border-color), inset 0 -2px 0 rgba(0,0,0,0.08);
+}
+
+.tags button span.dot {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 2px solid var(--border-color);
+}
+
+/* ============ GRID / CARDS ============ */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -329,12 +550,21 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
   border: 3px solid var(--border-color);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: var(--shadow-hard);
+  box-shadow: var(--shadow-hard), 0 4px 12px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
-  transition: transform .1s, box-shadow .1s;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s;
 }
-.card:active { transform: translateY(4px); box-shadow: none; }
+
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 6px 8px 0 rgba(0,0,0,0.18), 0 14px 28px rgba(0,0,0,0.15);
+  }
+  .card:hover .card-img-box img {
+    transform: scale(1.06);
+  }
+}
 
 .card-img-box {
   width: 100%;
@@ -349,97 +579,204 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 }
 
 .card-img-box::before {
-  content: ''; position: absolute; inset: 0;
+  content: '';
+  position: absolute;
+  inset: 0;
   background: linear-gradient(90deg, #d0d0d0 25%, #e8e8e8 50%, #d0d0d0 75%);
-  background-size: 200% 100%; animation: shimmer 1.4s infinite; z-index: 1; transition: opacity .35s ease;
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  z-index: 1;
+  transition: opacity 0.35s ease;
 }
-.card-img-box.loaded::before { opacity: 0; pointer-events: none; }
-@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.card-img-box.loaded::before {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 
 .card-img-box img {
-  width: 100%; height: 100%; object-fit: cover; 
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   object-position: top center;
-  opacity: 0; transition: opacity .35s ease; position: relative; z-index: 2;
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.4s ease;
+  position: relative;
+  z-index: 2;
 }
+
 .card-img-box img.img-ready { opacity: 1; }
 
 .card-img-placeholder {
-  color: var(--text-main); font-weight: 700; font-size: 14px; letter-spacing: 0.5px;
-  text-align: center; padding: 0 8px; position: relative; z-index: 2;
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  text-align: center;
+  padding: 0 8px;
+  position: relative;
+  z-index: 2;
 }
 
-.card-body { padding: 12px; display: flex; flex-direction: column; flex: 1; }
+.card-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 
 .card-title {
-  font-size: 20px; 
-  font-weight: 700; 
-  margin: 0 0 12px 0; 
-  color: var(--text-main); 
-  line-height: 1.3;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: var(--text-main);
+  line-height: 1.35;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
-.game-name { 
-  color: #e63946; 
-  font-weight: 600; 
-  display: block; 
-  margin-top: 6px; 
-  font-size: 16px; 
+.game-name {
+  display: inline-block;
+  background: linear-gradient(135deg, #ff4757 0%, #ff6b9d 100%);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 2px 0 var(--border-color);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+  letter-spacing: 0.3px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card-footer {
-  margin-top: auto; display: flex; justify-content: space-between; align-items: center;
-  gap: 6px; padding-top: 10px; border-top: 2px dashed rgba(0,0,0,0.1);
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 2px dashed rgba(0,0,0,0.1);
 }
 
 .btn-link {
-  flex: 1; text-align: center; background: #ffffff; border: 2px solid var(--border-color);
-  color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 13px; padding: 8px 0;
-  border-radius: 8px; transition: all .1s ease; display: flex; justify-content: center; align-items: center;
+  flex: 1;
+  text-align: center;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%);
+  border: 2px solid var(--border-color);
+  color: var(--text-main);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 9px 0;
+  border-radius: 10px;
+  transition: all 0.15s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   box-shadow: 0 3px 0 var(--border-color);
+  letter-spacing: 0.3px;
 }
-.btn-link:active { transform: translateY(3px); box-shadow: none; background: #f0f0f0; }
 
-.btn-sub { background: #f4f4f4; }
+.btn-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 var(--border-color);
+}
 
-.pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 30px; flex-wrap: wrap; }
+.btn-link:active {
+  transform: translateY(3px);
+  box-shadow: none;
+}
+
+.btn-sub {
+  background: linear-gradient(180deg, #f8f8f8 0%, #e8e8e8 100%);
+}
+
+/* ============ PAGINATION ============ */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
 .pagination button {
-  background: #ffffff; border: 2px solid var(--border-color); padding: 8px 16px; border-radius: 10px;
-  font-family: inherit; font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer;
-  box-shadow: 0 3px 0 var(--border-color); transition: all 0.1s ease;
+  background: #ffffff;
+  border: 2px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--border-color);
+  transition: all 0.15s;
+  min-width: 42px;
 }
-.pagination button:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
-.pagination button.active { background: var(--accent-yellow); }
-.pagination button:disabled { opacity: 0.5; cursor: not-allowed; background: #ddd; }
 
+.pagination button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 var(--border-color);
+}
+
+.pagination button:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: none;
+}
+
+.pagination button.active {
+  background: linear-gradient(180deg, var(--accent-yellow-2) 0%, var(--accent-yellow) 100%);
+  box-shadow: 0 3px 0 var(--border-color), inset 0 -2px 0 rgba(0,0,0,0.1);
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #ddd;
+}
+
+/* ============ RESPONSIVE ============ */
 @media (max-width: 480px) {
   .tags { grid-template-columns: repeat(2, 1fr); }
   .grid { gap: 8px; }
   .card-body { padding: 10px 6px; }
-  .card-title { font-size: 16px; } 
-  .game-name { font-size: 14px; margin-top: 4px; }
-  .btn-link { font-size: 11px; padding: 6px 0; }
-
-  /* Badge nhỏ lại cho gọn trên điện thoại */
+  .card-title { font-size: 15px; gap: 4px; }
+  .game-name { font-size: 10px; padding: 2px 9px; }
+  .btn-link { font-size: 11px; padding: 8px 0; }
   .support-badge { width: 78px; top: 8px; right: 8px; gap: 4px; }
-  .support-badge .support-text { font-size: 9px; padding: 2px 4px; border-radius: 6px; }
+  .support-badge .support-text { font-size: 9px; padding: 2px 6px; border-radius: 7px; }
+  .avatar-wrapper { width: 92px; height: 92px; }
+  .profile-name { font-size: 26px; }
 }
 </style>
 </head>
 <body>
 
-<!-- Audio: preload none để không tải nhạc khi vào trang -->
 <audio id="bgAudio" loop playsinline preload="none">
   <source src="./nhac.mp3" type="audio/mp3">
 </audio>
 
 <div class="header-container">
 
-  <!-- ===== Ảnh ủng hộ ad + chữ ===== -->
   <div class="support-badge">
     <img src="https://wsrv.nl/?url=https%3A%2F%2Fi.ibb.co%2FWNy4m01H%2FIMG-5965.jpg&w=240&h=240&fit=cover&output=webp&q=80"
          alt="Ủng hộ ad" decoding="async" fetchpriority="high">
-    <span class="support-text">Phật Nào Tốt Bụng Donate Ad 1-2k Iu Lắm<3</span>
+    <span class="support-text">Ước Dc Donate</span>
   </div>
 
   <div class="avatar-wrapper" id="avatarFrame">
@@ -477,8 +814,8 @@ main { max-width: 800px; margin: 0 auto; padding: 10px 16px; }
 </div>
 
 <main>
-  <h1 class="hero-title">Nếu Script Game Nào Chưa Update Hoặc Lỗi Ib TikTok Ad</h1>
-  <div class="hero-sub">Lưu Ý Tìm Kiếm Hãy Ghi Tiếng Anh</div>
+  <h1 class="hero-title">Nếu Script Game Nào Chưa Update Hoặc Lỗi Ib TikTok Ad Để Update Script Mới</h1>
+  <div class="hero-sub">Lưu Ý Tìm Kiếm Hãy Ghi Tên Game Là Tiếng Anh, Ai Không Biết Tên Tiếng Anh Xem Lại Cap Video Mình Có Để Tên Game</div>
 
   <div class="search-wrap">
     <div class="search-box">
@@ -501,9 +838,8 @@ const playerWidget = document.getElementById('playerWidget');
 const audioStatus = document.getElementById('audioStatus');
 const iconBadge = document.getElementById('iconBadge');
 let isPlaying = false;
-let userPaused = false; // Cờ đánh dấu người dùng đã chủ động tắt nhạc
+let userPaused = false;
 
-/* UI khi nhạc đang phát */
 function activateAudioUI() {
   isPlaying = true;
   userPaused = false;
@@ -513,7 +849,6 @@ function activateAudioUI() {
   audioStatus.innerText = 'Đang phát • Chạm để tắt';
 }
 
-/* UI khi nhạc bị tắt */
 function deactivateAudioUI() {
   isPlaying = false;
   userPaused = true;
@@ -524,20 +859,19 @@ function deactivateAudioUI() {
 }
 
 function tryAutoplay() {
-  if (userPaused) return; // Không auto bật lại nếu user đã chủ động tắt
+  if (userPaused) return;
   audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); })
     .catch(() => { audioStatus.innerText = 'Chạm để bật nhạc'; });
 }
 
 function unlockAndPlay() {
-  if (userPaused) return; // Tôn trọng lựa chọn của user
+  if (userPaused) return;
   if (!isPlaying) {
     audio.play().then(() => { activateAudioUI(); removeInteractionListeners(); })
       .catch(() => {});
   }
 }
 
-/* 🔁 Click vào player = BẬT / TẮT (toggle) */
 function manualPlayTrigger() {
   if (audio.paused) {
     audio.play().then(activateAudioUI).catch(() => {});
@@ -557,10 +891,9 @@ window.addEventListener('DOMContentLoaded', () => {
   setTimeout(tryAutoplay, 2000);
 });
 
-/* ============ Fast CDN rewrite + image resize ============ */
+/* ============ Fast CDN rewrite ============ */
 function fastCDN(url){
   if (!url) return url;
-
   const m = url.match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/(.+)$/);
   if (m) {
     const [, user, repo, rest] = m;
@@ -578,17 +911,15 @@ function fastCDN(url){
     }
     return url;
   }
-
   if (/^https:\/\/i\.ibb\.co\//.test(url)) {
     return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=640&output=webp&q=75`;
   }
-
   return url;
 }
 
 /* ============ Data ============ */
 const SCRIPTS = [
-  {id: 1, hub:"Miranda Hub", game:"Steal An Egg", c:"Tất Cả", link:"https://link4m.org/YBKOl", subLink:"https://link4m.org/SUmNR", img:"https://i.ibb.co/jZVNHhLB/IMG-4726.jpg"},
+  {id: 1, hub:"Nox Hub", game:"Vox Seas", c:"Tất Cả", link:"https://link4m.net/l9d3zHVM", subLink:"https://link4m.org/2dD0D", img:"https://i.ibb.co/PnHyb1S/IMG-6392.jpg"},
   {id: 2, hub:"Rift", game:"Climb For Animals Eggs", c:"Tất Cả", link:"https://link4m.net/esiNRzQm", subLink:"https://link4m.org/aM3vs5", img:"https://i.ibb.co/2Y8wSqpK/IMG-5037.jpg"},
   {id: 3, hub:"N-Hook", game:"Solve The Cube", c:"Tất Cả", link:"https://link4m.net/8oqCO5sN", subLink:"https://link4m.org/fU173sY", img:"https://i.ibb.co/VpMX4kjS/IMG-5068.jpg"},
   {id: 4, hub:"R Hub", game:"Ride A Pet", c:"Tất Cả", link:"https://link4m.net/Un5BcNem", subLink:"https://link4m.org/V6yRgx", img:"https://raw.githubusercontent.com/PainPH10/13-9/refs/heads/main/IMG_4155.jpeg"},
@@ -631,9 +962,9 @@ const SCRIPTS = [
   {id: 42, hub:"Foxname", game:"99 Nights in the Forest", c:"99 Nights In The Forest", link:"https://link4m.net/r6hLPeK", subLink:"https://link4m.org/VXmf8rGC", img:"https://i.ibb.co/svG0dQKy/IMG-5978.jpg"},
   {id: 43, hub:"Stockfish", game:"Rochess", c:"Tất Cả", link:"https://link4m.org/hZPjOeU", subLink:"https://link4m.net/nFD46", img:"https://i.ibb.co/JWB55t04/IMG-5931.jpg"},
   {id: 44, hub:"Tora Isme", game:"+1 Venom Evolution", c:"Tất Cả", link:"https://link4m.net/gaUog6ia", subLink:"https://link4m.net/xLwhJs8Z", img:"https://i.ibb.co/B2Q9BDhN/IMG-5549.jpg"},
-  {id: 45, hub:"Ringta", game:"99 Nights in the Forest", c:"99 Nights In The Forest", link:"https://link4m.org/VDzuM", subLink:"https://link4m.org/ejfWy", img:"https://i.ibb.co/HT7TdDVq/IMG-5849.jpg"},
+  {id: 45, hub:"Ringta", game:"99 Nights in the Forest", c:"99 Nights In The Forest", link:"https://link4m.org/VDzuM", subLink:"https://link4m.org/ejfWy", img:"https://i.ibb.co/s9zvqsRQ/IMG-6317.jpg"},
   {id: 46, hub:"RBXZ", game:"Deep Fishing", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.org/Qz027jc", subLink:"https://link4m.org/K7oH4", img:"https://i.ibb.co/gMzgqB6P/IMG-5103.jpg"},
-  {id: 47, hub:"Farm Sự Kiện", game:"Evade", c:"Tất Cả", link:"https://link4m.org/H9vIE71V", subLink:"https://link4m.net/H9vIE71V", img:"https://i.ibb.co/DHVGfXLJ/IMG-4778.jpg"},
+  {id: 47, hub:"Archivist Hub", game:"Vox Seas", c:"Tất Cả", link:"https://link4m.net/Vhoc7b", subLink:"https://link4m.org/yqbhNIcE", img:"https://i.ibb.co/fYvmDP67/IMG-6393.jpg"},
   {id: 48, hub:"Slopix Hub", game:"Ball Vs Ball", c:"Tất Cả", link:"https://link4m.org/K2imMty", subLink:"https://link4m.net/2SRqD", img:"https://i.ibb.co/KjpJBZdW/IMG-4780.jpg"},
   {id: 49, hub:"Mario Hub", game:"Build An Ant Empire", c:"Tất Cả", link:"https://link4m.net/FpGcxQ", subLink:"https://link4m.net/3NLEF1", img:"https://i.ibb.co/wZGHQ0MM/IMG-4779.jpg"},
   {id: 50, hub:"Mystrix Hub", game:"Climb For Animals Eggs", c:"Tất Cả", link:"https://link4m.org/c66ih", subLink:"https://link4m.net/tGX5xP", img:"https://i.ibb.co/G4Xwk4py/IMG-5038.jpg"},
@@ -642,7 +973,7 @@ const SCRIPTS = [
   {id: 52, hub:"Barrage", game:"8 Ball Duels", c:"Tất Cả", link:"https://link4m.net/L5rJICr", subLink:"https://link4m.net/yoPhp", img:"https://i.ibb.co/RkdJRvNG/IMG-4815.jpg"},
   {id: 53, hub:"Mirage Hub", game:"Untitled Boxing Game", c:"Tất Cả", link:"https://link4m.net/8nGzS3", subLink:"https://link4m.org/oPSbcv", img:"https://i.ibb.co/nqYvvCkx/IMG-4836.jpg"},
   {id: 54, hub:"Alexandria", game:"Be A Soccer Manager", c:"Tất Cả", link:"https://link4m.net/7P95T", subLink:"https://link4m.org/5GEeac", img:"https://i.ibb.co/SDyLr4Sz/IMG-5657.jpg"},
-  {id: 55, hub:"StarCrow", game:"Anime Ability Arena", c:"Tất Cả", link:"https://link4m.net/0hfqZt65", subLink:"https://link4m.org/VHkQs0", img:"https://i.ibb.co/gLBc2shY/IMG-4939.jpg"},
+  {id: 55, hub:"StarCrow", game:"Anime Ability Arena", c:"Tất Cả", link:"https://link4m.net/yMliw", subLink:"https://link4m.org/VHkQs0", img:"https://i.ibb.co/gLBc2shY/IMG-4939.jpg"},
   {id: 56, hub:"Jujutsu Shenanigans", game:"", c:"Tất Cả", link:"https://link4m.net/1EoT5IQz", subLink:"https://link4m.net/2RiQq2X", img:"https://i.ibb.co/DPfCtBH6/IMG-5102.jpg"},
   {id: 57, hub:"Ajjans", game:"Break And Steal An Egg", c:"Tất Cả", link:"https://link4m.net/Fv5Jt", subLink:"https://link4m.org/YEmFuJ0", img:"https://i.ibb.co/cS97rfPk/IMG-4967.jpg"},
   {id: 58, hub:"Barrage", game:"Backseat Rally", c:"Tất Cả", link:"https://link4m.net/obvNS", subLink:"https://link4m.org/kmLahP", img:"https://i.ibb.co/XfxBLrv5/IMG-4943.jpg"},
@@ -666,9 +997,9 @@ const SCRIPTS = [
   {id: 76, hub:"Tora Isme", game:"+1 Anime Eyes", c:"Tất Cả", link:"https://link4m.org/IERXjGZA", subLink:"https://link4m.net/2huOvlDP", img:"https://i.ibb.co/F48s7D5F/IMG-5633.jpg"},
   {id: 77, hub:"Solo Hub", game:"Attack On Titan Revolution", c:"Attack On Titan Revolution", link:"https://link4m.net/8w35Pq7Y", subLink:"https://link4m.net/9aoUi", img:"https://i.ibb.co/vxnpD4vK/IMG-5645.jpg"},
   {id: 78, hub:"Rs Hub", game:"RoWorld", c:"Tất Cả", link:"https://link4m.org/izCSJxdb", subLink:"https://link4m.net/fKb5EU7", img:"https://i.ibb.co/nqHLhxXh/IMG-5683.jpg"},
-  {id: 79, hub:"MultiHub Pro", game:"Bug Evolution", c:"Tất Cả", link:"https://link4m.net/f5EHtDVa", subLink:"https://link4m.net/rRZee5t", img:"https://i.ibb.co/dw40W4nj/IMG-5701.jpg"},
+  {id: 79, hub:"Multi Hub", game:"Bug Evolution", c:"Tất Cả", link:"https://link4m.net/f5EHtDVa", subLink:"https://link4m.net/rRZee5t", img:"https://i.ibb.co/Swp8gkT4/IMG-6331.jpg"},
   {id: 80, hub:"Rayfield", game:"Primeval Earth", c:"Tất Cả", link:"https://link4m.net/vWVdnl", subLink:"https://link4m.org/QsjNSy", img:"https://i.ibb.co/tTM6ZsTT/IMG-4739.jpg"},
-  {id: 81, hub:"Nobulem.wtf", game:"Attack On Titan Revolution", c:"Attack On Titan Revolution", link:"https://link4m.org/89SC9Hg", subLink:"https://link4m.net/Ceiug", img:"https://i.ibb.co/XrgrJWmK/IMG-5584.jpg"},
+  {id: 81, hub:"Nobulem.wtf", game:"Attack On Titan Revolution", c:"Attack On Titan Revolution", link:"https://link4m.net/wwt3bp", subLink:"https://link4m.org/GaEVMfw0", img:"https://i.ibb.co/v4WVv9hT/IMG-6192.jpg"},
   {id: 82, hub:"Akkiwi", game:"Throw Food For Animals", c:"Throw Food For Animals", link:"https://link4m.org/LFCrC1", subLink:"https://link4m.net/L4rUZws", img:"https://i.ibb.co/VnsdkB3/IMG-5740.jpg"},
   {id: 83, hub:"Tora Isme", game:"Survive Your Ideas", c:"Tất Cả", link:"https://link4m.org/v5Nln", subLink:"https://link4m.net/k2u0heop", img:"https://i.ibb.co/LzMphxvf/IMG-5777.jpg"},
   {id: 84, hub:"Axon Hub", game:"King Legacy", c:"King Legacy", link:"https://link4m.net/O5QrVUeW", subLink:"https://link4m.org/hFoaz", img:"https://i.ibb.co/h1XQc9tc/IMG-5885.jpg"},
@@ -678,12 +1009,24 @@ const SCRIPTS = [
   {id: 88, hub:"Yuri", game:"Throw A Seed", c:"Tất Cả", link:"https://link4m.org/mQHNf", subLink:"https://link4m.net/BDOo3R", img:"https://i.ibb.co/m59CCSYX/IMG-6016.jpg"},
   {id: 89, hub:"LNR Hub", game:"Fisch", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.org/mjE9a", subLink:"https://link4m.org/GTqn2z", img:"https://i.ibb.co/mVdsb7Y0/IMG-6024.jpg"},
   {id: 90, hub:"Adonis Hub", game:"Throw A Seed", c:"Tất Cả", link:"https://link4m.net/wci8W", subLink:"https://link4m.org/WFpBgDt", img:"https://i.ibb.co/1tZd1Bwf/IMG-6045.jpg"},
-  {id: 91, hub:"RBXZ", game:"Driving Empire", c:"Tất Cả", link:"https://link4m.org/pkZUH", subLink:"https://link4m.net/tpsHCK", img:"https://i.ibb.co/4ZdZN8R8/IMG-6082.jpg"},
+  {id: 91, hub:"RBXZ", game:"Driving Empire", c:"Tất Cả", link:"https://link4m.org/pkZUH", subLink:"https://link4m.net/tpsHCK", img:"https://i.ibb.co/xKcFFMMr/IMG-6314.jpg"},
   {id: 92, hub:"Spectrum", game:"King Legacy", c:"King Legacy", link:"https://link4m.org/JY0aofuB", subLink:"https://link4m.net/IKHCwc", img:"https://i.ibb.co/fYwhGFht/IMG-6114.jpg"},
-  {id: 93, hub:"DYXNET Hub", game:"Paper To Plane", c:"Tất Cả", link:"https://link4m.org/p1t6VWzc", subLink:"https://link4m.net/3MsJjKp", img:"https://i.ibb.co/Ld0t5kpq/IMG-6134.jpg"},
+  {id: 93, hub:"DYXNET Hub", game:"Paper To Plane", c:"Tất Cả", link:"https://link4m.org/p1t6VWzc", subLink:"https://link4m.net/3MsJjKp", img:"https://i.ibb.co/twDJFcw7/IMG-6293.jpg"},
   {id: 94, hub:"Core. Xyz", game:"99 Nights in the Forest", c:"99 Nights In The Forest", link:"https://link4m.net/Jrz5XJyJ", subLink:"https://link4m.net/PVk25UF0", img:"https://i.ibb.co/Z60HNPFT/IMG-6150.jpg"},
   {id: 95, hub:"MoonDiety", game:"Throw Food For Animals", c:"Throw Food For Animals", link:"https://link4m.net/9uFD2k", subLink:"https://link4m.net/J4Rgik7", img:"https://i.ibb.co/Gf6j1y4p/IMG-6156.jpg"},
-  {id: 96, hub:"Cryonix", game:"Attack On Titan Revolution", c:"Attack On Titan Revolution", link:"https://link4m.net/p9xBgX", subLink:"https://link4m.net/oWjnqFO9", img:"https://i.ibb.co/TqnCj1c7/IMG-5899.jpg"}
+  {id: 96, hub:"Lumin Hub", game:"King Legacy", c:"King Legacy", link:"https://link4m.net/jbOYl4K", subLink:"https://link4m.net/WIkmNiz", img:"https://i.ibb.co/HfkP3R9W/IMG-6169.jpg"},
+  {id: 97, hub:"Cryonix", game:"King Legacy", c:"King Legacy", link:"https://link4m.org/5oIRBCL", subLink:"https://link4m.org/cgsBMcWm", img:"https://i.ibb.co/tppFzr69/IMG-6227.jpg"},
+  {id: 98, hub:"Mythios", game:"Ant Evolution", c:"Tất Cả", link:"https://link4m.net/dltlIxKO", subLink:"https://link4m.org/unZhXL", img:"https://i.ibb.co/1G96fvNd/IMG-6329.jpg"},
+  {id: 99, hub:"RBXZ", game:"FERAL Animal Survival", c:"Tất Cả", link:"https://link4m.org/KvzT2c", subLink:"https://link4m.org/MZHrok0m", img:"https://i.ibb.co/wZBy4zQY/IMG-6260.jpg"},
+  {id: 100, hub:"Aqua Hub", game:"King Legacy", c:"King Legacy", link:"https://link4m.org/OXQiaf", subLink:"https://link4m.org/9Y6l1Msj", img:"https://i.ibb.co/cqdz6DM/IMG-6273.jpg"},
+  {id: 101, hub:"Kuzan Hub", game:"Paper To Plane", c:"Tất Cả", link:"https://link4m.net/USGX2D", subLink:"https://link4m.org/Ldvw4O", img:"https://i.ibb.co/0R7FHMmT/IMG-6292.jpg"},
+  {id: 102, hub:"Mystrix", game:"Driving Empire", c:"Tất Cả", link:"https://link4m.net/sTUtm", subLink:"https://link4m.org/63vtiX2p", img:"https://i.ibb.co/qLnqnD5n/IMG-6315.jpg"},
+  {id: 103, hub:"Multi Hub", game:"Ant Evolution", c:"Tất Cả", link:"https://link4m.net/bl5dv4", subLink:"https://link4m.net/itrCk", img:"https://i.ibb.co/DPgbgh55/IMG-6330.jpg"},
+  {id: 104, hub:"One Hub", game:"King Legacy", c:"King Legacy", link:"https://link4m.org/dcfp4Z79", subLink:"https://link4m.net/sI4qpjp", img:"https://i.ibb.co/PGmgQD84/IMG-6352.jpg"},
+  {id: 105, hub:"Mystrix", game:"Ragdoll Soccer", c:"Tất Cả", link:"https://link4m.org/iMDQ7uKb", subLink:"https://link4m.net/whiTi70Q", img:"https://i.ibb.co/wZc8RgF3/IMG-6382.jpg"},
+  {id: 106, hub:"Kryzen Hub", game:"Attack On Titan Revolution", c:"Attack On Titan Revolution", link:"https://link4m.org/dNhqsdzo", subLink:"https://link4m.net/5TSDM1", img:"https://i.ibb.co/HL9mbFXR/IMG-6361.jpg"},
+  {id: 107, hub:"Cryonix", game:"Attack On Titan Revolution", c:"Attack On Titan Revolution", link:"https://link4m.net/p9xBgX", subLink:"https://link4m.net/oWjnqFO9", img:"https://i.ibb.co/TqnCj1c7/IMG-5899.jpg"},
+  {id: 108, hub:"Axon Hub", game:"Fisch", c:"Tất Cả Script Game Câu Cá", link:"https://link4m.net/xtveIKVc", subLink:"https://link4m.org/FocWbr", img:"https://i.ibb.co/VWJCyQMc/IMG-6422.jpg"}
 ];
 
 function shuffle(array) {
@@ -701,7 +1044,7 @@ let currentPage = 1;
 const ITEMS_PER_PAGE = 20;
 const cats = ['Tất Cả', 'Attack On Titan Revolution', 'King Legacy', 'Tất Cả Script Game Câu Cá', '99 Nights In The Forest', 'Throw Food For Animals'];
 
-/* ============ Fast image pipeline ============ */
+/* ============ Lazy image pipeline ============ */
 let imgObserver;
 if (typeof IntersectionObserver !== 'undefined') {
   imgObserver = new IntersectionObserver((entries) => {
@@ -824,7 +1167,7 @@ function render(){
 function changeCat(c) { cat = c; currentPage = 1; render(); hideSuggestions(); }
 function changePage(p) { currentPage = p; render(); window.scrollTo({ top: 300, behavior: 'smooth' }); }
 
-/* ============ Suggestions (autocomplete) ============ */
+/* ============ Suggestions ============ */
 const inputEl = $('q');
 const sugBox  = $('suggestions');
 let sugItems = [];
